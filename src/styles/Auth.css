@@ -1,0 +1,78 @@
+/* ===========================
+   Estilos de Autenticação
+   Login e Cadastro
+   =========================== */
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--verde-fundo) 0%, var(--neutro-bg) 100%);
+  padding: 1rem;
+}
+
+.auth-card {
+  background: var(--neutro-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--sombra);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Logo e título */
+.auth-logo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-logo-icone {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.auth-titulo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--verde-principal);
+  margin-bottom: 0.25rem;
+}
+
+.auth-subtitulo {
+  font-size: 0.9rem;
+  color: var(--neutro-muted);
+}
+
+/* Formulário */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.campo-grupo {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Link de rodapé */
+.auth-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--neutro-muted);
+}
+
+.auth-link a {
+  color: var(--verde-principal);
+  font-weight: 600;
+}
+
+/* Responsivo — celular */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 2rem 1.25rem;
+  }
+}
