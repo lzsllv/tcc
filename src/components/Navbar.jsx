@@ -1,0 +1,61 @@
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useApp } from '../context/AppContext';
+import '../styles/Navbar.css';
+
+export default function Navbar() {
+  const { usuarioLogado, logout } = useApp();
+  const location = useLocation(); // sabe qual rota está ativa
+  const navegar = useNavigate();
+
+  function handleLogout() {
+    logout();
+    navegar('/login');
+  }
+
+  // Links do menu
+  const links = [
+    { caminho: '/dashboard',     icone: '🏠', nome: 'Início' },
+    { caminho: '/produtos',      icone: '📦', nome: 'Produtos' },
+    { caminho: '/custos-fixos',  icone: '💸', nome: 'Custos Fixos' },
+    { caminho: '/configuracoes', icone: '⚙️',  nome: 'Configurações' },
+    { caminho: '/simulacao',     icone: '📈', nome: 'Simulação' },
+    { caminho: '/relatorio',     icone: '📊', nome: 'Relatório' },
+  ];
+
+  return (
+    <nav className="navbar">
+      {/* Logo */}
+      <div className="navbar-logo">
+        <span>💰</span>
+        <span className="navbar-logo-nome">Precifique</span>
+      </div>
+
+      {/* Links de navegação */}
+      <ul className="navbar-links">
+        {links.map(link => (
+          <li key={link.caminho}>
+            <Link
+              to={link.caminho}
+              className={`navbar-link ${
+                location.pathname === link.caminho ? 'navbar-link-ativo' : ''
+              }`}
+            >
+              <span className="navbar-link-icone">{link.icone}</span>
+              <span className="navbar-link-nome">{link.nome}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+
+      {/* Usuário e botão sair */}
+      <div className="navbar-usuario">
+        <span className="navbar-usuario-nome">
+          Olá, {usuarioLogado?.nome?.split(' ')[0]}
+        </span>
+        <button onClick={handleLogout} className="navbar-sair">
+          Sair
+        </button>
+      </div>
+    </nav>
+  );
+}

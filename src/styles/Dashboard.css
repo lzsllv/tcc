@@ -1,0 +1,132 @@
+/* Dashboard */
+.dashboard-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.dashboard-cabecalho {
+  margin-bottom: 2rem;
+}
+
+.dashboard-titulo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--neutro-texto);
+}
+
+.dashboard-subtitulo {
+  color: var(--neutro-muted);
+  margin-top: 0.25rem;
+}
+
+/* Cards de resumo */
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.resumo-card {
+  background: var(--neutro-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--sombra);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-left: 4px solid var(--verde-principal);
+}
+
+.resumo-icone {
+  font-size: 2rem;
+}
+
+.resumo-label {
+  font-size: 0.82rem;
+  color: var(--neutro-muted);
+  margin-bottom: 0.2rem;
+}
+
+.resumo-valor {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--verde-principal);
+}
+
+/* Seção */
+.dashboard-secao {
+  background: var(--neutro-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--sombra);
+  padding: 1.5rem;
+}
+
+.secao-titulo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--neutro-texto);
+}
+
+/* Estado vazio */
+.estado-vazio {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--neutro-muted);
+}
+
+.estado-vazio span {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+/* Tabela */
+.dashboard-tabela-wrapper {
+  overflow-x: auto;
+}
+
+.dashboard-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.dashboard-tabela th {
+  text-align: left;
+  padding: 0.6rem 1rem;
+  background: var(--verde-fundo);
+  color: var(--verde-principal);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.dashboard-tabela td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--neutro-borda);
+}
+
+.dashboard-tabela tr:last-child td {
+  border-bottom: none;
+}
+
+.badge {
+  background: var(--verde-fundo);
+  color: var(--verde-principal);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.preco-sugerido {
+  color: var(--verde-principal);
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .dashboard-container { padding: 1rem; }
+  .dashboard-titulo { font-size: 1.3rem; }
+}

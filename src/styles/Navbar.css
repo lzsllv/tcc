@@ -1,0 +1,116 @@
+/* ===========================
+   Estilos da Navbar
+   =========================== */
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--verde-principal);
+  color: #fff;
+  padding: 0 1.5rem;
+  height: 60px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Logo */
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+}
+
+.navbar-logo-nome {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* Links */
+.navbar-links {
+  display: flex;
+  list-style: none;
+  gap: 0.25rem;
+}
+
+.navbar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius);
+  color: rgba(255,255,255,0.85);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.navbar-link:hover {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  text-decoration: none;
+}
+
+.navbar-link-ativo {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  font-weight: 700;
+}
+
+.navbar-link-icone {
+  font-size: 1rem;
+}
+
+/* Usuário e sair */
+.navbar-usuario {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.navbar-usuario-nome {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.9);
+}
+
+.navbar-sair {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: var(--radius);
+  padding: 0.35rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.navbar-sair:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+/* Responsivo — esconde nomes dos links em telas pequenas */
+@media (max-width: 768px) {
+  .navbar-link-nome {
+    display: none;
+  }
+  .navbar-logo-nome {
+    display: none;
+  }
+  .navbar-usuario-nome {
+    display: none;
+  }
+  .navbar-links {
+    gap: 0;
+  }
+  .navbar-link {
+    padding: 0.4rem 0.6rem;
+  }
+}
