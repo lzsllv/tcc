@@ -9,7 +9,7 @@ export default function Cadastro() {
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [erro, setErro] = useState('');
-  const [sucesso, setSucesso] = useState('');
+  const [mensagemSucesso, setMensagemSucesso] = useState('');
 
   const { cadastrar } = useApp();
   const navegar = useNavigate();
@@ -17,28 +17,26 @@ export default function Cadastro() {
   function handleSubmit(e) {
     e.preventDefault();
     setErro('');
-    setSucesso('');
+    setMensagemSucesso('');
 
-    // Validações
     if (!nome || !email || !senha || !confirmarSenha) {
       setErro('Preencha todos os campos.');
       return;
     }
-
     if (senha.length < 6) {
       setErro('A senha deve ter no mínimo 6 caracteres.');
       return;
     }
-
     if (senha !== confirmarSenha) {
       setErro('As senhas não coincidem.');
       return;
     }
 
-    const sucesso = cadastrar(nome, email, senha);
+    // Renomeado para 'ok' para evitar conflito com o estado 'mensagemSucesso'
+    const ok = cadastrar(nome, email, senha);
 
-    if (sucesso) {
-      setSucesso('Conta criada com sucesso! Redirecionando...');
+    if (ok) {
+      setMensagemSucesso('Conta criada com sucesso! Redirecionando...');
       setTimeout(() => navegar('/login'), 1500);
     } else {
       setErro('Este e-mail já está cadastrado.');
@@ -56,7 +54,7 @@ export default function Cadastro() {
 
         <form onSubmit={handleSubmit} className="auth-form">
           {erro && <div className="alerta-erro">{erro}</div>}
-          {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
+          {mensagemSucesso && <div className="alerta-sucesso">{mensagemSucesso}</div>}
 
           <div className="campo-grupo">
             <label className="input-label" htmlFor="nome">Nome completo</label>
