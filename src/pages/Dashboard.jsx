@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useApp } from '../context/AppContext';
 import '../styles/Dashboard.css';
@@ -12,14 +13,12 @@ export default function Dashboard() {
     configuracoes,
   } = useApp();
 
-  // Calcula totais para os cards de resumo
   const totalProdutos = produtos.length;
   const totalCustos = totalCustosFixos();
   const precoMedio = produtos.length > 0
     ? produtos.reduce((acc, p) => acc + calcularPrecoSugerido(p), 0) / produtos.length
     : 0;
 
-  // Formata valor em reais
   function formatarMoeda(valor) {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
@@ -28,7 +27,6 @@ export default function Dashboard() {
     <div>
       <Navbar />
       <main className="dashboard-container">
-        {/* Saudação */}
         <div className="dashboard-cabecalho">
           <h1 className="dashboard-titulo">
             Olá, {usuarioLogado?.nome?.split(' ')[0]}! 👋
@@ -38,7 +36,6 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Cards de resumo */}
         <div className="dashboard-cards">
           <div className="resumo-card">
             <span className="resumo-icone">📦</span>
@@ -73,16 +70,20 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Lista rápida de produtos */}
         <div className="dashboard-secao">
           <h2 className="secao-titulo">Seus produtos</h2>
           {produtos.length === 0 ? (
             <div className="estado-vazio">
               <span>📦</span>
               <p>Nenhum produto cadastrado ainda.</p>
-              <a href="/produtos" className="btn-primary" style={{display:'inline-block', width:'auto', padding:'0.6rem 1.5rem', marginTop:'1rem'}}>
+              {/* Usa <Link> em vez de <a href> para evitar reload da página */}
+              <Link
+                to="/produtos"
+                className="btn-primary"
+                style={{display:'inline-block', width:'auto', padding:'0.6rem 1.5rem', marginTop:'1rem'}}
+              >
                 Cadastrar produto
-              </a>
+              </Link>
             </div>
           ) : (
             <div className="dashboard-tabela-wrapper">
