@@ -2,6 +2,15 @@ import Navbar from '../components/Navbar';
 import { useApp } from '../context/AppContext';
 import '../styles/Pagina.css';
 
+// Mapeamento dos nomes das chaves para exibição correta com acentos
+const NOMES_CUSTOS = {
+  aluguel:  'Aluguel',
+  energia:  'Energia',
+  internet: 'Internet',
+  salarios: 'Salários',
+  outros:   'Outros',
+};
+
 export default function Relatorio() {
   const {
     produtos,
@@ -20,6 +29,10 @@ export default function Relatorio() {
   const totalCustos = totalCustosFixos();
   const custoFixoProd = custoFixoPorProduto();
 
+  function handleImprimir() {
+    window.print();
+  }
+
   return (
     <div>
       <Navbar />
@@ -29,6 +42,9 @@ export default function Relatorio() {
             <h1 className="pagina-titulo">📊 Relatório</h1>
             <p className="pagina-subtitulo">Visão completa dos seus custos, preços e margens</p>
           </div>
+          <button className="btn-primary" style={{width:'auto'}} onClick={handleImprimir}>
+            🖨️ Imprimir relatório
+          </button>
         </div>
 
         {/* Resumo geral */}
@@ -73,7 +89,7 @@ export default function Relatorio() {
               <tbody>
                 {Object.entries(custosFixos).map(([key, val]) => (
                   <tr key={key}>
-                    <td style={{textTransform:'capitalize'}}>{key}</td>
+                    <td>{NOMES_CUSTOS[key] || key}</td>
                     <td>{formatarMoeda(val)}</td>
                   </tr>
                 ))}
