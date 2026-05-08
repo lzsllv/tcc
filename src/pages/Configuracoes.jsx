@@ -7,6 +7,7 @@ export default function Configuracoes() {
   const { configuracoes, setConfiguracoes } = useApp();
   const [sucesso, setSucesso] = useState('');
   const [erro, setErro] = useState('');
+  const [aviso, setAviso] = useState('');
 
   function handleChange(campo, valor) {
     setConfiguracoes(prev => ({ ...prev, [campo]: valor }));
@@ -15,13 +16,21 @@ export default function Configuracoes() {
   function handleSalvar(e) {
     e.preventDefault();
     setErro('');
+    setSucesso('');
+    setAviso('');
+
+    // Erro bloqueante: margem zerada
     if (configuracoes.margemLucro < 1) {
       setErro('A margem de lucro deve ser maior que 0%.');
       return;
     }
+
+    // Aviso não bloqueante: margem baixa mas válida
     if (configuracoes.margemLucro < 10) {
-      setErro('⚠️ Atenção: margem abaixo de 10% pode ser insuficiente para cobrir imprevistos.');
+      setAviso('⚠️ Margem abaixo de 10% pode ser insuficiente para cobrir imprevistos.');
     }
+
+    // Salva em qualquer caso (desde que margem >= 1)
     setSucesso('Configurações salvas com sucesso!');
     setTimeout(() => setSucesso(''), 3000);
   }
@@ -39,7 +48,8 @@ export default function Configuracoes() {
 
         <div className="card" style={{maxWidth:'560px'}}>
           <form onSubmit={handleSalvar} className="auth-form">
-            {erro && <div className="alerta-aviso">{erro}</div>}
+            {erro    && <div className="alerta-erro">{erro}</div>}
+            {aviso   && <div className="alerta-aviso">{aviso}</div>}
             {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
 
             <div className="campo-grupo">
