@@ -4,7 +4,7 @@ import '../styles/Navbar.css';
 
 export default function Navbar() {
   const { usuarioLogado, logout } = useApp();
-  const location = useLocation(); // sabe qual rota está ativa
+  const location = useLocation();
   const navegar = useNavigate();
 
   function handleLogout() {
@@ -12,7 +12,6 @@ export default function Navbar() {
     navegar('/login');
   }
 
-  // Links do menu
   const links = [
     { caminho: '/dashboard',     icone: '🏠', nome: 'Início' },
     { caminho: '/produtos',      icone: '📦', nome: 'Produtos' },
@@ -24,13 +23,12 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      {/* Logo */}
-      <div className="navbar-logo">
+      {/* Logo clicavel — volta para a landing page */}
+      <Link to="/" className="navbar-logo">
         <span>💰</span>
         <span className="navbar-logo-nome">Precifique</span>
-      </div>
+      </Link>
 
-      {/* Links de navegação */}
       <ul className="navbar-links">
         {links.map(link => (
           <li key={link.caminho}>
@@ -47,7 +45,6 @@ export default function Navbar() {
         ))}
       </ul>
 
-      {/* Usuário e botão sair */}
       <div className="navbar-usuario">
         <span className="navbar-usuario-nome">
           Olá, {usuarioLogado?.nome?.split(' ')[0]}
