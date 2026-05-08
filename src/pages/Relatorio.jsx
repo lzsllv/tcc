@@ -18,6 +18,7 @@ export default function Relatorio() {
     configuracoes,
     totalCustosFixos,
     custoFixoPorProduto,
+    custoFixoPorUnidade,
     calcularCustoTotal,
     calcularPrecoSugerido,
   } = useApp();
@@ -27,7 +28,7 @@ export default function Relatorio() {
   }
 
   const totalCustos = totalCustosFixos();
-  const custoFixoProd = custoFixoPorProduto();
+  const custoFixoMedio = custoFixoPorProduto(); // só para o resumo geral
   const custosZerados = totalCustos === 0;
 
   function handleImprimir() {
@@ -48,12 +49,22 @@ export default function Relatorio() {
           </button>
         </div>
 
-        {/* Aviso se os custos fixos estiverem zerados */}
+        {/* Aviso: custos fixos zerados */}
         {custosZerados && (
           <div className="alerta-aviso" style={{marginBottom:'1.5rem'}}>
             ⚠️ Seus custos fixos estão zerados. Os preços sugeridos podem estar abaixo do valor real.{' '}
             <Link to="/custos-fixos" style={{color:'inherit', fontWeight:700, textDecoration:'underline'}}>
               Preencher custos fixos
+            </Link>
+          </div>
+        )}
+
+        {/* Aviso: produtos sem quantidade mensal */}
+        {produtos.some(p => !p.quantidadeMes) && (
+          <div className="alerta-aviso" style={{marginBottom:'1.5rem'}}>
+            ⚠️ Alguns produtos não têm a quantidade mensal informada. O rateio dos custos fixos usa 1 unidade como base, o que pode elevar muito o custo.{' '}
+            <Link to="/produtos" style={{color:'inherit', fontWeight:700, textDecoration:'underline'}}>
+              Corrigir produtos
             </Link>
           </div>
         )}
@@ -67,8 +78,8 @@ export default function Relatorio() {
               <span className="info-valor">{formatarMoeda(totalCustos)}</span>
             </div>
             <div className="info-item">
-              <span className="info-label">Custo fixo por produto</span>
-              <span className="info-valor">{formatarMoeda(custoFixoProd)}</span>
+              <span className="info-label">Média de custo fixo por tipo de produto</span>
+              <span className="info-valor">{formatarMoeda(custoFixoMedio)}</span>
             </div>
             <div className="info-item">
               <span className="info-label">Margem de lucro definida</span>
@@ -144,7 +155,9 @@ export default function Relatorio() {
                   <tr>
                     <th>Produto</th>
                     <th>Categoria</th>
+                    <th>Qtd/mês</th>
                     <th>Custo direto</th>
+                    <th>Fixo/unidade</th>
                     <th>Custo total</th>
                     <th>Preço sugerido</th>
                     <th>Margem</th>
@@ -152,13 +165,21 @@ export default function Relatorio() {
                 </thead>
                 <tbody>
                   {produtos.map(p => {
+                    const fixoUnidade = custoFixoPorUnidade(p);
                     const custoTotal = calcularCustoTotal(p);
                     const precoSugerido = calcularPrecoSugerido(p);
                     return (
                       <tr key={p.id}>
                         <td>{p.nome}</td>
                         <td><span className="badge">{p.categoria}</span></td>
+                        <td>
+                          {p.quantidadeMes
+                            ? `${p.quantidadeMes} un.`
+                            : <span style={{color:'var(--alerta)', fontSize:'0.8rem'}}>Não informado</span>
+                          }
+                        </td>
                         <td>{formatarMoeda(p.custo)}</td>
+                        <td>{formatarMoeda(fixoUnidade)}</td>
                         <td>{formatarMoeda(custoTotal)}</td>
                         <td className="preco-sugerido">{formatarMoeda(precoSugerido)}</td>
                         <td>{configuracoes.margemLucro}%</td>
