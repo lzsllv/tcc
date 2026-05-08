@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 
 // Importa todas as páginas do sistema
+import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
 import Dashboard from './pages/Dashboard';
@@ -15,7 +16,6 @@ import Relatorio from './pages/Relatorio';
 function RotaProtegida({ children }) {
   const { usuarioLogado } = useApp();
   if (!usuarioLogado) {
-    // Se não estiver logado, redireciona para o login
     return <Navigate to="/login" replace />;
   }
   return children;
@@ -23,14 +23,13 @@ function RotaProtegida({ children }) {
 
 export default function App() {
   return (
-    // AppProvider envolve tudo para que todas as telas acessem os dados
     <AppProvider>
       <BrowserRouter>
         <Routes>
-          {/* Rota inicial — redireciona para login */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          {/* Rota inicial — Landing Page */}
+          <Route path="/" element={<LandingPage />} />
 
-          {/* Rotas públicas — qualquer um pode acessar */}
+          {/* Rotas públicas */}
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
 
