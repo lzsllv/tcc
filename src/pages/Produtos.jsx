@@ -32,10 +32,23 @@ export default function Produtos() {
   function handleSubmit(e) {
     e.preventDefault();
     setErro('');
-    if (!form.nome || !form.custo) {
+
+    if (!form.nome || form.custo === '') {
       setErro('Nome e custo são obrigatórios.');
       return;
     }
+
+    // Validação JS do custo negativo (o min="0" do HTML é burlavel)
+    if (Number(form.custo) < 0) {
+      setErro('O custo não pode ser negativo.');
+      return;
+    }
+
+    if (form.tempoProducao !== '' && Number(form.tempoProducao) < 0) {
+      setErro('O tempo de produção não pode ser negativo.');
+      return;
+    }
+
     if (editando) {
       editarProduto(editando, form);
     } else {
@@ -66,7 +79,6 @@ export default function Produtos() {
           </button>
         </div>
 
-        {/* Formulário */}
         {mostrarForm && (
           <div className="card" style={{marginBottom:'1.5rem'}}>
             <h2 className="secao-titulo">{editando ? 'Editar produto' : 'Novo produto'}</h2>
@@ -104,7 +116,6 @@ export default function Produtos() {
           </div>
         )}
 
-        {/* Lista de produtos */}
         {produtos.length === 0 ? (
           <div className="estado-vazio card">
             <span>📦</span>
