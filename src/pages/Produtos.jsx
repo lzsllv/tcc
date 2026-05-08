@@ -3,78 +3,75 @@ import Navbar from '../components/Navbar';
 import { useApp } from '../context/AppContext';
 import '../styles/Pagina.css';
 
+const CATEGORIAS = ['Alimento','Bebida','Artesanato','Moda','Higiene','Presente','Serviço','Outro'];
+
 export default function Produtos() {
-  const { produtos, adicionarProduto, editarProduto, excluirProduto, calcularCustoTotal, calcularPrecoSugerido } = useApp();
+  const {
+    produtos,
+    adicionarProduto,
+    editarProduto,
+    excluirProduto,
+    calcularCustoTotal,
+    calcularPrecoSugerido,
+    totalCustosFixos,
+    totalUnidadesMes,
+    custoFixoPorUnidade,
+  } = useApp();
 
-  const [mostrarForm, setMostrarForm] = useState(false);
-  const [editando, setEditando] = useState(null);
   const [form, setForm] = useState({
-    nome: '',
-    custo: '',
-    tempoProducao: '',
-    quantidadeMes: '',
-    categoria: 'Produto',
+    nome:'', categoria:'Outro', custo:'', tempoProducao:'', quantidadeMes:'',
   });
+  const [editandoId, setEditandoId] = useState(null);
   const [erro, setErro] = useState('');
+  const [sucesso, setSucesso] = useState('');
 
-  function formatarMoeda(valor) {
-    return Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  }
-
-  function abrirFormNovo() {
-    setForm({ nome: '', custo: '', tempoProducao: '', quantidadeMes: '', categoria: 'Produto' });
-    setEditando(null);
-    setErro('');
-    setMostrarForm(true);
-  }
-
-  function abrirFormEditar(produto) {
-    setForm({
-      nome: produto.nome,
-      custo: produto.custo,
-      tempoProducao: produto.tempoProducao,
-      quantidadeMes: produto.quantidadeMes || '',
-      categoria: produto.categoria,
-    });
-    setEditando(produto.id);
-    setErro('');
-    setMostrarForm(true);
+  function handleChange(campo, valor) {
+    setForm(prev => ({ ...prev, [campo]: valor }));
   }
 
   function handleSubmit(e) {
     e.preventDefault();
     setErro('');
+    setSucesso('');
 
-    if (!form.nome || form.custo === '') {
-      setErro('Nome e custo são obrigatórios.');
-      return;
-    }
-    if (Number(form.custo) < 0) {
-      setErro('O custo não pode ser negativo.');
-      return;
-    }
-    if (form.tempoProducao !== '' && Number(form.tempoProducao) < 0) {
-      setErro('O tempo de produção não pode ser negativo.');
-      return;
-    }
-    if (form.quantidadeMes !== '' && Number(form.quantidadeMes) < 1) {
-      setErro('A quantidade mensal deve ser no mínimo 1.');
-      return;
-    }
+    if (!form.nome.trim()) { setErro('Informe o nome do produto.'); return; }
+    if (Number(form.custo) < 0) { setErro('O custo direto não pode ser negativo.'); return; }
+    if (Number(form.tempoProducao) < 0) { setErro('O tempo de produção não pode ser negativo.'); return; }
+    if (Number(form.quantidadeMes) < 0) { setErro('A quantidade mensal não pode ser negativa.'); return; }
 
-    if (editando) {
-      editarProduto(editando, form);
+    if (editandoId !== null) {
+      editarProduto(editandoId, form);
+      setSucesso('Produto atualizado com sucesso!');
+      setEditandoId(null);
     } else {
       adicionarProduto(form);
+      setSucesso('Produto cadastrado com sucesso!');
     }
-    setMostrarForm(false);
-    setEditando(null);
+    setForm({ nome:'', categoria:'Outro', custo:'', tempoProducao:'', quantidadeMes:'' });
+    setTimeout(() => setSucesso(''), 3000);
   }
 
-  function handleExcluir(produto) {
-    const confirmar = window.confirm(`Tem certeza que deseja excluir "${produto.nome}"? Esta ação não pode ser desfeita.`);
-    if (confirmar) excluirProduto(produto.id);
+  function handleEditar(p) {
+    setForm({ nome: p.nome, categoria: p.categoria, custo: p.custo,
+              tempoProducao: p.tempoProducao, quantidadeMes: p.quantidadeMes });
+    setEditandoId(p.id);
+    setErro('');
+    setSucesso('');
   }
+
+  function handleCancelar() {
+    setForm({ nome:'', categoria:'Outro', custo:'', tempoProducao:'', quantidadeMes:'' });
+    setEditandoId(null);
+    setErro('');
+  }
+
+  function formatarMoeda(valor) {
+    return Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  const totalCF    = totalCustosFixos();
+  const totalUn    = totalUnidadesMes();
+  const fixo       = custoFixoPorUnidade();
 
   return (
     <div>
@@ -82,138 +79,152 @@ export default function Produtos() {
       <main className="pagina-container">
         <div className="pagina-cabecalho">
           <div>
-            <h1 className="pagina-titulo">📦 Produtos e Serviços</h1>
-            <p className="pagina-subtitulo">Gerencie os itens do seu negócio</p>
+            <h1 className="pagina-titulo">📦 Produtos</h1>
+            <p className="pagina-subtitulo">Gerencie os produtos do seu negócio</p>
           </div>
-          <button className="btn-primary" style={{width:'auto'}} onClick={abrirFormNovo}>
-            + Novo produto
-          </button>
         </div>
 
-        {mostrarForm && (
-          <div className="card" style={{marginBottom:'1.5rem'}}>
-            <h2 className="secao-titulo">{editando ? 'Editar produto' : 'Novo produto'}</h2>
-            <form onSubmit={handleSubmit} className="form-grid">
-              {erro && <div className="alerta-erro" style={{gridColumn:'1/-1'}}>{erro}</div>}
+        <div className="pagina-grid">
+          {/* Formulário */}
+          <div className="card">
+            <h2 className="secao-titulo">{editandoId !== null ? '✏️ Editar produto' : '➕ Novo produto'}</h2>
+            <form onSubmit={handleSubmit} className="auth-form">
+              {erro    && <div className="alerta-erro">{erro}</div>}
+              {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
 
               <div className="campo-grupo">
-                <label className="input-label">Nome do produto/serviço</label>
-                <input
-                  className="input-field"
-                  value={form.nome}
-                  onChange={e => setForm({...form, nome: e.target.value})}
-                  placeholder="Ex: Pavê de Amendoim"
-                />
-              </div>
-
-              <div className="campo-grupo">
-                <label className="input-label">Custo do produto (R$)</label>
-                <input
-                  className="input-field"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={form.custo}
-                  onChange={e => setForm({...form, custo: e.target.value})}
-                  placeholder="0,00"
-                />
-              </div>
-
-              <div className="campo-grupo">
-                <label className="input-label">Tempo de produção (horas)</label>
-                <input
-                  className="input-field"
-                  type="number"
-                  min="0"
-                  step="0.5"
-                  value={form.tempoProducao}
-                  onChange={e => setForm({...form, tempoProducao: e.target.value})}
-                  placeholder="Ex: 2"
-                />
-              </div>
-
-              <div className="campo-grupo">
-                <label className="input-label">Quantidade produzida por mês</label>
-                <input
-                  className="input-field"
-                  type="number"
-                  min="1"
-                  step="1"
-                  value={form.quantidadeMes}
-                  onChange={e => setForm({...form, quantidadeMes: e.target.value})}
-                  placeholder="Ex: 30"
-                />
-                <small style={{color:'var(--neutro-muted)', marginTop:'0.3rem'}}>
-                  Usado para ratear os custos fixos mensais por unidade produzida.
-                </small>
+                <label className="input-label">Nome do produto</label>
+                <input className="input-field" type="text" value={form.nome}
+                  onChange={e => handleChange('nome', e.target.value)}
+                  placeholder="Ex: Vela aromática" required />
               </div>
 
               <div className="campo-grupo">
                 <label className="input-label">Categoria</label>
-                <select
-                  className="input-field"
-                  value={form.categoria}
-                  onChange={e => setForm({...form, categoria: e.target.value})}
-                >
-                  <option>Produto</option>
-                  <option>Serviço</option>
+                <select className="input-field" value={form.categoria}
+                  onChange={e => handleChange('categoria', e.target.value)}>
+                  {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
 
-              <div className="form-acoes">
-                <button type="submit" className="btn-primary" style={{width:'auto'}}>Salvar</button>
-                <button type="button" className="btn-secondary" style={{width:'auto'}} onClick={() => setMostrarForm(false)}>Cancelar</button>
+              <div className="campo-grupo">
+                <label className="input-label">💰 Custo direto (R$)</label>
+                <input className="input-field" type="number" min="0" step="0.01"
+                  value={form.custo}
+                  onChange={e => handleChange('custo', e.target.value)}
+                  placeholder="Soma de materiais, embalagem..." required />
+                <small style={{color:'var(--neutro-muted)', marginTop:'0.3rem'}}>
+                  Soma de todos os materiais e insumos para produzir 1 unidade.
+                </small>
+              </div>
+
+              <div className="campo-grupo">
+                <label className="input-label">⏱️ Tempo de produção (horas)</label>
+                <input className="input-field" type="number" min="0" step="0.25"
+                  value={form.tempoProducao}
+                  onChange={e => handleChange('tempoProducao', e.target.value)}
+                  placeholder="Ex: 1.5" />
+                <small style={{color:'var(--neutro-muted)', marginTop:'0.3rem'}}>
+                  Horas gastas para produzir 1 unidade. Multiplicado pelo seu custo/hora.
+                </small>
+              </div>
+
+              <div className="campo-grupo">
+                <label className="input-label">📦 Quantidade produzida por mês</label>
+                <input className="input-field" type="number" min="1"
+                  value={form.quantidadeMes}
+                  onChange={e => handleChange('quantidadeMes', e.target.value)}
+                  placeholder="Ex: 50" />
+                <small style={{color:'var(--neutro-muted)', marginTop:'0.3rem'}}>
+                  Usado para rateio dos custos fixos entre todos os produtos.
+                </small>
+              </div>
+
+              <div style={{display:'flex', gap:'0.75rem'}}>
+                <button type="submit" className="btn-primary" style={{flex:1}}>
+                  {editandoId !== null ? 'Salvar alterações' : 'Cadastrar produto'}
+                </button>
+                {editandoId !== null && (
+                  <button type="button" onClick={handleCancelar}
+                    className="btn-secondary" style={{flex:1}}>Cancelar</button>
+                )}
               </div>
             </form>
           </div>
-        )}
 
-        {produtos.length === 0 ? (
-          <div className="estado-vazio card">
-            <span>📦</span>
-            <p>Nenhum produto cadastrado ainda.</p>
-          </div>
-        ) : (
-          <div className="card">
-            <div className="tabela-wrapper">
-              <table className="tabela">
-                <thead>
-                  <tr>
-                    <th>Nome</th>
-                    <th>Categoria</th>
-                    <th>Custo direto</th>
-                    <th>Qtd/mês</th>
-                    <th>Custo total/un.</th>
-                    <th>Preço sugerido</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {produtos.map(p => (
-                    <tr key={p.id}>
-                      <td>{p.nome}</td>
-                      <td><span className="badge">{p.categoria}</span></td>
-                      <td>{formatarMoeda(p.custo)}</td>
-                      <td>{p.quantidadeMes ? `${p.quantidadeMes} un.` : <span style={{color:'var(--alerta)'}}>Não informado</span>}</td>
-                      <td>{formatarMoeda(calcularCustoTotal(p))}</td>
-                      <td className="preco-sugerido">{formatarMoeda(calcularPrecoSugerido(p))}</td>
-                      <td className="acoes">
-                        <button className="btn-editar" onClick={() => abrirFormEditar(p)}>✏️ Editar</button>
-                        <button className="btn-excluir" onClick={() => handleExcluir(p)}>🗑️ Excluir</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            {/* Aviso se algum produto nao tem quantidade informada */}
-            {produtos.some(p => !p.quantidadeMes) && (
-              <p className="texto-aviso" style={{padding:'0.75rem 0 0'}}>
-                ⚠️ Produtos sem quantidade mensal informada usam 1 un. como base para o rateio dos custos fixos. Para cálculos precisos, edite e preencha a quantidade.
-              </p>
+          {/* Lista de produtos */}
+          <div>
+            {/* Nota sobre rateio */}
+            {produtos.length > 0 && totalCF > 0 && (
+              <div className="alerta-info" style={{marginBottom:'1rem', fontSize:'0.85rem'}}>
+                ℹ️ <strong>Custo fixo rateado:</strong>{' '}
+                {formatarMoeda(totalCF)} ÷ {totalUn} un totais ={' '}
+                <strong>{formatarMoeda(fixo)}/unidade</strong> (igual para todos os produtos).
+                O divisor é a soma das quantidades mensais de <em>todos</em> os seus produtos.
+              </div>
+            )}
+
+            {produtos.length === 0 ? (
+              <div className="card">
+                <div className="estado-vazio">
+                  <span>📦</span>
+                  <p>Nenhum produto cadastrado ainda.<br />Use o formulário ao lado para começar.</p>
+                </div>
+              </div>
+            ) : (
+              produtos.map(p => {
+                const custo = calcularCustoTotal(p);
+                const preco = calcularPrecoSugerido(p);
+                return (
+                  <div key={p.id} className="card" style={{marginBottom:'1rem'}}>
+                    <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
+                      <div>
+                        <h3 style={{fontWeight:700, marginBottom:'0.25rem'}}>{p.nome}</h3>
+                        <span className="badge">{p.categoria}</span>
+                      </div>
+                      <div style={{display:'flex', gap:'0.5rem'}}>
+                        <button className="btn-secondary" style={{padding:'0.35rem 0.75rem', fontSize:'0.85rem'}}
+                          onClick={() => handleEditar(p)}>✏️ Editar</button>
+                        <button
+                          style={{padding:'0.35rem 0.75rem', fontSize:'0.85rem', background:'var(--erro)', color:'#fff', border:'none', borderRadius:'8px', cursor:'pointer'}}
+                          onClick={() => {
+                            if (window.confirm(`Excluir "${p.nome}"?`)) excluirProduto(p.id);
+                          }}>🗑️</button>
+                      </div>
+                    </div>
+
+                    <div style={{marginTop:'0.75rem', display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.5rem 1.5rem'}}>
+                      <div className="resumo-linha" style={{margin:0}}>
+                        <span>Custo direto:</span>
+                        <strong>{formatarMoeda(p.custo || 0)}</strong>
+                      </div>
+                      <div className="resumo-linha" style={{margin:0}}>
+                        <span>Fixo/unidade:</span>
+                        <strong>{formatarMoeda(fixo)}</strong>
+                      </div>
+                      <div className="resumo-linha" style={{margin:0}}>
+                        <span>Tempo produção:</span>
+                        <strong>{p.tempoProducao || 0}h</strong>
+                      </div>
+                      <div className="resumo-linha" style={{margin:0}}>
+                        <span>Qtd/mês:</span>
+                        <strong>{p.quantidadeMes || <span style={{color:'var(--alerta)'}}>Não informado</span>}</strong>
+                      </div>
+                      <div className="resumo-linha" style={{margin:0, gridColumn:'1/-1', borderTop:'1px solid var(--borda)', paddingTop:'0.5rem', marginTop:'0.25rem'}}>
+                        <span><strong>Custo total unitário:</strong></span>
+                        <strong style={{color:'var(--texto-principal)'}}>{formatarMoeda(custo)}</strong>
+                      </div>
+                      <div className="resumo-linha" style={{margin:0, gridColumn:'1/-1'}}>
+                        <span><strong>💚 Preço sugerido:</strong></span>
+                        <strong className="valor-verde" style={{fontSize:'1.1rem'}}>{formatarMoeda(preco)}</strong>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
             )}
           </div>
-        )}
+        </div>
       </main>
     </div>
   );

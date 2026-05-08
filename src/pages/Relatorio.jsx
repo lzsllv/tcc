@@ -17,6 +17,7 @@ export default function Relatorio() {
     custosFixos,
     configuracoes,
     totalCustosFixos,
+    totalUnidadesMes,
     custoFixoPorProduto,
     custoFixoPorUnidade,
     calcularCustoTotal,
@@ -27,13 +28,13 @@ export default function Relatorio() {
     return Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 
-  const totalCustos = totalCustosFixos();
-  const custoFixoMedio = custoFixoPorProduto(); // só para o resumo geral
-  const custosZerados = totalCustos === 0;
+  const totalCustos     = totalCustosFixos();
+  const custoFixoMedio  = custoFixoPorProduto();
+  const totalUnidades   = totalUnidadesMes();
+  const fixoPorUnidade  = custoFixoPorUnidade();
+  const custosZerados   = totalCustos === 0;
 
-  function handleImprimir() {
-    window.print();
-  }
+  function handleImprimir() { window.print(); }
 
   return (
     <div>
@@ -49,7 +50,6 @@ export default function Relatorio() {
           </button>
         </div>
 
-        {/* Aviso: custos fixos zerados */}
         {custosZerados && (
           <div className="alerta-aviso" style={{marginBottom:'1.5rem'}}>
             ⚠️ Seus custos fixos estão zerados. Os preços sugeridos podem estar abaixo do valor real.{' '}
@@ -59,8 +59,7 @@ export default function Relatorio() {
           </div>
         )}
 
-        {/* Aviso: produtos sem quantidade mensal */}
-        {produtos.some(p => !p.quantidadeMes) && (
+        {produtos.some(p => !p.quantidadeMes || Number(p.quantidadeMes) === 0) && (
           <div className="alerta-aviso" style={{marginBottom:'1.5rem'}}>
             ⚠️ Alguns produtos não têm a quantidade mensal informada. O rateio dos custos fixos usa 1 unidade como base, o que pode elevar muito o custo.{' '}
             <Link to="/produtos" style={{color:'inherit', fontWeight:700, textDecoration:'underline'}}>
@@ -140,6 +139,18 @@ export default function Relatorio() {
         {/* Tabela de produtos */}
         <div className="card">
           <h2 className="secao-titulo">Produtos e preços sugeridos</h2>
+
+          {/* Explicação do rateio */}
+          {produtos.length > 0 && !custosZerados && (
+            <div className="alerta-info" style={{marginBottom:'1rem', fontSize:'0.85rem'}}>
+              ℹ️ <strong>Como o custo fixo é rateado:</strong> O total de custos fixos
+              ({formatarMoeda(totalCustos)}) é dividido pelo <strong>total de unidades
+              de todos os produtos juntos ({totalUnidades} un/mês)</strong>, resultando
+              em {formatarMoeda(fixoPorUnidade)} por unidade para qualquer produto.
+              Isso garante que os custos fixos sejam cobertos proporcionalmente.
+            </div>
+          )}
+
           {produtos.length === 0 ? (
             <div className="estado-vazio">
               <span>📦</span>
@@ -157,7 +168,7 @@ export default function Relatorio() {
                     <th>Categoria</th>
                     <th>Qtd/mês</th>
                     <th>Custo direto</th>
-                    <th>Fixo/unidade</th>
+                    <th>Fixo/unidade*</th>
                     <th>Custo total</th>
                     <th>Preço sugerido</th>
                     <th>Margem</th>
@@ -165,15 +176,15 @@ export default function Relatorio() {
                 </thead>
                 <tbody>
                   {produtos.map(p => {
-                    const fixoUnidade = custoFixoPorUnidade(p);
-                    const custoTotal = calcularCustoTotal(p);
+                    const fixoUnidade  = custoFixoPorUnidade();
+                    const custoTotal   = calcularCustoTotal(p);
                     const precoSugerido = calcularPrecoSugerido(p);
                     return (
                       <tr key={p.id}>
                         <td>{p.nome}</td>
                         <td><span className="badge">{p.categoria}</span></td>
                         <td>
-                          {p.quantidadeMes
+                          {p.quantidadeMes && Number(p.quantidadeMes) > 0
                             ? `${p.quantidadeMes} un.`
                             : <span style={{color:'var(--alerta)', fontSize:'0.8rem'}}>Não informado</span>
                           }
@@ -188,6 +199,9 @@ export default function Relatorio() {
                   })}
                 </tbody>
               </table>
+              <p style={{fontSize:'0.78rem', color:'var(--neutro-muted)', marginTop:'0.5rem'}}>
+                * Fixo/unidade = {formatarMoeda(totalCustos)} ÷ {totalUnidades} un totais = {formatarMoeda(fixoPorUnidade)}/un
+              </p>
             </div>
           )}
         </div>
