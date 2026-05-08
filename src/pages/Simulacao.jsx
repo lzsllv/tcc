@@ -11,7 +11,6 @@ export default function Simulacao() {
   const [quantidade, setQuantidade] = useState('');
   const [resultado, setResultado] = useState(null);
 
-  // Produto atualmente selecionado no select
   const produtoAtual = produtos.find(p => p.id === Number(produtoSelecionado)) || null;
   const precoSugeridoRef = produtoAtual ? calcularPrecoSugerido(produtoAtual) : null;
 
@@ -23,13 +22,17 @@ export default function Simulacao() {
     e.preventDefault();
     if (!produtoAtual) return;
 
-    const custoTotal = calcularCustoTotal(produtoAtual);
-    const lucroMensal = calcularLucroMensal(precoVenda, custoTotal, quantidade);
-    const lucroUnitario = Number(precoVenda) - custoTotal;
-    const margemReal = custoTotal > 0 ? (lucroUnitario / custoTotal) * 100 : 0;
+    const custoTotal     = calcularCustoTotal(produtoAtual);
+    const lucroMensal    = calcularLucroMensal(precoVenda, custoTotal, quantidade);
+    const lucroUnitario  = Number(precoVenda) - custoTotal;
+    // Margem sobre venda = lucro ÷ preço de venda × 100
+    // (diferente de markup, que divide pelo custo)
+    const margemSobreVenda = Number(precoVenda) > 0
+      ? (lucroUnitario / Number(precoVenda)) * 100
+      : 0;
     const emPrejuizo = Number(precoVenda) < custoTotal;
 
-    setResultado({ produto: produtoAtual, custoTotal, lucroMensal, lucroUnitario, margemReal, emPrejuizo });
+    setResultado({ produto: produtoAtual, custoTotal, lucroMensal, lucroUnitario, margemSobreVenda, emPrejuizo });
   }
 
   return (
@@ -72,7 +75,6 @@ export default function Simulacao() {
                   </select>
                 </div>
 
-                {/* Mostra o preço sugerido assim que o produto é selecionado */}
                 {precoSugeridoRef !== null && (
                   <div className="alerta-info" style={{marginBottom:'0.5rem'}}>
                     💡 Preço sugerido pelo sistema: <strong>{formatarMoeda(precoSugeridoRef)}</strong>
@@ -139,9 +141,9 @@ export default function Simulacao() {
                 </strong>
               </div>
               <div className="resumo-linha">
-                <span>Margem real:</span>
-                <strong style={{color: resultado.margemReal < 10 ? 'var(--alerta)' : 'var(--verde-principal)'}}>
-                  {resultado.margemReal.toFixed(1)}%
+                <span>Margem sobre venda:</span>
+                <strong style={{color: resultado.margemSobreVenda < 10 ? 'var(--alerta)' : 'var(--verde-principal)'}}>
+                  {resultado.margemSobreVenda.toFixed(1)}%
                 </strong>
               </div>
               <div className="resumo-linha destaque">
