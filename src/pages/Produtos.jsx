@@ -46,7 +46,7 @@ export default function Produtos() {
   }
 
   function handleExcluir(produto) {
-    const confirmar = window.confirm(`Tem certeza que deseja excluir "${produto.nome}"?`);
+    const confirmar = window.confirm(`Tem certeza que deseja excluir "${produto.nome}"? Esta ação não pode ser desfeita.`);
     if (confirmar) {
       excluirProduto(produto.id);
     }
