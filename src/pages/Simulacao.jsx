@@ -4,12 +4,16 @@ import { useApp } from '../context/AppContext';
 import '../styles/Pagina.css';
 
 export default function Simulacao() {
-  const { produtos, calcularCustoTotal, calcularLucroMensal } = useApp();
+  const { produtos, calcularCustoTotal, calcularLucroMensal, calcularPrecoSugerido } = useApp();
 
   const [produtoSelecionado, setProdutoSelecionado] = useState('');
   const [precoVenda, setPrecoVenda] = useState('');
   const [quantidade, setQuantidade] = useState('');
   const [resultado, setResultado] = useState(null);
+
+  // Produto atualmente selecionado no select
+  const produtoAtual = produtos.find(p => p.id === Number(produtoSelecionado)) || null;
+  const precoSugeridoRef = produtoAtual ? calcularPrecoSugerido(produtoAtual) : null;
 
   function formatarMoeda(valor) {
     return Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -17,16 +21,15 @@ export default function Simulacao() {
 
   function handleSimular(e) {
     e.preventDefault();
-    const produto = produtos.find(p => p.id === Number(produtoSelecionado));
-    if (!produto) return;
+    if (!produtoAtual) return;
 
-    const custoTotal = calcularCustoTotal(produto);
+    const custoTotal = calcularCustoTotal(produtoAtual);
     const lucroMensal = calcularLucroMensal(precoVenda, custoTotal, quantidade);
     const lucroUnitario = Number(precoVenda) - custoTotal;
     const margemReal = custoTotal > 0 ? (lucroUnitario / custoTotal) * 100 : 0;
     const emPrejuizo = Number(precoVenda) < custoTotal;
 
-    setResultado({ produto, custoTotal, lucroMensal, lucroUnitario, margemReal, emPrejuizo });
+    setResultado({ produto: produtoAtual, custoTotal, lucroMensal, lucroUnitario, margemReal, emPrejuizo });
   }
 
   return (
@@ -53,7 +56,15 @@ export default function Simulacao() {
               <form onSubmit={handleSimular} className="auth-form">
                 <div className="campo-grupo">
                   <label className="input-label">Selecione o produto</label>
-                  <select className="input-field" value={produtoSelecionado} onChange={e => setProdutoSelecionado(e.target.value)} required>
+                  <select
+                    className="input-field"
+                    value={produtoSelecionado}
+                    onChange={e => {
+                      setProdutoSelecionado(e.target.value);
+                      setResultado(null);
+                    }}
+                    required
+                  >
                     <option value="">-- Selecione --</option>
                     {produtos.map(p => (
                       <option key={p.id} value={p.id}>{p.nome}</option>
@@ -61,14 +72,38 @@ export default function Simulacao() {
                   </select>
                 </div>
 
+                {/* Mostra o preço sugerido assim que o produto é selecionado */}
+                {precoSugeridoRef !== null && (
+                  <div className="alerta-info" style={{marginBottom:'0.5rem'}}>
+                    💡 Preço sugerido pelo sistema: <strong>{formatarMoeda(precoSugeridoRef)}</strong>
+                  </div>
+                )}
+
                 <div className="campo-grupo">
                   <label className="input-label">Preço de venda (R$)</label>
-                  <input className="input-field" type="number" min="0" step="0.01" value={precoVenda} onChange={e => setPrecoVenda(e.target.value)} placeholder="0,00" required />
+                  <input
+                    className="input-field"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={precoVenda}
+                    onChange={e => setPrecoVenda(e.target.value)}
+                    placeholder="0,00"
+                    required
+                  />
                 </div>
 
                 <div className="campo-grupo">
                   <label className="input-label">Quantidade vendida por mês</label>
-                  <input className="input-field" type="number" min="1" value={quantidade} onChange={e => setQuantidade(e.target.value)} placeholder="Ex: 50" required />
+                  <input
+                    className="input-field"
+                    type="number"
+                    min="1"
+                    value={quantidade}
+                    onChange={e => setQuantidade(e.target.value)}
+                    placeholder="Ex: 50"
+                    required
+                  />
                 </div>
 
                 <button type="submit" className="btn-primary">Simular</button>
