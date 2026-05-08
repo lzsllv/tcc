@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 
-// Importa todas as páginas do sistema
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
@@ -12,7 +11,6 @@ import Configuracoes from './pages/Configuracoes';
 import Simulacao from './pages/Simulacao';
 import Relatorio from './pages/Relatorio';
 
-// Rota protegida — só acessa se estiver logado
 function RotaProtegida({ children }) {
   const { usuarioLogado } = useApp();
   if (!usuarioLogado) {
@@ -26,14 +24,14 @@ export default function App() {
     <AppProvider>
       <BrowserRouter>
         <Routes>
-          {/* Rota inicial — Landing Page */}
+          {/* Página inicial */}
           <Route path="/" element={<LandingPage />} />
 
           {/* Rotas públicas */}
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
 
-          {/* Rotas protegidas — só acessa logado */}
+          {/* Rotas protegidas */}
           <Route path="/dashboard" element={
             <RotaProtegida><Dashboard /></RotaProtegida>
           } />
@@ -52,6 +50,9 @@ export default function App() {
           <Route path="/relatorio" element={
             <RotaProtegida><Relatorio /></RotaProtegida>
           } />
+
+          {/* Rota 404 — redireciona qualquer URL inválida para a landing */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </AppProvider>
