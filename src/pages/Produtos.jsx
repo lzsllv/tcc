@@ -45,6 +45,13 @@ export default function Produtos() {
     setEditando(null);
   }
 
+  function handleExcluir(produto) {
+    const confirmar = window.confirm(`Tem certeza que deseja excluir "${produto.nome}"?`);
+    if (confirmar) {
+      excluirProduto(produto.id);
+    }
+  }
+
   return (
     <div>
       <Navbar />
@@ -127,7 +134,7 @@ export default function Produtos() {
                       <td className="preco-sugerido">{formatarMoeda(calcularPrecoSugerido(p))}</td>
                       <td className="acoes">
                         <button className="btn-editar" onClick={() => abrirFormEditar(p)}>✏️ Editar</button>
-                        <button className="btn-excluir" onClick={() => excluirProduto(p.id)}>🗑️ Excluir</button>
+                        <button className="btn-excluir" onClick={() => handleExcluir(p)}>🗑️ Excluir</button>
                       </td>
                     </tr>
                   ))}
