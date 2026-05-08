@@ -1,8 +1,8 @@
 import Navbar from '../components/Navbar';
+import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import '../styles/Pagina.css';
 
-// Mapeamento dos nomes das chaves para exibição correta com acentos
 const NOMES_CUSTOS = {
   aluguel:  'Aluguel',
   energia:  'Energia',
@@ -28,6 +28,7 @@ export default function Relatorio() {
 
   const totalCustos = totalCustosFixos();
   const custoFixoProd = custoFixoPorProduto();
+  const custosZerados = totalCustos === 0;
 
   function handleImprimir() {
     window.print();
@@ -46,6 +47,16 @@ export default function Relatorio() {
             🖨️ Imprimir relatório
           </button>
         </div>
+
+        {/* Aviso se os custos fixos estiverem zerados */}
+        {custosZerados && (
+          <div className="alerta-aviso" style={{marginBottom:'1.5rem'}}>
+            ⚠️ Seus custos fixos estão zerados. Os preços sugeridos podem estar abaixo do valor real.{' '}
+            <Link to="/custos-fixos" style={{color:'inherit', fontWeight:700, textDecoration:'underline'}}>
+              Preencher custos fixos
+            </Link>
+          </div>
+        )}
 
         {/* Resumo geral */}
         <div className="card" style={{marginBottom:'1.5rem'}}>
@@ -81,32 +92,51 @@ export default function Relatorio() {
         {/* Custos fixos detalhados */}
         <div className="card" style={{marginBottom:'1.5rem'}}>
           <h2 className="secao-titulo">Custos fixos detalhados</h2>
-          <div className="tabela-wrapper">
-            <table className="tabela">
-              <thead>
-                <tr><th>Despesa</th><th>Valor mensal</th></tr>
-              </thead>
-              <tbody>
-                {Object.entries(custosFixos).map(([key, val]) => (
-                  <tr key={key}>
-                    <td>{NOMES_CUSTOS[key] || key}</td>
-                    <td>{formatarMoeda(val)}</td>
+          {custosZerados ? (
+            <div className="estado-vazio">
+              <span>💸</span>
+              <p>Nenhum custo fixo registrado ainda.</p>
+              <Link to="/custos-fixos" className="btn-primary" style={{display:'inline-block', width:'auto', padding:'0.6rem 1.5rem', marginTop:'1rem'}}>
+                Cadastrar custos fixos
+              </Link>
+            </div>
+          ) : (
+            <div className="tabela-wrapper">
+              <table className="tabela">
+                <thead>
+                  <tr><th>Despesa</th><th>Valor mensal</th></tr>
+                </thead>
+                <tbody>
+                  {Object.entries(custosFixos)
+                    .filter(([, val]) => Number(val) > 0)
+                    .map(([key, val]) => (
+                      <tr key={key}>
+                        <td>{NOMES_CUSTOS[key] || key}</td>
+                        <td>{formatarMoeda(val)}</td>
+                      </tr>
+                    ))
+                  }
+                  <tr style={{fontWeight:700, background:'var(--verde-fundo)'}}>
+                    <td>Total</td>
+                    <td className="valor-verde">{formatarMoeda(totalCustos)}</td>
                   </tr>
-                ))}
-                <tr style={{fontWeight:700, background:'var(--verde-fundo)'}}>
-                  <td>Total</td>
-                  <td className="valor-verde">{formatarMoeda(totalCustos)}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         {/* Tabela de produtos */}
         <div className="card">
           <h2 className="secao-titulo">Produtos e preços sugeridos</h2>
           {produtos.length === 0 ? (
-            <div className="estado-vazio"><span>📦</span><p>Nenhum produto cadastrado.</p></div>
+            <div className="estado-vazio">
+              <span>📦</span>
+              <p>Nenhum produto cadastrado.</p>
+              <Link to="/produtos" className="btn-primary" style={{display:'inline-block', width:'auto', padding:'0.6rem 1.5rem', marginTop:'1rem'}}>
+                Cadastrar produto
+              </Link>
+            </div>
           ) : (
             <div className="tabela-wrapper">
               <table className="tabela">
