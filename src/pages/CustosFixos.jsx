@@ -4,8 +4,9 @@ import { useApp } from '../context/AppContext';
 import '../styles/Pagina.css';
 
 export default function CustosFixos() {
-  const { custosFixos, setCustosFixos, totalCustosFixos, custoFixoPorProduto, produtos } = useApp();
+  const { custosFixos, setCustosFixos, totalCustosFixos, produtos } = useApp();
   const [sucesso, setSucesso] = useState('');
+  const [erro, setErro] = useState('');
 
   function formatarMoeda(valor) {
     return Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -17,6 +18,16 @@ export default function CustosFixos() {
 
   function handleSalvar(e) {
     e.preventDefault();
+    setErro('');
+    setSucesso('');
+
+    // Valida negativos (min="0" no HTML é burlável via devtools)
+    const temNegativo = Object.values(custosFixos).some(v => Number(v) < 0);
+    if (temNegativo) {
+      setErro('Nenhum custo pode ser negativo.');
+      return;
+    }
+
     setSucesso('Custos fixos salvos com sucesso!');
     setTimeout(() => setSucesso(''), 3000);
   }
@@ -28,6 +39,10 @@ export default function CustosFixos() {
     { key: 'salarios', label: 'Salários', icone: '👷' },
     { key: 'outros',   label: 'Outros',   icone: '📋' },
   ];
+
+  // Custo fixo médio por tipo de produto (apenas informativo)
+  const totalMensal = totalCustosFixos();
+  const mediaFixaPorTipo = produtos.length > 0 ? totalMensal / produtos.length : 0;
 
   return (
     <div>
@@ -45,6 +60,7 @@ export default function CustosFixos() {
           <div className="card">
             <h2 className="secao-titulo">Despesas mensais</h2>
             <form onSubmit={handleSalvar} className="auth-form">
+              {erro    && <div className="alerta-erro">{erro}</div>}
               {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
 
               {campos.map(c => (
@@ -72,16 +88,19 @@ export default function CustosFixos() {
               <h2 className="secao-titulo">📊 Resumo</h2>
               <div className="resumo-linha">
                 <span>Total mensal:</span>
-                <strong className="valor-verde">{formatarMoeda(totalCustosFixos())}</strong>
+                <strong className="valor-verde">{formatarMoeda(totalMensal)}</strong>
               </div>
               <div className="resumo-linha">
                 <span>Produtos cadastrados:</span>
                 <strong>{produtos.length}</strong>
               </div>
               <div className="resumo-linha">
-                <span>Custo fixo por produto:</span>
-                <strong className="valor-verde">{formatarMoeda(custoFixoPorProduto())}</strong>
+                <span>Média de custo fixo por tipo:</span>
+                <strong className="valor-verde">{formatarMoeda(mediaFixaPorTipo)}</strong>
               </div>
+              <small style={{color:'var(--neutro-muted)', marginTop:'0.5rem', display:'block'}}>
+                O rateio real por unidade depende da quantidade mensal de cada produto.
+              </small>
               {produtos.length === 0 && (
                 <p className="texto-aviso">⚠️ Cadastre produtos para ver a distribuição de custos.</p>
               )}

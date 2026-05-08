@@ -19,18 +19,24 @@ export default function Configuracoes() {
     setSucesso('');
     setAviso('');
 
-    // Erro bloqueante: margem zerada
-    if (configuracoes.margemLucro < 1) {
+    const margem    = Number(configuracoes.margemLucro);
+    const custoHora = Number(configuracoes.custoHora);
+
+    // Erros bloqueantes
+    if (margem < 1) {
       setErro('A margem de lucro deve ser maior que 0%.');
       return;
     }
+    if (custoHora < 0) {
+      setErro('O custo/hora não pode ser negativo.');
+      return;
+    }
 
-    // Aviso não bloqueante: margem baixa mas válida
-    if (configuracoes.margemLucro < 10) {
+    // Aviso não bloqueante
+    if (margem < 10) {
       setAviso('⚠️ Margem abaixo de 10% pode ser insuficiente para cobrir imprevistos.');
     }
 
-    // Salva em qualquer caso (desde que margem >= 1)
     setSucesso('Configurações salvas com sucesso!');
     setTimeout(() => setSucesso(''), 3000);
   }
