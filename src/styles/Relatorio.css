@@ -1,73 +1,107 @@
 /* ============================================================
-   Relatório — cabeçalho e impressão
+   Relatório — estilos específicos
    ============================================================ */
 
-.relatorio-cabecalho-impresso {
-  display: flex;
-  flex-direction: column;
-}
+.relatorio-filtro { margin-bottom: 1.5rem; }
 
-/* ── Filtro de período ── */
-.filtro-periodo {
+.relatorio-filtro-campos {
   display: flex;
-  align-items: flex-end;
   gap: 1rem;
   flex-wrap: wrap;
+  align-items: flex-end;
 }
 
-/* ── Impressão ── */
+.campo-sem-margem { margin-bottom: 0 !important; min-width: 160px; }
+
+.relatorio-periodo-label {
+  font-size: 0.85rem;
+  color: var(--texto-sec);
+  padding-bottom: 0.35rem;
+}
+
+/* Cabeçalho impresso */
+.relatorio-cabecalho-impresso { margin-bottom: 1.5rem; }
+
+.relatorio-cabecalho-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.relatorio-logo {
+  height: 64px;
+  max-width: 160px;
+  object-fit: contain;
+}
+
+.relatorio-nome-negocio {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 0.2rem;
+}
+
+.relatorio-periodo-desc {
+  color: var(--texto-sec);
+  font-size: 0.9rem;
+}
+
+.relatorio-regiao {
+  font-size: 0.82rem;
+  color: var(--texto-muted);
+}
+
+.relatorio-sem-identidade {
+  font-size: 0.82rem;
+  color: var(--texto-muted);
+  margin-top: 0.5rem;
+}
+.relatorio-sem-identidade a {
+  color: var(--verde-principal);
+  font-weight: 600;
+}
+
+/* Alertas */
+.relatorio-alerta { margin-bottom: 1.5rem; }
+.relatorio-alerta a {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* Seções */
+.relatorio-secao { margin-bottom: 1.5rem; }
+
+/* Info de rateio */
+.relatorio-rateio-info { margin-bottom: 1rem; font-size: 0.85rem; }
+
+/* Tabela — linha de total */
+.tabela-total { font-weight: 700; background: var(--verde-fundo); }
+
+/* Nota de rodapé da tabela */
+.tabela-nota {
+  font-size: 0.78rem;
+  color: var(--texto-muted);
+  margin-top: 0.5rem;
+}
+
+/* Qtd não informada */
+.texto-aviso-sm {
+  color: var(--alerta);
+  font-size: 0.8rem;
+}
+
+/* Botão imprimir */
+.btn-imprimir { width: auto; }
+
+/* Botão em estado vazio */
+.btn-estado-vazio {
+  display: inline-block;
+  width: auto;
+  padding: 0.6rem 1.5rem;
+  margin-top: 1rem;
+}
+
+/* Impressão */
 @media print {
-  nav,
-  .pagina-cabecalho > button,
-  .card:has(select),
-  .alerta-aviso,
-  .alerta-info {
-    display: none !important;
-  }
-
-  body { background: #fff !important; font-size: 12pt !important; }
-
-  .pagina-container {
-    padding: 0 !important;
-    max-width: 100% !important;
-  }
-
-  .card {
-    box-shadow: none !important;
-    border: 1px solid #ccc !important;
-    break-inside: avoid;
-    margin-bottom: .75rem !important;
-    border-radius: 6px !important;
-  }
-
-  .tabela th {
-    background: #e8f5ee !important;
-    color: #15803d !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .tabela tfoot td {
-    background: #e8f5ee !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .relatorio-cabecalho-impresso {
-    border: none !important;
-    padding-top: 0 !important;
-  }
-
-  .tabela-wrapper {
-    border: none !important;
-    overflow: visible !important;
-  }
-
-  .tabela { min-width: unset !important; }
-
-  .info-item {
-    background: #e8f5ee !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
+  .pagina-cabecalho .btn-imprimir { display: none; }
 }

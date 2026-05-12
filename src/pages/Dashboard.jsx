@@ -5,17 +5,13 @@ import '../styles/Dashboard.css';
 
 export default function Dashboard() {
   const {
-    usuarioLogado,
-    produtos,
-    totalCustosFixos,
-    calcularCustoTotal,
-    calcularPrecoSugerido,
+    usuarioLogado, produtos,
+    totalCustosFixos, calcularCustoTotal, calcularPrecoSugerido,
     configuracoes,
   } = useApp();
 
-  const totalProdutos = produtos.length;
-  const totalCustos   = totalCustosFixos();
-  const precoMedio    = produtos.length > 0
+  const totalCustos = totalCustosFixos();
+  const precoMedio  = produtos.length > 0
     ? produtos.reduce((acc, p) => acc + calcularPrecoSugerido(p), 0) / produtos.length
     : 0;
 
@@ -30,32 +26,27 @@ export default function Dashboard() {
       <Navbar />
       <main className="dashboard-container">
 
-        {/* Boas-vindas */}
         <div className="dashboard-welcome">
           <h1>Olá, {nome}! 👋</h1>
           <p>Aqui está o resumo do seu negócio hoje.</p>
         </div>
 
-        {/* KPIs */}
         <div className="dashboard-kpis">
           <div className="kpi-card">
             <span className="kpi-icone">📦</span>
             <p className="kpi-label">Produtos cadastrados</p>
-            <p className="kpi-valor">{totalProdutos}</p>
+            <p className="kpi-valor">{produtos.length}</p>
           </div>
-
           <div className="kpi-card">
             <span className="kpi-icone">💸</span>
             <p className="kpi-label">Total de custos fixos</p>
             <p className="kpi-valor verde">{fmt(totalCustos)}</p>
           </div>
-
           <div className="kpi-card">
             <span className="kpi-icone">🏷️</span>
             <p className="kpi-label">Preço médio sugerido</p>
             <p className="kpi-valor verde">{fmt(precoMedio)}</p>
           </div>
-
           <div className="kpi-card">
             <span className="kpi-icone">📈</span>
             <p className="kpi-label">Margem de lucro</p>
@@ -63,8 +54,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Ações rápidas */}
-        <div className="card" style={{ marginBottom: '1.5rem' }}>
+        <div className="card dashboard-acoes-card">
           <h2 className="secao-titulo">⚡ Ações rápidas</h2>
           <div className="acoes-rapidas">
             <Link to="/produtos" className="acao-card">
@@ -90,18 +80,13 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Tabela de produtos */}
         <div className="card">
           <h2 className="secao-titulo">Seus produtos</h2>
-
           {produtos.length === 0 ? (
             <div className="estado-vazio">
               <span>📦</span>
               <p>Nenhum produto cadastrado ainda.</p>
-              <Link to="/produtos" className="btn-primary"
-                style={{ display: 'inline-flex', width: 'auto', padding: '.6rem 1.5rem', marginTop: '.5rem' }}>
-                Cadastrar produto
-              </Link>
+              <Link to="/produtos" className="btn-primary btn-estado-vazio">Cadastrar produto</Link>
             </div>
           ) : (
             <div className="tabela-wrapper">
@@ -117,7 +102,7 @@ export default function Dashboard() {
                 <tbody>
                   {produtos.map(p => (
                     <tr key={p.id}>
-                      <td style={{ fontWeight: 600, color: 'var(--texto)' }}>{p.nome}</td>
+                      <td className="tabela-nome-produto">{p.nome}</td>
                       <td><span className="badge">{p.categoria}</span></td>
                       <td>{fmt(calcularCustoTotal(p))}</td>
                       <td className="preco-sugerido">{fmt(calcularPrecoSugerido(p))}</td>

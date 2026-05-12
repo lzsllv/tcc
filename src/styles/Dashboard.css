@@ -1,5 +1,5 @@
 /* ============================================================
-   Dashboard
+   Dashboard — layout e componentes
    ============================================================ */
 
 .dashboard-container {
@@ -8,27 +8,26 @@
   padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2rem);
 }
 
-/* ── Boas-vindas ── */
+/* Boas-vindas */
 .dashboard-welcome {
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
 }
 .dashboard-welcome h1 {
   font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2rem);
   font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--texto);
-  letter-spacing: -.025em;
-  line-height: 1.15;
 }
 .dashboard-welcome p {
   color: var(--texto-muted);
-  margin-top: .35rem;
-  font-size: .925rem;
+  margin-top: 0.25rem;
+  font-size: 0.95rem;
 }
 
-/* ── KPIs ── */
+/* KPIs */
 .dashboard-kpis {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
@@ -36,92 +35,75 @@
 .kpi-card {
   background: var(--surface);
   border: 1px solid var(--borda);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   padding: 1.25rem 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: .4rem;
-  box-shadow: var(--sombra-sm);
-  transition: box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+  gap: 0.35rem;
+  transition: box-shadow var(--dur) var(--ease);
 }
-.kpi-card:hover {
-  box-shadow: var(--sombra-md);
-  transform: translateY(-2px);
-}
+.kpi-card:hover { box-shadow: var(--sombra-sm, 0 2px 8px rgba(0,0,0,.06)); }
 
 .kpi-icone {
   font-size: 1.5rem;
   line-height: 1;
-  margin-bottom: .15rem;
+  margin-bottom: 0.25rem;
 }
-
 .kpi-label {
-  font-size: .75rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--texto-muted);
   text-transform: uppercase;
-  letter-spacing: .05em;
-  line-height: 1.3;
+  letter-spacing: 0.04em;
 }
-
 .kpi-valor {
-  font-size: 1.55rem;
+  font-size: 1.35rem;
   font-weight: 800;
   color: var(--texto);
-  letter-spacing: -.03em;
-  line-height: 1;
+  letter-spacing: -0.02em;
 }
-.kpi-valor.verde  { color: var(--verde-principal); }
-.kpi-valor.alerta { color: var(--alerta); }
+.kpi-valor.verde { color: var(--verde-principal); }
 
-/* ── Ações rápidas ── */
+/* Ações rápidas */
+.dashboard-acoes-card { margin-bottom: 1.5rem; }
+
 .acoes-rapidas {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: .75rem;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
 }
 
 .acao-card {
+  background: var(--surface-2);
+  border: 1px solid var(--borda);
+  border-radius: var(--radius);
+  padding: 1.25rem 1rem;
+  text-align: center;
+  text-decoration: none;
+  color: var(--texto);
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: .35rem;
-  padding: 1rem 1.1rem;
-  border-radius: var(--radius);
-  border: 1.5px solid var(--borda);
-  background: var(--surface);
-  text-decoration: none;
+  align-items: center;
+  gap: 0.4rem;
   transition: all var(--dur) var(--ease);
-  color: var(--texto);
 }
 .acao-card:hover {
-  border-color: var(--verde-borda);
   background: var(--verde-fundo);
-  text-decoration: none;
-  transform: translateY(-1px);
-  box-shadow: var(--sombra-sm);
-}
-.acao-card-icone  { font-size: 1.4rem; line-height: 1; }
-.acao-card-titulo {
-  font-size: .875rem;
-  font-weight: 700;
-  color: var(--verde-principal);
-  line-height: 1.2;
-}
-.acao-card-desc {
-  font-size: .78rem;
-  color: var(--texto-muted);
-  line-height: 1.4;
+  border-color: var(--verde-borda);
+  transform: translateY(-2px);
+  box-shadow: var(--sombra-sm, 0 4px 12px rgba(0,0,0,.08));
 }
 
-/* ── Responsivo ── */
-@media (max-width: 900px) {
-  .dashboard-kpis    { grid-template-columns: repeat(2, 1fr); }
-  .acoes-rapidas     { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 480px) {
-  .dashboard-container { padding: 1rem .875rem; }
-  .dashboard-kpis      { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
-  .acoes-rapidas       { grid-template-columns: repeat(2, 1fr); }
-  .kpi-valor           { font-size: 1.3rem; }
+.acao-card-icone { font-size: 1.75rem; line-height: 1; }
+.acao-card-titulo { font-weight: 700; font-size: 0.9rem; }
+.acao-card-desc   { font-size: 0.78rem; color: var(--texto-muted); }
+
+/* Tabela: nome de produto em destaque */
+.tabela-nome-produto { font-weight: 600; color: var(--texto); }
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .dashboard-kpis { grid-template-columns: repeat(2, 1fr); }
+  .acoes-rapidas  { grid-template-columns: repeat(2, 1fr); }
 }
