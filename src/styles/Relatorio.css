@@ -1,0 +1,42 @@
+/* Cabeçalho do relatório — visível na tela e ao imprimir */
+.relatorio-cabecalho-impresso {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Estilos de impressão ── */
+@media print {
+  /* Esconde navbar, botões, filtros e alertas */
+  nav,
+  .pagina-cabecalho button,
+  .alerta-aviso,
+  .card:has(.campo-grupo) {
+    display: none !important;
+  }
+
+  body { background: #fff !important; }
+
+  .pagina-container {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+    break-inside: avoid;
+    margin-bottom: 1rem !important;
+  }
+
+  .tabela th {
+    background: #f0f0f0 !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .relatorio-cabecalho-impresso {
+    border: none !important;
+    padding-top: 0 !important;
+  }
+}
