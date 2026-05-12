@@ -2,106 +2,112 @@
    Relatório — estilos específicos
    ============================================================ */
 
-.relatorio-filtro { margin-bottom: 1.5rem; }
-
-.relatorio-filtro-campos {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  align-items: flex-end;
-}
-
-.campo-sem-margem { margin-bottom: 0 !important; min-width: 160px; }
-
-.relatorio-periodo-label {
+/* Aviso explicativo do filtro de período */
+.relatorio-filtro-aviso {
   font-size: 0.85rem;
   color: var(--texto-sec);
-  padding-bottom: 0.35rem;
+  margin-bottom: 0.75rem;
+  max-width: 55ch;
 }
 
-/* Cabeçalho impresso */
-.relatorio-cabecalho-impresso { margin-bottom: 1.5rem; }
+/* Campos lado a lado */
+.relatorio-filtro-campos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+}
 
+.relatorio-periodo-label {
+  font-size: 0.875rem;
+  color: var(--texto-sec);
+  align-self: flex-end;
+  padding-bottom: 0.5rem;
+}
+
+/* Cabeçalho para impressão */
 .relatorio-cabecalho-inner {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .relatorio-logo {
-  height: 64px;
-  max-width: 160px;
+  height: 48px;
+  width: auto;
   object-fit: contain;
 }
 
 .relatorio-nome-negocio {
-  font-size: 1.3rem;
-  font-weight: 800;
-  margin-bottom: 0.2rem;
-}
-
-.relatorio-periodo-desc {
-  color: var(--texto-sec);
-  font-size: 0.9rem;
-}
-
-.relatorio-regiao {
-  font-size: 0.82rem;
-  color: var(--texto-muted);
-}
-
-.relatorio-sem-identidade {
-  font-size: 0.82rem;
-  color: var(--texto-muted);
-  margin-top: 0.5rem;
-}
-.relatorio-sem-identidade a {
-  color: var(--verde-principal);
-  font-weight: 600;
-}
-
-/* Alertas */
-.relatorio-alerta { margin-bottom: 1.5rem; }
-.relatorio-alerta a {
-  color: inherit;
+  font-size: 1.1rem;
   font-weight: 700;
-  text-decoration: underline;
+  color: var(--texto);
+  margin-bottom: 0.15rem;
 }
 
-/* Seções */
-.relatorio-secao { margin-bottom: 1.5rem; }
+.relatorio-periodo-desc { font-size: 0.875rem; color: var(--texto-sec); }
+.relatorio-regiao       { font-size: 0.8rem;   color: var(--texto-sec); margin-top: 0.15rem; }
+.relatorio-sem-identidade { font-size: 0.85rem; color: var(--texto-sec); margin-top: 0.5rem; }
 
-/* Info de rateio */
-.relatorio-rateio-info { margin-bottom: 1rem; font-size: 0.85rem; }
+/* Info de rateio acima da tabela */
+.relatorio-rateio-info { margin-bottom: 1rem; font-size: 0.875rem; }
 
-/* Tabela — linha de total */
-.tabela-total { font-weight: 700; background: var(--verde-fundo); }
+/* Alerta de aviso */
+.relatorio-alerta { margin-bottom: 0.75rem; }
+
+/* Seções internas */
+.relatorio-secao { margin-top: 0; }
+
+/* Grid de informações resumo */
+.relatorio-grid-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-label {
+  font-size: 0.8rem;
+  color: var(--texto-sec);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.info-valor {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+/* Total da tabela */
+.tabela-total td {
+  font-weight: 700;
+  border-top: 2px solid var(--borda);
+}
 
 /* Nota de rodapé da tabela */
 .tabela-nota {
-  font-size: 0.78rem;
-  color: var(--texto-muted);
   margin-top: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--texto-sec);
 }
 
-/* Qtd não informada */
+/* Texto aviso pequeno (tabela) */
 .texto-aviso-sm {
   color: var(--alerta);
   font-size: 0.8rem;
 }
 
 /* Botão imprimir */
-.btn-imprimir { width: auto; }
+.btn-imprimir { white-space: nowrap; }
 
-/* Botão em estado vazio */
-.btn-estado-vazio {
-  display: inline-block;
-  width: auto;
-  padding: 0.6rem 1.5rem;
-  margin-top: 1rem;
-}
-
-/* Impressão */
+/* Oculta botão ao imprimir */
 @media print {
-  .pagina-cabecalho .btn-imprimir { display: none; }
+  .btn-imprimir { display: none !important; }
+  .navbar       { display: none !important; }
 }

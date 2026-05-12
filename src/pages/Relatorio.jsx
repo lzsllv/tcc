@@ -63,7 +63,11 @@ export default function Relatorio() {
 
         {/* Filtro de período */}
         <div className="card relatorio-filtro">
-          <h2 className="secao-titulo">📅 Período do relatório</h2>
+          <h2 className="secao-titulo">📅 Período de referência</h2>
+          <p className="relatorio-filtro-aviso">
+            ℹ️ Este relatório exibe uma <strong>projeção mensal</strong> com base nos dados atuais.
+            O mês e ano selecionados aparecem apenas no cabeçalho impresso.
+          </p>
           <div className="relatorio-filtro-campos">
             <div className="campo-grupo campo-sem-margem">
               <label className="input-label">Mês</label>
@@ -78,7 +82,7 @@ export default function Relatorio() {
               </select>
             </div>
             <p className="relatorio-periodo-label">
-              Exibindo projeção para: <strong>{MESES[mesSel]} {anoSel}</strong>
+              Cabeçalho do impresso: <strong>{MESES[mesSel]} {anoSel}</strong>
             </p>
           </div>
         </div>
@@ -92,7 +96,7 @@ export default function Relatorio() {
             <div>
               {nomeNegocio && <h2 className="relatorio-nome-negocio">{nomeNegocio}</h2>}
               <p className="relatorio-periodo-desc">
-                Relatório de faturamento — <strong>{MESES[mesSel]} {anoSel}</strong>
+                Projeção mensal — <strong>{MESES[mesSel]} {anoSel}</strong>
               </p>
               {configuracoes.regiaoAtuacao && (
                 <p className="relatorio-regiao">📍 {configuracoes.regiaoAtuacao}</p>
@@ -124,7 +128,7 @@ export default function Relatorio() {
 
         {/* Resumo geral */}
         <div className="card relatorio-secao">
-          <h2 className="secao-titulo">Resumo — {MESES[mesSel]} {anoSel}</h2>
+          <h2 className="secao-titulo">Resumo da projeção — {MESES[mesSel]} {anoSel}</h2>
           <div className="relatorio-grid-info">
             <div className="info-item">
               <span className="info-label">Receita bruta projetada</span>
@@ -139,7 +143,7 @@ export default function Relatorio() {
               <span className="info-valor">{fmt(totalCustos)}</span>
             </div>
             <div className="info-item">
-              <span className="info-label">Margem de lucro definida</span>
+              <span className="info-label">Markup configurado</span>
               <span className="info-valor">{configuracoes.margemLucro}%</span>
             </div>
             <div className="info-item">
@@ -187,7 +191,7 @@ export default function Relatorio() {
 
         {/* Tabela de produtos */}
         <div className="card relatorio-secao">
-          <h2 className="secao-titulo">Produtos e projeção — {MESES[mesSel]} {anoSel}</h2>
+          <h2 className="secao-titulo">Produção e projeção — {MESES[mesSel]} {anoSel}</h2>
 
           {produtos.length > 0 && !custosZerados && (
             <div className="alerta-info relatorio-rateio-info">

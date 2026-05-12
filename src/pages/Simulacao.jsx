@@ -5,7 +5,7 @@ import '../styles/Pagina.css';
 import '../styles/Simulacao.css';
 
 export default function Simulacao() {
-  const { produtos, calcularCustoTotal, calcularLucroMensal, calcularPrecoSugerido } = useApp();
+  const { produtos, calcularCustoTotal, calcularLucroMensal, calcularPrecoSugerido, configuracoes } = useApp();
 
   const [produtoSelecionado, setProdutoSelecionado] = useState('');
   const [precoVenda,         setPrecoVenda]         = useState('');
@@ -70,6 +70,9 @@ export default function Simulacao() {
                 {precoSugeridoRef !== null && (
                   <div className="alerta-info sim-sugestao">
                     💡 Preço sugerido pelo sistema: <strong>{fmt(precoSugeridoRef)}</strong>
+                    <small className="sim-nota-markup">
+                      (baseado em markup de {configuracoes.margemLucro}% sobre o custo)
+                    </small>
                   </div>
                 )}
 
@@ -129,6 +132,9 @@ export default function Simulacao() {
                   {resultado.margemSobreVenda.toFixed(1)}%
                 </strong>
               </div>
+              <small className="sim-nota-margem">
+                ℹ️ Margem calculada sobre o preço de venda (diferente do markup configurado).
+              </small>
 
               <div className="resumo-linha destaque">
                 <span>💰 Lucro mensal estimado:</span>

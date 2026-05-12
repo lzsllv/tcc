@@ -3,7 +3,28 @@
    ============================================================ */
 
 /* Caixa de sugestão de preço */
-.sim-sugestao { margin-bottom: 0.5rem; }
+.sim-sugestao {
+  margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+/* Nota de markup no alerta de sugestão */
+.sim-nota-markup {
+  color: var(--texto-sec);
+  font-size: 0.78rem;
+  display: block;
+}
+
+/* Nota abaixo da margem no resultado */
+.sim-nota-margem {
+  display: block;
+  color: var(--texto-sec);
+  font-size: 0.78rem;
+  margin-top: -0.25rem;
+  margin-bottom: 0.5rem;
+}
 
 /* Valores condicionais no resultado */
 .sim-valor-erro   { color: var(--erro); }

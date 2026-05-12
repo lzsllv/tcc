@@ -1,0 +1,23 @@
+/* ============================================================
+   Produtos — estilos específicos
+   ============================================================ */
+
+/* Botões do formulário lado a lado */
+.produtos-form-acoes {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+.produtos-btn-flex { flex: 1; }
+
+/* Info de rateio acima da lista */
+.produtos-rateio-info {
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+}
+
+/* Linhas de detalhe do card de produto sem margem vertical extra */
+.produto-detalhe-linha { margin: 0; }
+
+/* Preço sugerido em destaque */
+.produto-preco-valor { font-size: 1.1rem; }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import { useApp } from '../context/AppContext';
 import '../styles/Pagina.css';
+import '../styles/Produtos.css';
 
 const CATEGORIAS = ['Alimento','Bebida','Artesanato','Moda','Higiene','Presente','Serviço','Outro'];
 
@@ -132,13 +133,13 @@ export default function Produtos() {
                 <small className="input-hint">Usado para rateio dos custos fixos entre todos os produtos.</small>
               </div>
 
-              <div className="form-acoes" style={{marginTop:'0.5rem'}}>
-                <button type="submit" className="btn-primary" style={{flex:1}}>
+              <div className="produtos-form-acoes">
+                <button type="submit" className="btn-primary produtos-btn-flex">
                   {editandoId !== null ? 'Salvar alterações' : 'Cadastrar produto'}
                 </button>
                 {editandoId !== null && (
                   <button type="button" onClick={handleCancelar}
-                    className="btn-secondary" style={{flex:1}}>Cancelar</button>
+                    className="btn-secondary produtos-btn-flex">Cancelar</button>
                 )}
               </div>
             </form>
@@ -147,7 +148,7 @@ export default function Produtos() {
           {/* Lista */}
           <div>
             {produtos.length > 0 && totalCF > 0 && (
-              <div className="alerta-info" style={{marginBottom:'1rem', fontSize:'0.85rem'}}>
+              <div className="alerta-info produtos-rateio-info">
                 ℹ️ <strong>Custo fixo rateado:</strong>{' '}
                 {fmt(totalCF)} ÷ {totalUn} un = <strong>{fmt(fixo)}/unidade</strong>
               </div>
@@ -179,32 +180,32 @@ export default function Produtos() {
                     </div>
 
                     <div className="produto-detalhes">
-                      <div className="resumo-linha" style={{margin:0}}>
+                      <div className="resumo-linha produto-detalhe-linha">
                         <span>Custo direto:</span>
                         <strong>{fmt(p.custo || 0)}</strong>
                       </div>
-                      <div className="resumo-linha" style={{margin:0}}>
+                      <div className="resumo-linha produto-detalhe-linha">
                         <span>Fixo/unidade:</span>
                         <strong>{fmt(fixo)}</strong>
                       </div>
-                      <div className="resumo-linha" style={{margin:0}}>
+                      <div className="resumo-linha produto-detalhe-linha">
                         <span>Tempo produção:</span>
                         <strong>{p.tempoProducao || 0}h</strong>
                       </div>
-                      <div className="resumo-linha" style={{margin:0}}>
+                      <div className="resumo-linha produto-detalhe-linha">
                         <span>Qtd/mês:</span>
                         {semQtd
                           ? <span className="texto-aviso">⚠️ Não informado</span>
                           : <strong>{p.quantidadeMes} un.</strong>
                         }
                       </div>
-                      <div className="resumo-linha produto-total" style={{margin:0}}>
+                      <div className="resumo-linha produto-total produto-detalhe-linha">
                         <span>Custo total unitário:</span>
                         <strong>{fmt(custo)}</strong>
                       </div>
-                      <div className="resumo-linha produto-preco" style={{margin:0}}>
+                      <div className="resumo-linha produto-preco produto-detalhe-linha">
                         <span>💚 Preço sugerido:</span>
-                        <strong className="valor-verde" style={{fontSize:'1.1rem'}}>{fmt(preco)}</strong>
+                        <strong className="valor-verde produto-preco-valor">{fmt(preco)}</strong>
                       </div>
                     </div>
                   </div>
