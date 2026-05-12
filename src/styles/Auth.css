@@ -1,78 +1,117 @@
-/* ===========================
-   Estilos de Autenticação
-   Login e Cadastro
-   =========================== */
+/* ============================================================
+   Auth — Login e Cadastro
+   ============================================================ */
 
-.auth-container {
+.auth-page {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+.auth-main {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--verde-fundo) 0%, var(--neutro-bg) 100%);
-  padding: 1rem;
+  padding: clamp(1.5rem, 6vw, 3rem) 1rem;
 }
 
 .auth-card {
-  background: var(--neutro-card);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--sombra);
-  padding: 2.5rem 2rem;
   width: 100%;
   max-width: 420px;
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--sombra-lg);
+  border: 1px solid var(--borda);
+  padding: clamp(1.75rem, 5vw, 2.75rem);
+  animation: auth-entrada .35s var(--ease) both;
 }
 
-/* Logo e título */
+@keyframes auth-entrada {
+  from { opacity: 0; transform: translateY(16px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0)  scale(1); }
+}
+
 .auth-logo {
-  text-align: center;
-  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  margin-bottom: 1.75rem;
+  text-decoration: none;
 }
 
-.auth-logo-icone {
-  font-size: 2.5rem;
-  display: block;
-  margin-bottom: 0.5rem;
+.auth-logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  background: var(--verde-fundo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--verde-principal);
+}
+
+.auth-logo-nome {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--verde-principal);
+  letter-spacing: -.03em;
 }
 
 .auth-titulo {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--verde-principal);
-  margin-bottom: 0.25rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--texto);
+  text-align: center;
+  margin-bottom: .4rem;
+  letter-spacing: -.02em;
 }
 
 .auth-subtitulo {
-  font-size: 0.9rem;
-  color: var(--neutro-muted);
+  font-size: .875rem;
+  color: var(--texto-muted);
+  text-align: center;
+  margin-bottom: 1.75rem;
+  line-height: 1.5;
 }
 
-/* Formulário */
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: .2rem;
 }
 
-.campo-grupo {
-  display: flex;
-  flex-direction: column;
+.auth-divider {
+  text-align: center;
+  font-size: .82rem;
+  color: var(--texto-muted);
+  margin: 1.25rem 0 .75rem;
+  position: relative;
 }
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 38%;
+  height: 1px;
+  background: var(--borda);
+}
+.auth-divider::before { left: 0; }
+.auth-divider::after  { right: 0; }
 
-/* Link de rodapé */
-.auth-link {
+.auth-rodape {
   text-align: center;
   margin-top: 1.5rem;
-  font-size: 0.9rem;
-  color: var(--neutro-muted);
+  font-size: .875rem;
+  color: var(--texto-muted);
 }
-
-.auth-link a {
+.auth-rodape a {
   color: var(--verde-principal);
   font-weight: 600;
 }
-
-/* Responsivo — celular */
-@media (max-width: 480px) {
-  .auth-card {
-    padding: 2rem 1.25rem;
-  }
-}
+.auth-rodape a:hover { text-decoration: underline; }

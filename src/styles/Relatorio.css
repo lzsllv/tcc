@@ -1,20 +1,31 @@
-/* Cabeçalho do relatório — visível na tela e ao imprimir */
+/* ============================================================
+   Relatório — cabeçalho e impressão
+   ============================================================ */
+
 .relatorio-cabecalho-impresso {
   display: flex;
   flex-direction: column;
 }
 
-/* ── Estilos de impressão ── */
+/* ── Filtro de período ── */
+.filtro-periodo {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ── Impressão ── */
 @media print {
-  /* Esconde navbar, botões, filtros e alertas */
   nav,
-  .pagina-cabecalho button,
+  .pagina-cabecalho > button,
+  .card:has(select),
   .alerta-aviso,
-  .card:has(.campo-grupo) {
+  .alerta-info {
     display: none !important;
   }
 
-  body { background: #fff !important; }
+  body { background: #fff !important; font-size: 12pt !important; }
 
   .pagina-container {
     padding: 0 !important;
@@ -23,14 +34,21 @@
 
   .card {
     box-shadow: none !important;
-    border: 1px solid #ddd !important;
+    border: 1px solid #ccc !important;
     break-inside: avoid;
-    margin-bottom: 1rem !important;
+    margin-bottom: .75rem !important;
+    border-radius: 6px !important;
   }
 
   .tabela th {
-    background: #f0f0f0 !important;
-    color: #000 !important;
+    background: #e8f5ee !important;
+    color: #15803d !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .tabela tfoot td {
+    background: #e8f5ee !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -38,5 +56,18 @@
   .relatorio-cabecalho-impresso {
     border: none !important;
     padding-top: 0 !important;
+  }
+
+  .tabela-wrapper {
+    border: none !important;
+    overflow: visible !important;
+  }
+
+  .tabela { min-width: unset !important; }
+
+  .info-item {
+    background: #e8f5ee !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }

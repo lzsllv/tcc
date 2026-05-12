@@ -1,215 +1,289 @@
-/* ===========================
-   Estilos gerais das páginas
-   =========================== */
+/* ============================================================
+   Páginas internas — layout, tabelas, cards de info
+   ============================================================ */
 
+/* ── Container principal ── */
 .pagina-container {
-  max-width: 1100px;
+  max-width: var(--content, 1140px);
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2rem);
 }
 
+/* ── Cabeçalho da página ── */
 .pagina-cabecalho {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
   gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
 .pagina-titulo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--neutro-texto);
+  font-size: clamp(1.35rem, 1.1rem + 1.2vw, 1.75rem);
+  font-weight: 800;
+  color: var(--texto);
+  letter-spacing: -.02em;
+  line-height: 1.15;
 }
 
 .pagina-subtitulo {
-  color: var(--neutro-muted);
-  margin-top: 0.2rem;
-  font-size: 0.95rem;
+  color: var(--texto-muted);
+  margin-top: .3rem;
+  font-size: .9rem;
+  font-weight: 400;
 }
 
+.pagina-cabecalho .btn-primary {
+  width: auto;
+  padding: .6rem 1.3rem;
+  font-size: .9rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Grid de duas colunas ── */
 .pagina-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
 }
+@media (max-width: 768px) { .pagina-grid { grid-template-columns: 1fr; } }
 
+/* ── Seção título dentro de card ── */
 .secao-titulo {
   font-size: 1rem;
   font-weight: 700;
-  margin-bottom: 1rem;
-  color: var(--neutro-texto);
+  color: var(--texto);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.secao-titulo::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--borda);
+  margin-left: .25rem;
 }
 
-/* Formulário em grid */
+/* ── Form grid ── */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
-
 .form-acoes {
   grid-column: 1 / -1;
   display: flex;
-  gap: 0.75rem;
+  gap: .75rem;
+}
+@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+
+/* ── Auth form ── */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: .1rem;
 }
 
-/* Resumo linha */
+/* ── Resumo linha ── */
 .resumo-linha {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.6rem 0;
-  border-bottom: 1px solid var(--neutro-borda);
-  font-size: 0.95rem;
+  padding: .65rem 0;
+  border-bottom: 1px solid var(--borda);
+  font-size: .93rem;
+  gap: 1rem;
 }
-
-.resumo-linha:last-child {
-  border-bottom: none;
-}
-
+.resumo-linha:last-child { border-bottom: none; }
 .resumo-linha.destaque {
   background: var(--verde-fundo);
-  padding: 0.75rem;
+  padding: .75rem 1rem;
   border-radius: var(--radius);
-  margin-top: 0.5rem;
+  margin-top: .5rem;
   border-bottom: none;
 }
 
+/* ── Valores ── */
 .valor-verde {
   color: var(--verde-principal);
   font-weight: 700;
 }
-
 .texto-aviso {
   color: var(--alerta);
-  font-size: 0.85rem;
-  margin-top: 0.75rem;
+  font-size: .85rem;
+  margin-top: .6rem;
 }
 
-/* Tabela */
+/* ── Tabela ── */
 .tabela-wrapper {
   overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--borda);
 }
 
 .tabela {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.93rem;
+  font-size: .875rem;
+  min-width: 500px;
 }
 
+.tabela thead tr {
+  background: var(--verde-fundo);
+  border-bottom: 2px solid var(--verde-borda);
+}
 .tabela th {
   text-align: left;
-  padding: 0.6rem 1rem;
-  background: var(--verde-fundo);
-  color: var(--verde-principal);
-  font-weight: 600;
-  font-size: 0.85rem;
+  padding: .75rem 1rem;
+  color: var(--verde-hover);
+  font-weight: 700;
+  font-size: .8rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .tabela td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--neutro-borda);
+  padding: .8rem 1rem;
+  border-bottom: 1px solid var(--borda);
+  color: var(--texto-sec);
+  vertical-align: middle;
 }
-
-.tabela tr:last-child td {
-  border-bottom: none;
+.tabela tbody tr:last-child td { border-bottom: none; }
+.tabela tbody tr {
+  transition: background var(--dur) var(--ease);
 }
+.tabela tbody tr:hover { background: var(--surface-2); }
 
-.badge {
+.tabela tfoot td {
+  padding: .85rem 1rem;
   background: var(--verde-fundo);
-  color: var(--verde-principal);
-  border-radius: 999px;
-  padding: 0.2rem 0.7rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.preco-sugerido {
-  color: var(--verde-principal);
+  border-top: 2px solid var(--verde-borda);
   font-weight: 700;
+  color: var(--texto);
 }
 
-/* Botões de ação na tabela */
-.acoes {
-  display: flex;
-  gap: 0.5rem;
-}
+/* ── Botões de ação ── */
+.acoes { display: flex; gap: .4rem; }
 
 .btn-editar {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
   background: var(--verde-fundo);
   color: var(--verde-principal);
-  border: none;
-  border-radius: var(--radius);
-  padding: 0.3rem 0.75rem;
-  font-size: 0.82rem;
+  border: 1px solid var(--verde-borda);
+  border-radius: var(--radius-sm);
+  padding: .32rem .75rem;
+  font-size: .8rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all var(--dur) var(--ease);
 }
-
 .btn-editar:hover {
-  background: var(--verde-borda);
+  background: var(--verde-fundo-2);
+  border-color: var(--verde-principal);
+  color: var(--verde-hover);
 }
 
 .btn-excluir {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
   background: var(--erro-fundo);
   color: var(--erro);
-  border: none;
-  border-radius: var(--radius);
-  padding: 0.3rem 0.75rem;
-  font-size: 0.82rem;
+  border: 1px solid var(--erro-borda);
+  border-radius: var(--radius-sm);
+  padding: .32rem .75rem;
+  font-size: .8rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all var(--dur) var(--ease);
 }
-
 .btn-excluir:hover {
-  background: #f5c6c2;
+  background: #fee2e2;
+  border-color: var(--erro);
 }
 
-/* Estado vazio */
+/* ── Estado vazio ── */
 .estado-vazio {
   text-align: center;
-  padding: 2.5rem 1rem;
-  color: var(--neutro-muted);
+  padding: 3rem 1.5rem;
+  color: var(--texto-muted);
 }
-
 .estado-vazio span {
-  font-size: 2.5rem;
+  font-size: 2.75rem;
   display: block;
-  margin-bottom: 0.75rem;
+  margin-bottom: .75rem;
+  filter: grayscale(.3);
+}
+.estado-vazio p {
+  font-size: .95rem;
+  margin-bottom: 1.25rem;
+  color: var(--texto-sec);
+  max-width: 280px;
+  margin-inline: auto;
+}
+.estado-vazio .btn-primary {
+  width: auto;
+  display: inline-flex;
+  padding: .6rem 1.4rem;
+  margin-top: .5rem;
 }
 
-/* Relatório grid info */
+/* ── Relatório grid info ── */
 .relatorio-grid-info {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 1rem;
 }
 
 .info-item {
   background: var(--verde-fundo);
+  border: 1px solid var(--verde-borda);
   border-radius: var(--radius);
-  padding: 1rem;
+  padding: 1.1rem 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: .35rem;
+  transition: box-shadow var(--dur) var(--ease);
 }
+.info-item:hover { box-shadow: var(--sombra-sm); }
 
 .info-label {
-  font-size: 0.8rem;
-  color: var(--neutro-muted);
+  font-size: .75rem;
+  color: var(--verde-hover);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
 }
 
 .info-valor {
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--texto);
+  letter-spacing: -.02em;
+}
+.info-valor.valor-verde { color: var(--verde-principal); }
+
+/* ── Preco sugerido ── */
+.preco-sugerido {
   color: var(--verde-principal);
+  font-weight: 700;
 }
 
-/* Responsivo */
+/* ── Responsivo ── */
 @media (max-width: 768px) {
-  .pagina-grid { grid-template-columns: 1fr; }
-  .form-grid { grid-template-columns: 1fr; }
-  .pagina-container { padding: 1rem; }
+  .pagina-container { padding: 1.25rem 1rem; }
+  .pagina-cabecalho { margin-bottom: 1.5rem; }
+  .relatorio-grid-info { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .pagina-container { padding: 1rem .875rem; }
+  .relatorio-grid-info { grid-template-columns: 1fr 1fr; }
+  .info-valor { font-size: 1.1rem; }
 }
