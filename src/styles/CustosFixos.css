@@ -1,0 +1,107 @@
+/* ============================================================
+   CustosFixos — estilos da seção de extras
+   ============================================================ */
+
+.extras-container {
+  margin-top: 1.25rem;
+}
+
+.extras-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  background: none;
+  border: 1.5px dashed var(--borda-forte);
+  border-radius: var(--radius);
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  color: var(--texto-sec);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.extras-toggle:hover {
+  border-color: var(--verde-principal);
+  background: var(--verde-fundo);
+  color: var(--verde-principal);
+}
+
+.extras-toggle-info {
+  font-size: 0.82rem;
+  opacity: 0.75;
+  font-weight: 500;
+}
+
+.extras-painel {
+  border: 1.5px solid var(--borda);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: var(--surface-2);
+}
+
+.extras-vazio {
+  color: var(--texto-muted);
+  font-size: 0.88rem;
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.extra-linha {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.extra-campo-desc  { flex: 2; margin-bottom: 0 !important; }
+.extra-campo-valor { flex: 1; margin-bottom: 0 !important; }
+
+.extra-remover {
+  background: none;
+  border: 1px solid var(--erro-borda);
+  border-radius: var(--radius-sm);
+  color: var(--erro);
+  font-size: 1rem;
+  padding: 0.42rem 0.6rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  align-self: flex-end;
+  margin-bottom: 0;
+}
+.extra-remover:hover {
+  background: var(--erro-fundo);
+  border-color: var(--erro);
+}
+
+.btn-adicionar-extra {
+  align-self: flex-start;
+  background: none;
+  border: 1px solid var(--verde-borda);
+  color: var(--verde-principal);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all var(--dur) var(--ease);
+}
+.btn-adicionar-extra:hover {
+  background: var(--verde-fundo);
+  border-color: var(--verde-principal);
+}
+
+.extras-subtotal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  border-top: 1px solid var(--borda);
+  padding-top: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--texto-sec);
+}

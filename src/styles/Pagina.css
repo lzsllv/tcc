@@ -75,7 +75,6 @@
   gap: 1rem;
 }
 .form-acoes {
-  grid-column: 1 / -1;
   display: flex;
   gap: .75rem;
 }
@@ -86,6 +85,14 @@
   display: flex;
   flex-direction: column;
   gap: .1rem;
+}
+
+/* ── Hint de input ── */
+.input-hint {
+  font-size: .8rem;
+  color: var(--texto-muted);
+  margin-top: .3rem;
+  line-height: 1.4;
 }
 
 /* ── Resumo linha ── */
@@ -105,6 +112,40 @@
   border-radius: var(--radius);
   margin-top: .5rem;
   border-bottom: none;
+}
+
+/* ── Produto card ── */
+.produto-card {
+  margin-bottom: 1rem;
+}
+.produto-card:last-child { margin-bottom: 0; }
+
+.produto-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
+.produto-nome {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--texto);
+  margin-bottom: 0.3rem;
+}
+
+.produto-detalhes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1.5rem;
+}
+.produto-total,
+.produto-preco {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--borda);
+  padding-top: 0.5rem;
+  margin-top: 0.25rem;
+  border-bottom: none !important;
 }
 
 /* ── Valores ── */
@@ -281,6 +322,7 @@
   .pagina-container { padding: 1.25rem 1rem; }
   .pagina-cabecalho { margin-bottom: 1.5rem; }
   .relatorio-grid-info { grid-template-columns: repeat(2, 1fr); }
+  .produto-detalhes { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
   .pagina-container { padding: 1rem .875rem; }

@@ -1,29 +1,28 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import Navbar from '../components/Navbar';
 import '../styles/Auth.css';
 
 export default function Cadastro() {
-  const [nome, setNome]                     = useState('');
-  const [email, setEmail]                   = useState('');
-  const [senha, setSenha]                   = useState('');
+  const [nome,           setNome]           = useState('');
+  const [email,          setEmail]          = useState('');
+  const [senha,          setSenha]          = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
-  const [erro, setErro]                     = useState('');
-  const [mensagemSucesso, setMensagemSucesso] = useState('');
+  const [erro,           setErro]           = useState('');
+  const [sucesso,        setSucesso]        = useState('');
 
   const { cadastrar } = useApp();
   const navegar = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();
-    setErro(''); setMensagemSucesso('');
+    setErro(''); setSucesso('');
     if (!nome || !email || !senha || !confirmarSenha) { setErro('Preencha todos os campos.'); return; }
-    if (senha.length < 6) { setErro('A senha deve ter no mínimo 6 caracteres.'); return; }
+    if (senha.length < 6)         { setErro('A senha deve ter no mínimo 6 caracteres.'); return; }
     if (senha !== confirmarSenha) { setErro('As senhas não coincidem.'); return; }
     const ok = cadastrar(nome, email, senha);
     if (ok) {
-      setMensagemSucesso('Conta criada com sucesso! Redirecionando...');
+      setSucesso('Conta criada com sucesso! Redirecionando...');
       setTimeout(() => navegar('/login'), 1500);
     } else {
       setErro('Este e-mail já está cadastrado.');
@@ -31,25 +30,26 @@ export default function Cadastro() {
   }
 
   return (
-    <div>
-      <Navbar />
-      <div className="auth-container">
+    <div className="auth-page">
+      <main className="auth-main">
         <div className="auth-card">
           <div className="auth-logo">
-            <span className="auth-logo-icone">💰</span>
-            <h1 className="auth-titulo">Precifique</h1>
-            <p className="auth-subtitulo">Crie sua conta gratuitamente</p>
+            <span className="auth-logo-icon">💰</span>
+            <span className="auth-logo-nome">Precifique</span>
           </div>
 
+          <h1 className="auth-titulo">Criar conta grátis</h1>
+          <p className="auth-subtitulo">Precifique seus produtos com inteligência</p>
+
           <form onSubmit={handleSubmit} className="auth-form">
-            {erro            && <div className="alerta-erro">{erro}</div>}
-            {mensagemSucesso && <div className="alerta-sucesso">{mensagemSucesso}</div>}
+            {erro    && <div className="alerta-erro">{erro}</div>}
+            {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
 
             <div className="campo-grupo">
               <label className="input-label" htmlFor="nome">Nome completo</label>
               <input id="nome" type="text" className="input-field"
                 placeholder="Seu nome" value={nome}
-                onChange={e => setNome(e.target.value)} />
+                onChange={e => setNome(e.target.value)} autoFocus />
             </div>
 
             <div className="campo-grupo">
@@ -76,11 +76,11 @@ export default function Cadastro() {
             <button type="submit" className="btn-primary">Criar conta</button>
           </form>
 
-          <p className="auth-link">
+          <p className="auth-rodape">
             Já tem conta? <Link to="/login">Entrar</Link>
           </p>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

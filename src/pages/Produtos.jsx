@@ -7,22 +7,16 @@ const CATEGORIAS = ['Alimento','Bebida','Artesanato','Moda','Higiene','Presente'
 
 export default function Produtos() {
   const {
-    produtos,
-    adicionarProduto,
-    editarProduto,
-    excluirProduto,
-    calcularCustoTotal,
-    calcularPrecoSugerido,
-    totalCustosFixos,
-    totalUnidadesMes,
-    custoFixoPorUnidade,
+    produtos, adicionarProduto, editarProduto, excluirProduto,
+    calcularCustoTotal, calcularPrecoSugerido,
+    totalCustosFixos, totalUnidadesMes, custoFixoPorUnidade,
   } = useApp();
 
   const [form, setForm] = useState({
-    nome:'', categoria:'Outro', custo:'', tempoProducao:'', quantidadeMes:'',
+    nome: '', categoria: 'Outro', custo: '', tempoProducao: '', quantidadeMes: '',
   });
   const [editandoId, setEditandoId] = useState(null);
-  const [erro, setErro] = useState('');
+  const [erro,    setErro]    = useState('');
   const [sucesso, setSucesso] = useState('');
 
   function handleChange(campo, valor) {
@@ -31,13 +25,11 @@ export default function Produtos() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    setErro('');
-    setSucesso('');
-
-    if (!form.nome.trim()) { setErro('Informe o nome do produto.'); return; }
-    if (Number(form.custo) < 0) { setErro('O custo direto não pode ser negativo.'); return; }
-    if (Number(form.tempoProducao) < 0) { setErro('O tempo de produção não pode ser negativo.'); return; }
-    if (Number(form.quantidadeMes) < 0) { setErro('A quantidade mensal não pode ser negativa.'); return; }
+    setErro(''); setSucesso('');
+    if (!form.nome.trim())               { setErro('Informe o nome do produto.'); return; }
+    if (Number(form.custo) < 0)          { setErro('O custo direto não pode ser negativo.'); return; }
+    if (Number(form.tempoProducao) < 0)  { setErro('O tempo de produção não pode ser negativo.'); return; }
+    if (Number(form.quantidadeMes) < 0)  { setErro('A quantidade mensal não pode ser negativa.'); return; }
 
     if (editandoId !== null) {
       editarProduto(editandoId, form);
@@ -47,7 +39,7 @@ export default function Produtos() {
       adicionarProduto(form);
       setSucesso('Produto cadastrado com sucesso!');
     }
-    setForm({ nome:'', categoria:'Outro', custo:'', tempoProducao:'', quantidadeMes:'' });
+    setForm({ nome: '', categoria: 'Outro', custo: '', tempoProducao: '', quantidadeMes: '' });
     setTimeout(() => setSucesso(''), 3000);
   }
 
@@ -55,23 +47,29 @@ export default function Produtos() {
     setForm({ nome: p.nome, categoria: p.categoria, custo: p.custo,
               tempoProducao: p.tempoProducao, quantidadeMes: p.quantidadeMes });
     setEditandoId(p.id);
-    setErro('');
-    setSucesso('');
+    setErro(''); setSucesso('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function handleCancelar() {
-    setForm({ nome:'', categoria:'Outro', custo:'', tempoProducao:'', quantidadeMes:'' });
+    setForm({ nome: '', categoria: 'Outro', custo: '', tempoProducao: '', quantidadeMes: '' });
     setEditandoId(null);
     setErro('');
   }
 
-  function formatarMoeda(valor) {
-    return Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  function confirmarExclusao(p) {
+    if (window.confirm(`Excluir "${p.nome}"? Esta ação não pode ser desfeita.`)) {
+      excluirProduto(p.id);
+    }
   }
 
-  const totalCF    = totalCustosFixos();
-  const totalUn    = totalUnidadesMes();
-  const fixo       = custoFixoPorUnidade();
+  function fmt(v) {
+    return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  const totalCF = totalCustosFixos();
+  const totalUn = totalUnidadesMes();
+  const fixo    = custoFixoPorUnidade();
 
   return (
     <div>
@@ -113,9 +111,7 @@ export default function Produtos() {
                   value={form.custo}
                   onChange={e => handleChange('custo', e.target.value)}
                   placeholder="Soma de materiais, embalagem..." required />
-                <small style={{color:'var(--neutro-muted)', marginTop:'0.3rem'}}>
-                  Soma de todos os materiais e insumos para produzir 1 unidade.
-                </small>
+                <small className="input-hint">Soma de todos os materiais e insumos para produzir 1 unidade.</small>
               </div>
 
               <div className="campo-grupo">
@@ -124,9 +120,7 @@ export default function Produtos() {
                   value={form.tempoProducao}
                   onChange={e => handleChange('tempoProducao', e.target.value)}
                   placeholder="Ex: 1.5" />
-                <small style={{color:'var(--neutro-muted)', marginTop:'0.3rem'}}>
-                  Horas gastas para produzir 1 unidade. Multiplicado pelo seu custo/hora.
-                </small>
+                <small className="input-hint">Horas gastas para produzir 1 unidade. Multiplicado pelo seu custo/hora.</small>
               </div>
 
               <div className="campo-grupo">
@@ -135,12 +129,10 @@ export default function Produtos() {
                   value={form.quantidadeMes}
                   onChange={e => handleChange('quantidadeMes', e.target.value)}
                   placeholder="Ex: 50" />
-                <small style={{color:'var(--neutro-muted)', marginTop:'0.3rem'}}>
-                  Usado para rateio dos custos fixos entre todos os produtos.
-                </small>
+                <small className="input-hint">Usado para rateio dos custos fixos entre todos os produtos.</small>
               </div>
 
-              <div style={{display:'flex', gap:'0.75rem'}}>
+              <div className="form-acoes" style={{marginTop:'0.5rem'}}>
                 <button type="submit" className="btn-primary" style={{flex:1}}>
                   {editandoId !== null ? 'Salvar alterações' : 'Cadastrar produto'}
                 </button>
@@ -152,15 +144,12 @@ export default function Produtos() {
             </form>
           </div>
 
-          {/* Lista de produtos */}
+          {/* Lista */}
           <div>
-            {/* Nota sobre rateio */}
             {produtos.length > 0 && totalCF > 0 && (
               <div className="alerta-info" style={{marginBottom:'1rem', fontSize:'0.85rem'}}>
                 ℹ️ <strong>Custo fixo rateado:</strong>{' '}
-                {formatarMoeda(totalCF)} ÷ {totalUn} un totais ={' '}
-                <strong>{formatarMoeda(fixo)}/unidade</strong> (igual para todos os produtos).
-                O divisor é a soma das quantidades mensais de <em>todos</em> os seus produtos.
+                {fmt(totalCF)} ÷ {totalUn} un = <strong>{fmt(fixo)}/unidade</strong>
               </div>
             )}
 
@@ -175,32 +164,28 @@ export default function Produtos() {
               produtos.map(p => {
                 const custo = calcularCustoTotal(p);
                 const preco = calcularPrecoSugerido(p);
+                const semQtd = !p.quantidadeMes || Number(p.quantidadeMes) === 0;
                 return (
-                  <div key={p.id} className="card" style={{marginBottom:'1rem'}}>
-                    <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
+                  <div key={p.id} className="card produto-card">
+                    <div className="produto-card-header">
                       <div>
-                        <h3 style={{fontWeight:700, marginBottom:'0.25rem'}}>{p.nome}</h3>
+                        <h3 className="produto-nome">{p.nome}</h3>
                         <span className="badge">{p.categoria}</span>
                       </div>
-                      <div style={{display:'flex', gap:'0.5rem'}}>
-                        <button className="btn-secondary" style={{padding:'0.35rem 0.75rem', fontSize:'0.85rem'}}
-                          onClick={() => handleEditar(p)}>✏️ Editar</button>
-                        <button
-                          style={{padding:'0.35rem 0.75rem', fontSize:'0.85rem', background:'var(--erro)', color:'#fff', border:'none', borderRadius:'8px', cursor:'pointer'}}
-                          onClick={() => {
-                            if (window.confirm(`Excluir "${p.nome}"?`)) excluirProduto(p.id);
-                          }}>🗑️</button>
+                      <div className="acoes">
+                        <button className="btn-editar" onClick={() => handleEditar(p)}>✏️ Editar</button>
+                        <button className="btn-excluir" onClick={() => confirmarExclusao(p)}>🗑️</button>
                       </div>
                     </div>
 
-                    <div style={{marginTop:'0.75rem', display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.5rem 1.5rem'}}>
+                    <div className="produto-detalhes">
                       <div className="resumo-linha" style={{margin:0}}>
                         <span>Custo direto:</span>
-                        <strong>{formatarMoeda(p.custo || 0)}</strong>
+                        <strong>{fmt(p.custo || 0)}</strong>
                       </div>
                       <div className="resumo-linha" style={{margin:0}}>
                         <span>Fixo/unidade:</span>
-                        <strong>{formatarMoeda(fixo)}</strong>
+                        <strong>{fmt(fixo)}</strong>
                       </div>
                       <div className="resumo-linha" style={{margin:0}}>
                         <span>Tempo produção:</span>
@@ -208,15 +193,18 @@ export default function Produtos() {
                       </div>
                       <div className="resumo-linha" style={{margin:0}}>
                         <span>Qtd/mês:</span>
-                        <strong>{p.quantidadeMes || <span style={{color:'var(--alerta)'}}>Não informado</span>}</strong>
+                        {semQtd
+                          ? <span className="texto-aviso">⚠️ Não informado</span>
+                          : <strong>{p.quantidadeMes} un.</strong>
+                        }
                       </div>
-                      <div className="resumo-linha" style={{margin:0, gridColumn:'1/-1', borderTop:'1px solid var(--borda)', paddingTop:'0.5rem', marginTop:'0.25rem'}}>
-                        <span><strong>Custo total unitário:</strong></span>
-                        <strong style={{color:'var(--texto-principal)'}}>{formatarMoeda(custo)}</strong>
+                      <div className="resumo-linha produto-total" style={{margin:0}}>
+                        <span>Custo total unitário:</span>
+                        <strong>{fmt(custo)}</strong>
                       </div>
-                      <div className="resumo-linha" style={{margin:0, gridColumn:'1/-1'}}>
-                        <span><strong>💚 Preço sugerido:</strong></span>
-                        <strong className="valor-verde" style={{fontSize:'1.1rem'}}>{formatarMoeda(preco)}</strong>
+                      <div className="resumo-linha produto-preco" style={{margin:0}}>
+                        <span>💚 Preço sugerido:</span>
+                        <strong className="valor-verde" style={{fontSize:'1.1rem'}}>{fmt(preco)}</strong>
                       </div>
                     </div>
                   </div>
