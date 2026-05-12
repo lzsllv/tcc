@@ -1,0 +1,13 @@
+/* ============================================================
+   Simulação — estilos específicos
+   ============================================================ */
+
+/* Caixa de sugestão de preço */
+.sim-sugestao { margin-bottom: 0.5rem; }
+
+/* Valores condicionais no resultado */
+.sim-valor-erro   { color: var(--erro); }
+.sim-valor-alerta { color: var(--alerta); }
+
+/* Lucro mensal em destaque */
+.sim-lucro-mensal { font-size: 1.2rem; }
