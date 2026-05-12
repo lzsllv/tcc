@@ -107,7 +107,7 @@ src/
 
 ## 👨‍💻 Autor
 
-Desenvolvido por **lz** como TCC do curso de Análise e Desenvolvimento de Sistemas.
+Desenvolvido por **Luiz Fernando,stefany Marques, Maria Ramiro e Maria Eduarda Gianzanti
 
 ---
 
