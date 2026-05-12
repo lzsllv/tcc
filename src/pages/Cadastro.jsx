@@ -48,7 +48,7 @@ export default function Cadastro() {
       <div className="auth-card">
         <div className="auth-logo">
           <span className="auth-logo-icone">💰</span>
-          <h1 className="auth-titulo">Precifique</h1>
+          <h1 className="auth-titulo">Precifique 1</h1>
           <p className="auth-subtitulo">Crie sua conta gratuitamente</p>
         </div>
 
