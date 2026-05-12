@@ -24,9 +24,13 @@ export function AppProvider({ children }) {
 
   const [custosFixos, setCustosFixos] = useState(() => {
     const salvo = localStorage.getItem('custosFixos');
-    return salvo ? JSON.parse(salvo) : {
-      aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0,
-    };
+    if (salvo) {
+      const parsed = JSON.parse(salvo);
+      // garante retrocompatibilidade: adiciona extras se não existir
+      if (!parsed.extras) parsed.extras = [];
+      return parsed;
+    }
+    return { aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] };
   });
 
   const [configuracoes, setConfiguracoes] = useState(() => {
@@ -44,78 +48,40 @@ export function AppProvider({ children }) {
 
   // --- FUNÇÕES DE CÁLCULO ---
 
-  /** Soma de todos os custos fixos mensais. */
   function totalCustosFixos() {
-    return Object.values(custosFixos).reduce((acc, val) => acc + Number(val), 0);
+    const fixos = Object.entries(custosFixos)
+      .filter(([k]) => k !== 'extras')
+      .reduce((acc, [, val]) => acc + Number(val), 0);
+    const extras = (custosFixos.extras || []).reduce((acc, e) => acc + Number(e.valor || 0), 0);
+    return fixos + extras;
   }
 
-  /**
-   * Total de unidades produzidas por mês considerando TODOS os produtos.
-   * Usado como divisor do rateio de custo fixo.
-   */
   function totalUnidadesMes() {
     if (produtos.length === 0) return 1;
     return produtos.reduce((acc, p) => acc + (Number(p.quantidadeMes) || 1), 0);
   }
 
-  /**
-   * Custo fixo rateado por unidade produzida (RN06).
-   *
-   * Fórmula correta:
-   *   custo_fixo_por_unidade = total_custos_fixos / total_unidades_de_todos_produtos
-   *
-   * ATENÇÃO: A divisão deve ser feita pelo TOTAL de unidades de TODOS os produtos
-   * juntos, não pela quantidade de cada produto individualmente.
-   *
-   * Exemplo: custos fixos R$ 1.500, 3 produtos (60+40+20 = 120 un/mês)
-   *   custo_fixo_por_unidade = 1500 / 120 = R$ 12,50 por qualquer unidade
-   *
-   * Se dividisse por produto separado:
-   *   Produto A (60 un): 1500/60 = R$25 × 60 = R$1.500 embutido
-   *   Produto B (40 un): 1500/40 = R$37.50 × 40 = R$1.500 embutido
-   *   Total embutido: R$3.000 — O DOBRO do custo real!
-   */
   function custoFixoPorUnidade() {
-    const totalUn = totalUnidadesMes();
-    return totalCustosFixos() / totalUn;
+    return totalCustosFixos() / totalUnidadesMes();
   }
 
-  /**
-   * Média de custo fixo por TIPO de produto (apenas informativo no resumo).
-   * Não usado nos cálculos de preço.
-   */
   function custoFixoPorProduto() {
     if (produtos.length === 0) return 0;
     return totalCustosFixos() / produtos.length;
   }
 
-  /**
-   * Custo total de um produto (RN01):
-   *   custo_direto + custo_fixo_por_unidade + mão_de_obra
-   *
-   * O custo_fixo_por_unidade é o mesmo para todos os produtos
-   * (rateado sobre o total de unidades de todos os produtos).
-   */
   function calcularCustoTotal(produto) {
-    const fixo     = custoFixoPorUnidade();
+    const fixo = custoFixoPorUnidade();
     const maoDeObra = Number(configuracoes.custoHora) * Number(produto.tempoProducao || 0);
     return Number(produto.custo || 0) + fixo + maoDeObra;
   }
 
-  /**
-   * Preço sugerido (RN02):
-   *   custo_total × (1 + margem/100)
-   */
   function calcularPrecoSugerido(produto) {
-    const custo  = calcularCustoTotal(produto);
+    const custo = calcularCustoTotal(produto);
     const margem = Number(configuracoes.margemLucro) / 100;
     return custo * (1 + margem);
   }
 
-  /**
-   * Lucro mensal estimado (RN05):
-   *   (preco_venda - custo_total) × quantidade_vendida
-   */
   function calcularLucroMensal(precoVenda, custoTotal, quantidade) {
     return (Number(precoVenda) - Number(custoTotal)) * Number(quantidade);
   }
