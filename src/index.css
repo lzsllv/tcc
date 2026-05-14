@@ -83,11 +83,30 @@ html {
   --nav-h:      64px;
   --content:    1100px;
   --content-sm: 720px;
+
+  /* ──────────────────────────────────────────────────────────
+     ALIASES DE COMPATIBILIDADE
+     A LandingPage.css (e outros arquivos legados) usam nomes
+     antigos. Estes aliases apontam para os tokens canônicos
+     acima — não remova sem migrar os arquivos que os usam.
+     ────────────────────────────────────────────────────────── */
+
+  /* Nomenclatura antiga → nova */
+  --verde-principal:  var(--verde);          /* #5D9B64 */
+  --verde-claro:      var(--verde-hover);    /* #47774C */
+
+  /* Prefixo "neutro-" → tokens sem prefixo */
+  --neutro-texto:     var(--texto);          /* #172D1A */
+  --neutro-muted:     var(--texto-muted);    /* #728D76 */
+  --neutro-faint:     var(--texto-faint);    /* #90B095 */
+  --neutro-bg:        var(--surface-2);      /* #f5faf5 */
+  --neutro-surface:   var(--surface);        /* #ffffff */
+  --neutro-borda:     var(--borda);          /* #B1D8B7 */
 }
 
 body {
   font-family: var(--font);
-  font-size: 16px;          /* subiu de 15 → 16 */
+  font-size: 16px;
   line-height: 1.65;
   color: var(--texto);
   background: var(--bg);
