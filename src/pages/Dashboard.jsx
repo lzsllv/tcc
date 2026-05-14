@@ -21,6 +21,13 @@ export default function Dashboard() {
 
   const nome = usuarioLogado?.nome?.split(' ')[0];
 
+  // ── Dados para o gráfico de barras ──
+  const MAX_BARRAS = 8;
+  const produtosGrafico = produtos.slice(0, MAX_BARRAS);
+  const maxPreco = produtosGrafico.length
+    ? Math.max(...produtosGrafico.map(p => calcularPrecoSugerido(p)))
+    : 1;
+
   return (
     <div>
       <Navbar />
@@ -78,6 +85,46 @@ export default function Dashboard() {
               <span className="acao-card-desc">Ver faturamento do mês</span>
             </Link>
           </div>
+        </div>
+
+        {/* ── Gráfico de preços sugeridos ── */}
+        <div className="card dashboard-grafico-card">
+          <h2 className="secao-titulo">📊 Preço sugerido por produto</h2>
+          {produtos.length === 0 ? (
+            <div className="estado-vazio">
+              <span>📦</span>
+              <p>Nenhum produto cadastrado ainda.</p>
+              <Link to="/produtos" className="btn-primary btn-estado-vazio">Cadastrar produto</Link>
+            </div>
+          ) : (
+            <div className="grafico-wrapper">
+              {produtosGrafico.map(p => {
+                const preco = calcularPrecoSugerido(p);
+                const pct   = maxPreco > 0 ? (preco / maxPreco) * 100 : 0;
+                return (
+                  <div key={p.id} className="grafico-linha">
+                    <span className="grafico-label" title={p.nome}>
+                      {p.nome.length > 20 ? p.nome.slice(0, 19) + '…' : p.nome}
+                    </span>
+                    <div className="grafico-barra-fundo">
+                      <div
+                        className="grafico-barra"
+                        style={{ width: `${pct}%` }}
+                        title={fmt(preco)}
+                      />
+                    </div>
+                    <span className="grafico-valor">{fmt(preco)}</span>
+                  </div>
+                );
+              })}
+              {produtos.length > MAX_BARRAS && (
+                <p className="grafico-nota">
+                  Exibindo os primeiros {MAX_BARRAS} produtos.{' '}
+                  <Link to="/relatorio">Ver relatório completo →</Link>
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="card">

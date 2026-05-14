@@ -10,6 +10,7 @@ import CustosFixos from './pages/CustosFixos';
 import Configuracoes from './pages/Configuracoes';
 import Simulacao from './pages/Simulacao';
 import Relatorio from './pages/Relatorio';
+import NotFound from './pages/NotFound';
 
 function RotaProtegida({ children }) {
   const { usuarioLogado } = useApp();
@@ -19,13 +20,18 @@ function RotaProtegida({ children }) {
   return children;
 }
 
+function RaizOuDashboard() {
+  const { usuarioLogado } = useApp();
+  return usuarioLogado ? <Navigate to="/dashboard" replace /> : <LandingPage />;
+}
+
 export default function App() {
   return (
     <AppProvider>
       <BrowserRouter>
         <Routes>
-          {/* Página inicial */}
-          <Route path="/" element={<LandingPage />} />
+          {/* Página inicial — redireciona logado para /dashboard */}
+          <Route path="/" element={<RaizOuDashboard />} />
 
           {/* Rotas públicas */}
           <Route path="/login" element={<Login />} />
@@ -51,8 +57,8 @@ export default function App() {
             <RotaProtegida><Relatorio /></RotaProtegida>
           } />
 
-          {/* Rota 404 — redireciona qualquer URL inválida para a landing */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* Rota 404 */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </AppProvider>

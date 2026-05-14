@@ -50,7 +50,6 @@
   box-shadow: var(--sombra-md);
   transform: translateY(-2px);
 }
-/* Linha de accent na borda superior */
 .kpi-card::before {
   content: '';
   position: absolute;
@@ -62,20 +61,6 @@
 .kpi-card:nth-child(2)::before { background: #5D9B64; }
 .kpi-card:nth-child(3)::before { background: #47774C; }
 .kpi-card:nth-child(4)::before { background: #77C480; }
-
-.kpi-icone-wrap {
-  width: 40px; height: 40px;
-  border-radius: var(--radius);
-  background: var(--verde-fundo);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: .4rem;
-  border: 1px solid var(--borda);
-}
-.kpi-card:nth-child(2) .kpi-icone-wrap { background: #f0fdf4; border-color: #B1D8B7; }
-.kpi-card:nth-child(3) .kpi-icone-wrap { background: #eaf3eb; border-color: #90B095; }
-.kpi-card:nth-child(4) .kpi-icone-wrap { background: #f5faf5; border-color: #B1D8B7; }
 
 .kpi-icone { font-size: 1.05rem; line-height: 1; }
 
@@ -154,7 +139,72 @@
 
 .tabela-nome-produto { font-weight: 600; color: var(--texto); }
 
+/* ── Gráfico de barras ── */
+.dashboard-grafico-card {
+  margin-bottom: 1.5rem;
+}
+
+.grafico-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: .65rem;
+  margin-top: .75rem;
+}
+
+.grafico-linha {
+  display: grid;
+  grid-template-columns: 160px 1fr 90px;
+  align-items: center;
+  gap: .75rem;
+}
+
+.grafico-label {
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--texto);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+.grafico-barra-fundo {
+  background: var(--surface-3, #eef2ee);
+  border-radius: 99px;
+  height: 22px;
+  overflow: hidden;
+  border: 1px solid var(--borda);
+}
+
+.grafico-barra {
+  height: 100%;
+  background: var(--verde, #2d7a35);
+  border-radius: 99px;
+  transition: width .5s cubic-bezier(.16,1,.3,1);
+  min-width: 4px;
+}
+
+.grafico-valor {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--verde, #2d7a35);
+  white-space: nowrap;
+}
+
+.grafico-nota {
+  font-size: .75rem;
+  color: var(--texto-muted);
+  margin-top: .25rem;
+}
+.grafico-nota a {
+  color: var(--verde);
+  text-decoration: underline;
+}
+
 @media (max-width: 600px) {
   .dashboard-kpis  { grid-template-columns: repeat(2, 1fr); }
   .acoes-rapidas   { grid-template-columns: repeat(2, 1fr); }
+  .grafico-linha   { grid-template-columns: 90px 1fr 72px; gap: .4rem; }
+  .grafico-label   { font-size: .72rem; }
+  .grafico-valor   { font-size: .7rem; }
 }

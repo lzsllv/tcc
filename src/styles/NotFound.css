@@ -1,0 +1,58 @@
+.nf-page {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg, #f5faf5);
+  padding: 1.5rem;
+}
+
+.nf-card {
+  background: var(--surface, #fff);
+  border: 1px solid var(--borda, #d1e8d3);
+  border-radius: var(--radius-lg, 1rem);
+  padding: clamp(2rem, 6vw, 3.5rem) clamp(1.5rem, 6vw, 3rem);
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,.07);
+}
+
+.nf-codigo {
+  font-size: clamp(4rem, 15vw, 7rem);
+  font-weight: 900;
+  color: var(--verde, #2d7a35);
+  line-height: 1;
+  letter-spacing: -.05em;
+  opacity: .15;
+  margin-bottom: -.5rem;
+}
+
+.nf-icone {
+  font-size: 2.5rem;
+  margin-bottom: .75rem;
+}
+
+.nf-titulo {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--texto, #1a2e1c);
+  margin-bottom: .5rem;
+  letter-spacing: -.02em;
+}
+
+.nf-desc {
+  font-size: .9rem;
+  color: var(--texto-muted, #5a7a5e);
+  line-height: 1.5;
+  margin-bottom: 1.75rem;
+  max-width: 30ch;
+  margin-inline: auto;
+}
+
+.nf-acoes {
+  display: flex;
+  gap: .75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
