@@ -1,5 +1,5 @@
 /* ============================================================
-   Navbar — logado (verde) / deslogado (branco) + mobile drawer
+   Navbar
    ============================================================ */
 
 .navbar {
@@ -14,17 +14,20 @@
   transition: background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 
-/* ── Logado: verde ── */
+/* Logado: verde premium */
 .navbar-logado {
-  background: var(--verde-principal);
-  box-shadow: 0 2px 16px rgba(22,163,74,.18), 0 1px 4px rgba(0,0,0,.08);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  box-shadow: 0 1px 0 rgba(255,255,255,.08) inset,
+              0 4px 20px rgba(22,163,74,.25);
 }
 
-/* ── Deslogado: branco ── */
+/* Deslogado: branco com blur */
 .navbar-deslogado {
-  background: var(--surface);
-  box-shadow: var(--sombra-sm);
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--borda);
+  box-shadow: 0 1px 8px rgba(0,0,0,.06);
 }
 
 /* ── Logo ── */
@@ -35,46 +38,43 @@
   text-decoration: none;
   flex-shrink: 0;
 }
-
 .navbar-logo-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-sm);
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 800;
   transition: transform var(--dur) var(--ease);
 }
-.navbar-logo:hover .navbar-logo-icon { transform: scale(1.06); }
-
-.navbar-logado    .navbar-logo-icon { background: rgba(255,255,255,.18); color: #fff; }
-.navbar-deslogado .navbar-logo-icon { background: var(--verde-fundo);    color: var(--verde-principal); }
+.navbar-logo:hover .navbar-logo-icon { transform: scale(1.07); }
+.navbar-logado    .navbar-logo-icon { background: rgba(255,255,255,.2); color: #fff; }
+.navbar-deslogado .navbar-logo-icon { background: var(--verde-fundo); color: var(--verde-principal); border: 1px solid var(--verde-borda); }
 
 .navbar-logo-nome {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 800;
-  letter-spacing: -.02em;
+  letter-spacing: -.025em;
 }
 .navbar-logado    .navbar-logo-nome { color: #fff; }
 .navbar-deslogado .navbar-logo-nome { color: var(--verde-principal); }
 
-/* ── Links (desktop) ── */
+/* ── Links desktop ── */
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: .2rem;
+  gap: .15rem;
 }
-
 .navbar-link {
   display: flex;
   align-items: center;
   gap: .4rem;
-  padding: .45rem .85rem;
-  border-radius: var(--radius);
-  color: rgba(255,255,255,.8);
-  font-size: .875rem;
+  padding: .42rem .82rem;
+  border-radius: 8px;
+  color: rgba(255,255,255,.75);
+  font-size: .845rem;
   font-weight: 500;
   text-decoration: none;
   transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
@@ -83,62 +83,59 @@
 .navbar-link:hover {
   background: rgba(255,255,255,.15);
   color: #fff;
-  text-decoration: none;
 }
 .navbar-link-ativo {
   background: rgba(255,255,255,.2);
   color: #fff;
   font-weight: 700;
 }
-.navbar-link-icone { font-size: .95rem; line-height: 1; }
+.navbar-link-icone { font-size: .9rem; line-height: 1; }
 
 /* ── Usuário + sair ── */
 .navbar-usuario {
   display: flex;
   align-items: center;
-  gap: .75rem;
+  gap: .6rem;
   flex-shrink: 0;
 }
-
 .navbar-usuario-nome {
-  font-size: .875rem;
+  font-size: .845rem;
   font-weight: 600;
   color: rgba(255,255,255,.9);
-  max-width: 120px;
+  max-width: 110px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 .navbar-sair {
-  background: rgba(255,255,255,.12);
-  color: rgba(255,255,255,.9);
-  border: 1.5px solid rgba(255,255,255,.25);
-  border-radius: var(--radius);
-  padding: .38rem .9rem;
-  font-size: .82rem;
+  background: rgba(255,255,255,.1);
+  color: rgba(255,255,255,.88);
+  border: 1.5px solid rgba(255,255,255,.22);
+  border-radius: 8px;
+  padding: .34rem .85rem;
+  font-size: .8rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  transition: all var(--dur) var(--ease);
+  font-family: var(--font);
   white-space: nowrap;
 }
 .navbar-sair:hover {
-  background: rgba(255,255,255,.24);
-  border-color: rgba(255,255,255,.45);
+  background: rgba(255,255,255,.22);
+  border-color: rgba(255,255,255,.42);
 }
 
-/* ── Botões públicos (deslogado) ── */
+/* ── Botões públicos ── */
 .navbar-acoes-publicas {
   display: flex;
   align-items: center;
-  gap: .6rem;
+  gap: .5rem;
   flex-shrink: 0;
 }
-
 .navbar-btn-ghost {
-  padding: .42rem 1rem;
-  border-radius: var(--radius);
-  font-size: .875rem;
+  padding: .4rem .95rem;
+  border-radius: 8px;
+  font-size: .845rem;
   font-weight: 600;
   color: var(--verde-principal);
   border: 1.5px solid var(--verde-borda);
@@ -150,29 +147,29 @@
 .navbar-btn-ghost:hover {
   background: var(--verde-fundo);
   border-color: var(--verde-principal);
-  text-decoration: none;
   color: var(--verde-hover);
 }
-
 .navbar-btn-verde {
-  padding: .42rem 1rem;
-  border-radius: var(--radius);
-  font-size: .875rem;
+  padding: .4rem .95rem;
+  border-radius: 8px;
+  font-size: .845rem;
   font-weight: 700;
   color: #fff;
-  background: var(--verde-principal);
-  border: 1.5px solid var(--verde-principal);
+  background: linear-gradient(135deg, var(--verde-principal) 0%, #15803d 100%);
+  border: none;
   text-decoration: none;
   transition: all var(--dur) var(--ease);
   white-space: nowrap;
+  box-shadow: var(--sombra-verde);
 }
 .navbar-btn-verde:hover {
-  background: var(--verde-hover);
-  box-shadow: 0 4px 12px rgba(22,163,74,.3);
-  text-decoration: none;
+  background: linear-gradient(135deg, #15803d 0%, #166534 100%);
+  box-shadow: 0 4px 14px rgba(22,163,74,.38);
+  transform: translateY(-1px);
+  color: #fff;
 }
 
-/* ── Botão hamburguer ── */
+/* ── Hamburguer ── */
 .navbar-hamburger {
   display: none;
   flex-direction: column;
@@ -181,26 +178,23 @@
   width: 38px;
   height: 38px;
   background: rgba(255,255,255,.12);
-  border: 1.5px solid rgba(255,255,255,.25);
-  border-radius: var(--radius);
+  border: 1.5px solid rgba(255,255,255,.22);
+  border-radius: 8px;
   cursor: pointer;
   padding: 0 9px;
   transition: background var(--dur) var(--ease);
   flex-shrink: 0;
 }
 .navbar-hamburger:hover { background: rgba(255,255,255,.22); }
-
 .navbar-hamburger span {
   display: block;
   width: 100%;
   height: 2px;
   background: #fff;
   border-radius: 2px;
-  transition: transform 0.22s ease, opacity 0.22s ease;
+  transition: transform .22s ease, opacity .22s ease;
   transform-origin: center;
 }
-
-/* Animação → X */
 .hamburger-aberto span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .hamburger-aberto span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .hamburger-aberto span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -209,7 +203,7 @@
 .navbar-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.45);
+  background: rgba(0,0,0,.4);
   z-index: 299;
   animation: fadeIn .2s ease;
 }
@@ -218,17 +212,16 @@
 /* ── Drawer mobile ── */
 .navbar-drawer {
   position: fixed;
-  top: 0;
-  right: 0;
+  top: 0; right: 0;
   height: 100dvh;
   width: min(280px, 80vw);
   background: var(--surface);
-  box-shadow: -4px 0 24px rgba(0,0,0,.15);
+  box-shadow: -8px 0 40px rgba(0,0,0,.12);
   z-index: 300;
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
-  transition: transform 0.28s cubic-bezier(.16,1,.3,1);
+  transition: transform .28s cubic-bezier(.16,1,.3,1);
   padding-top: var(--nav-h, 64px);
 }
 .drawer-aberto { transform: translateX(0); }
@@ -236,35 +229,33 @@
 .drawer-links {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem 0.75rem;
+  padding: 1rem .75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: .2rem;
 }
-
 .drawer-link {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  gap: .75rem;
+  padding: .7rem 1rem;
   border-radius: var(--radius);
   text-decoration: none;
   color: var(--texto-sec);
   font-weight: 500;
-  font-size: 0.95rem;
-  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+  font-size: .9rem;
+  transition: all var(--dur) var(--ease);
 }
 .drawer-link:hover {
   background: var(--verde-fundo);
   color: var(--verde-principal);
-  text-decoration: none;
 }
 .drawer-link-ativo {
-  background: var(--verde-fundo-2);
+  background: var(--verde-fundo);
   color: var(--verde-principal);
   font-weight: 700;
 }
-.drawer-link-icone { font-size: 1.1rem; width: 24px; text-align: center; }
+.drawer-link-icone { font-size: 1.05rem; width: 22px; text-align: center; }
 
 .drawer-rodape {
   border-top: 1px solid var(--borda);
@@ -272,51 +263,46 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: .5rem;
 }
-
 .drawer-usuario {
-  font-size: 0.875rem;
+  font-size: .875rem;
   font-weight: 600;
   color: var(--texto);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 .drawer-sair {
   background: var(--erro-fundo);
   color: var(--erro);
   border: 1px solid var(--erro-borda);
   border-radius: var(--radius-sm);
-  padding: 0.35rem 0.8rem;
-  font-size: 0.82rem;
+  padding: .32rem .75rem;
+  font-size: .8rem;
   font-weight: 600;
   cursor: pointer;
   transition: background var(--dur) var(--ease);
+  font-family: var(--font);
   white-space: nowrap;
   flex-shrink: 0;
 }
-.drawer-sair:hover { background: #fee2e2; }
+.drawer-sair:hover { background: #fee2e2; border-color: var(--erro); }
 
-/* ── Responsivo — desktop: hamburguer oculto ── */
 @media (min-width: 901px) {
   .navbar-hamburger { display: none !important; }
   .navbar-drawer    { display: none !important; }
   .navbar-overlay   { display: none !important; }
 }
-
-/* ── Responsivo — tablet/mobile ── */
 @media (max-width: 900px) {
-  .navbar-links        { display: none; }      /* esconde links desktop */
-  .navbar-hamburger    { display: flex; }       /* mostra hamburguer */
-  .navbar-sair         { display: none; }       /* sair fica só no drawer */
-  .navbar-link-nome    { display: none; }
+  .navbar-links     { display: none; }
+  .navbar-hamburger { display: flex; }
+  .navbar-sair      { display: none; }
+  .navbar-link-nome { display: none; }
 }
-
 @media (max-width: 640px) {
   .navbar-logo-nome    { display: none; }
   .navbar-usuario-nome { display: none; }
   .navbar-btn-ghost,
-  .navbar-btn-verde    { padding: .38rem .75rem; font-size: .8rem; }
+  .navbar-btn-verde    { padding: .36rem .7rem; font-size: .8rem; }
 }
