@@ -1,12 +1,13 @@
 /* ============================================================
-   Auth — Login e Cadastro
+   Auth — Forest Green
    ============================================================ */
 
 .auth-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(160deg, #f0fdf4 0%, #f8fafc 50%, #eff6ff 100%);
+  /* gradiente sutil: fundo verde clarinho para branco */
+  background: linear-gradient(160deg, #EDF6EE 0%, #f5faf5 55%, #eaf3eb 100%);
 }
 
 .auth-main {
@@ -28,7 +29,7 @@
   animation: auth-entrada .35s var(--ease) both;
 }
 @keyframes auth-entrada {
-  from { opacity: 0; transform: translateY(18px) scale(.98); }
+  from { opacity: 0; transform: translateY(20px) scale(.98); }
   to   { opacity: 1; transform: none; }
 }
 
@@ -41,24 +42,22 @@
   text-decoration: none;
 }
 .auth-logo-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: var(--radius);
-  background: linear-gradient(135deg, var(--verde-fundo), var(--verde-fundo-2));
-  border: 1px solid var(--verde-borda);
+  width: 44px; height: 44px;
+  border-radius: var(--radius-lg);
+  background: var(--verde-fundo);
+  border: 1px solid var(--borda);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 800;
-  color: var(--verde-principal);
-  box-shadow: 0 2px 8px rgba(22,163,74,.15);
+  color: var(--verde);
 }
 .auth-logo-nome {
-  font-size: 1.45rem;
+  font-size: 1.5rem;
   font-weight: 800;
-  color: var(--verde-principal);
-  letter-spacing: -.03em;
+  color: var(--verde-dark);
+  letter-spacing: -.035em;
 }
 
 .auth-titulo {
@@ -79,8 +78,8 @@
 
 .auth-divider {
   text-align: center;
-  font-size: .82rem;
-  color: var(--texto-muted);
+  font-size: .8rem;
+  color: var(--texto-faint);
   margin: 1.25rem 0 .75rem;
   position: relative;
 }
@@ -102,5 +101,5 @@
   font-size: .875rem;
   color: var(--texto-muted);
 }
-.auth-rodape a { color: var(--verde-principal); font-weight: 600; }
-.auth-rodape a:hover { text-decoration: underline; }
+.auth-rodape a { color: var(--verde); font-weight: 700; }
+.auth-rodape a:hover { color: var(--verde-dark); text-decoration: underline; }

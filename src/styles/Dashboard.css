@@ -1,10 +1,10 @@
 /* ============================================================
-   Dashboard
+   Dashboard — Forest Green
    ============================================================ */
 
 .dashboard-container {
-  max-width: var(--content, 1140px);
-  margin: 0 auto;
+  max-width: var(--content, 1100px);
+  margin-inline: auto;
   padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2rem);
 }
 
@@ -13,10 +13,11 @@
   margin-bottom: 2rem;
 }
 .dashboard-welcome h1 {
-  font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.1rem);
+  font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2rem);
   font-weight: 800;
   letter-spacing: -.03em;
   color: var(--texto);
+  line-height: 1.15;
 }
 .dashboard-welcome p {
   color: var(--texto-muted);
@@ -49,75 +50,70 @@
   box-shadow: var(--sombra-md);
   transform: translateY(-2px);
 }
-/* Detalhe lateral colorido */
+/* Linha de accent na borda superior */
 .kpi-card::before {
   content: '';
   position: absolute;
-  top: 0; left: 0;
-  width: 3px;
-  height: 100%;
-  background: var(--verde-principal);
-  border-radius: 3px 0 0 3px;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--verde);
   opacity: .7;
 }
+.kpi-card:nth-child(2)::before { background: #5D9B64; }
+.kpi-card:nth-child(3)::before { background: #47774C; }
+.kpi-card:nth-child(4)::before { background: #77C480; }
 
 .kpi-icone-wrap {
-  width: 40px;
-  height: 40px;
+  width: 40px; height: 40px;
   border-radius: var(--radius);
   background: var(--verde-fundo);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
-  margin-bottom: .5rem;
-  border: 1px solid var(--verde-borda);
+  margin-bottom: .4rem;
+  border: 1px solid var(--borda);
 }
-/* Cores distintas por card */
-.kpi-card:nth-child(2) .kpi-icone-wrap { background:#eff6ff; border-color:#bfdbfe; }
-.kpi-card:nth-child(3) .kpi-icone-wrap { background:#fdf4ff; border-color:#e9d5ff; }
-.kpi-card:nth-child(4) .kpi-icone-wrap { background:#fff7ed; border-color:#fed7aa; }
-.kpi-card:nth-child(2)::before { background:#3b82f6; }
-.kpi-card:nth-child(3)::before { background:#a855f7; }
-.kpi-card:nth-child(4)::before { background:#f97316; }
+.kpi-card:nth-child(2) .kpi-icone-wrap { background: #f0fdf4; border-color: #B1D8B7; }
+.kpi-card:nth-child(3) .kpi-icone-wrap { background: #eaf3eb; border-color: #90B095; }
+.kpi-card:nth-child(4) .kpi-icone-wrap { background: #f5faf5; border-color: #B1D8B7; }
 
-.kpi-icone { font-size: 1.1rem; line-height: 1; }
+.kpi-icone { font-size: 1.05rem; line-height: 1; }
 
 .kpi-label {
-  font-size: .72rem;
-  font-weight: 600;
+  font-size: .7rem;
+  font-weight: 700;
   color: var(--texto-muted);
   text-transform: uppercase;
-  letter-spacing: .05em;
-  margin-top: .25rem;
+  letter-spacing: .055em;
+  margin-top: .2rem;
 }
 .kpi-valor {
-  font-size: 1.4rem;
+  font-size: 1.45rem;
   font-weight: 800;
   color: var(--texto);
   letter-spacing: -.03em;
-  line-height: 1.2;
+  line-height: 1.15;
 }
-.kpi-valor.verde { color: var(--verde-principal); }
+.kpi-valor.verde { color: var(--verde); }
 
 /* ── Ações rápidas ── */
 .dashboard-acoes-card { margin-bottom: 1.5rem; }
 
 .acoes-rapidas {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: .875rem;
-  margin-top: .25rem;
+  margin-top: .5rem;
 }
 
 .acao-card {
   background: var(--surface);
   border: 1.5px solid var(--borda);
   border-radius: var(--radius-lg);
-  padding: 1.25rem 1rem;
+  padding: 1.2rem 1rem;
   text-align: center;
   text-decoration: none;
-  color: var(--texto);
+  color: var(--texto-sec);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -130,14 +126,13 @@
   border-color: var(--verde-borda);
   transform: translateY(-3px);
   box-shadow: var(--sombra-md);
-  color: var(--verde-hover);
+  color: var(--verde);
 }
 .acao-card-icone {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   line-height: 1;
-  width: 44px;
-  height: 44px;
-  background: var(--surface-2);
+  width: 44px; height: 44px;
+  background: var(--surface-3);
   border-radius: var(--radius);
   display: flex;
   align-items: center;
@@ -145,14 +140,14 @@
   margin-bottom: .1rem;
   transition: background var(--dur) var(--ease);
 }
-.acao-card:hover .acao-card-icone { background: var(--verde-fundo-2); }
+.acao-card:hover .acao-card-icone { background: #B1D8B7; }
 .acao-card-titulo {
   font-weight: 700;
-  font-size: .875rem;
+  font-size: .855rem;
   letter-spacing: -.01em;
 }
 .acao-card-desc {
-  font-size: .75rem;
+  font-size: .74rem;
   color: var(--texto-muted);
   line-height: 1.3;
 }

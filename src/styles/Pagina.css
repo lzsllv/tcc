@@ -1,10 +1,10 @@
 /* ============================================================
-   Páginas internas — layout, tabelas, cards
+   Páginas internas — Forest Green
    ============================================================ */
 
 .pagina-container {
-  max-width: var(--content, 1140px);
-  margin: 0 auto;
+  max-width: var(--content, 1100px);
+  margin-inline: auto;
   padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1rem, 4vw, 2rem);
 }
 
@@ -18,10 +18,10 @@
   flex-wrap: wrap;
 }
 .pagina-titulo {
-  font-size: clamp(1.35rem, 1.1rem + 1.2vw, 1.75rem);
+  font-size: clamp(1.3rem, 1rem + 1.3vw, 1.7rem);
   font-weight: 800;
   color: var(--texto);
-  letter-spacing: -.025em;
+  letter-spacing: -.03em;
   line-height: 1.15;
 }
 .pagina-subtitulo {
@@ -31,13 +31,12 @@
 }
 .pagina-cabecalho .btn-primary {
   width: auto;
-  padding: .6rem 1.3rem;
-  font-size: .875rem;
-  white-space: nowrap;
+  padding: .58rem 1.2rem;
+  font-size: .855rem;
   flex-shrink: 0;
 }
 
-/* ── Grid 2 colunas ── */
+/* ── Grid ── */
 .pagina-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -45,24 +44,23 @@
 }
 @media (max-width: 768px) { .pagina-grid { grid-template-columns: 1fr; } }
 
-/* ── Título de seção ── */
+/* ── Seção título ── */
 .secao-titulo {
-  font-size: .875rem;
-  font-weight: 700;
-  color: var(--texto-sec);
-  margin-bottom: 1.25rem;
+  font-size: .72rem;
+  font-weight: 800;
+  color: var(--texto-muted);
+  margin-bottom: 1.1rem;
   display: flex;
   align-items: center;
-  gap: .5rem;
+  gap: .6rem;
   text-transform: uppercase;
-  letter-spacing: .05em;
+  letter-spacing: .07em;
 }
 .secao-titulo::after {
   content: '';
   flex: 1;
   height: 1px;
   background: var(--borda);
-  margin-left: .25rem;
 }
 
 /* ── Formulário ── */
@@ -74,13 +72,8 @@
 .form-acoes { display: flex; gap: .75rem; }
 @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
 
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: .1rem;
-}
 .input-hint {
-  font-size: .775rem;
+  font-size: .77rem;
   color: var(--texto-muted);
   margin-top: .25rem;
   line-height: 1.4;
@@ -91,21 +84,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: .6rem 0;
+  padding: .58rem 0;
   border-bottom: 1px solid var(--borda);
-  font-size: .9rem;
+  font-size: .875rem;
   gap: 1rem;
   color: var(--texto-sec);
 }
-.resumo-linha span:first-child { color: var(--texto-muted); font-size: .85rem; }
+.resumo-linha span:first-child { color: var(--texto-muted); font-size: .835rem; }
 .resumo-linha:last-child { border-bottom: none; }
 .resumo-linha.destaque {
   background: var(--verde-fundo);
   padding: .8rem 1rem;
   border-radius: var(--radius);
   margin-top: .5rem;
-  border-bottom: none;
-  border: 1px solid var(--verde-borda);
+  border: 1px solid var(--borda);
+  border-bottom: 1px solid var(--borda);
 }
 
 /* ── Produto card ── */
@@ -120,7 +113,7 @@
 }
 .produto-nome {
   font-weight: 700;
-  font-size: .975rem;
+  font-size: .95rem;
   color: var(--texto);
   margin-bottom: .3rem;
   letter-spacing: -.01em;
@@ -140,7 +133,7 @@
 }
 
 /* ── Valores ── */
-.valor-verde  { color: var(--verde-principal); font-weight: 700; }
+.valor-verde  { color: var(--verde); font-weight: 700; }
 .texto-aviso  { color: var(--alerta); font-size: .85rem; }
 
 /* ── Tabela ── */
@@ -153,35 +146,35 @@
 .tabela {
   width: 100%;
   border-collapse: collapse;
-  font-size: .855rem;
+  font-size: .845rem;
   min-width: 500px;
 }
 .tabela thead tr {
-  background: #f8fafc;
+  background: var(--surface-3);
   border-bottom: 1px solid var(--borda);
 }
 .tabela th {
   text-align: left;
-  padding: .8rem 1rem;
+  padding: .82rem 1rem;
   color: var(--texto-muted);
-  font-weight: 600;
-  font-size: .75rem;
-  letter-spacing: .05em;
+  font-weight: 700;
+  font-size: .72rem;
+  letter-spacing: .06em;
   text-transform: uppercase;
   white-space: nowrap;
 }
 .tabela td {
-  padding: .8rem 1rem;
-  border-bottom: 1px solid #f1f5f9;
+  padding: .82rem 1rem;
+  border-bottom: 1px solid var(--surface-3);
   color: var(--texto-sec);
   vertical-align: middle;
 }
 .tabela tbody tr:last-child td { border-bottom: none; }
 .tabela tbody tr { transition: background var(--dur) var(--ease); }
-.tabela tbody tr:hover { background: #fafafa; }
+.tabela tbody tr:hover { background: var(--verde-fundo); }
 .tabela tfoot td {
   padding: .85rem 1rem;
-  background: #f8fafc;
+  background: var(--surface-3);
   border-top: 1px solid var(--borda);
   font-weight: 700;
   color: var(--texto);
@@ -194,20 +187,20 @@
   align-items: center;
   gap: .3rem;
   background: var(--verde-fundo);
-  color: var(--verde-principal);
-  border: 1.5px solid var(--verde-borda);
+  color: var(--verde);
+  border: 1.5px solid var(--borda);
   border-radius: var(--radius-sm);
-  padding: .3rem .7rem;
-  font-size: .78rem;
-  font-weight: 600;
+  padding: .3rem .72rem;
+  font-size: .76rem;
+  font-weight: 700;
   cursor: pointer;
   transition: all var(--dur) var(--ease);
   font-family: var(--font);
 }
 .btn-editar:hover {
-  background: var(--verde-fundo-2);
-  border-color: var(--verde-principal);
-  box-shadow: 0 2px 8px rgba(22,163,74,.15);
+  background: #B1D8B7;
+  border-color: var(--verde-borda);
+  box-shadow: var(--sombra-xs);
 }
 .btn-excluir {
   display: inline-flex;
@@ -217,9 +210,9 @@
   color: var(--erro);
   border: 1.5px solid var(--erro-borda);
   border-radius: var(--radius-sm);
-  padding: .3rem .7rem;
-  font-size: .78rem;
-  font-weight: 600;
+  padding: .3rem .72rem;
+  font-size: .76rem;
+  font-weight: 700;
   cursor: pointer;
   transition: all var(--dur) var(--ease);
   font-family: var(--font);
@@ -236,7 +229,7 @@
   font-size: 2.5rem;
   display: block;
   margin-bottom: .75rem;
-  opacity: .7;
+  opacity: .65;
 }
 .estado-vazio p {
   font-size: .9rem;
@@ -249,14 +242,13 @@
 .btn-estado-vazio {
   width: auto !important;
   display: inline-flex !important;
-  padding: .6rem 1.4rem !important;
-  margin-top: .5rem;
+  padding: .58rem 1.4rem !important;
 }
 
-/* ── Info cards (relatório) ── */
+/* ── Info cards ── */
 .relatorio-grid-info {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
   gap: 1rem;
 }
 .info-item {
@@ -271,11 +263,11 @@
 }
 .info-item:hover { box-shadow: var(--sombra-md); transform: translateY(-1px); }
 .info-label {
-  font-size: .7rem;
+  font-size: .68rem;
   color: var(--texto-muted);
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .05em;
+  letter-spacing: .06em;
 }
 .info-valor {
   font-size: 1.25rem;
@@ -283,20 +275,16 @@
   color: var(--texto);
   letter-spacing: -.025em;
 }
-.info-valor.valor-verde { color: var(--verde-principal); }
-
-/* ── Preço sugerido ── */
-.preco-sugerido { color: var(--verde-principal); font-weight: 700; }
+.info-valor.valor-verde { color: var(--verde); }
+.preco-sugerido { color: var(--verde); font-weight: 700; }
 
 /* ── Responsivo ── */
 @media (max-width: 768px) {
   .pagina-container { padding: 1.25rem 1rem; }
-  .pagina-cabecalho { margin-bottom: 1.5rem; }
   .relatorio-grid-info { grid-template-columns: repeat(2, 1fr); }
   .produto-detalhes { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
-  .pagina-container { padding: 1rem .875rem; }
   .relatorio-grid-info { grid-template-columns: 1fr 1fr; }
   .info-valor { font-size: 1.1rem; }
 }
