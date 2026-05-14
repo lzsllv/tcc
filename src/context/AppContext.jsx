@@ -3,10 +3,29 @@ import { createContext, useContext, useState, useEffect } from 'react';
 const AppContext = createContext();
 export function useApp() { return useContext(AppContext); }
 
-// Ofuscação simples de senha (não é criptografia real, mas evita texto puro visível)
 function hashSenha(senha) {
   return btoa(unescape(encodeURIComponent(senha + ':precifique')));
 }
+
+const DADOS_DEMO = {
+  produtos: [
+    { id: 1, nome: 'Vela Aromática', categoria: 'Artesanato', custo: '8.50', tempoProducao: '0.5', quantidadeMes: '60' },
+    { id: 2, nome: 'Brigadeiro Gourmet (caixa c/9)', categoria: 'Alimento', custo: '12.00', tempoProducao: '1', quantidadeMes: '80' },
+    { id: 3, nome: 'Bolsa de Crochê', categoria: 'Moda', custo: '22.00', tempoProducao: '3', quantidadeMes: '20' },
+    { id: 4, nome: 'Sabonete Artesanal', categoria: 'Higiene', custo: '5.00', tempoProducao: '0.25', quantidadeMes: '100' },
+  ],
+  custosFixos: {
+    aluguel: 800, energia: 150, internet: 100, salarios: 0, outros: 50,
+    extras: [
+      { id: 10, descricao: 'Embalagens', valor: '120' },
+      { id: 11, descricao: 'Taxa marketplace', valor: '80' },
+    ],
+  },
+  configuracoes: {
+    margemLucro: 35, custoHora: 15, regiaoAtuacao: 'São Paulo - SP',
+    nomeNegocio: 'Ateliê Demo', logoNegocio: '',
+  },
+};
 
 export function AppProvider({ children }) {
   const [usuarioLogado, setUsuarioLogado] = useState(() => {
@@ -37,9 +56,9 @@ export function AppProvider({ children }) {
       const s = localStorage.getItem('configuracoes');
       if (s) {
         const p = JSON.parse(s);
-        if (!p.nomeNegocio) p.nomeNegocio = '';
-        if (!p.logoNegocio) p.logoNegocio = '';
-        if (!p.regiaoAtuacao) p.regiaoAtuacao = '';
+        if (!p.nomeNegocio)    p.nomeNegocio = '';
+        if (!p.logoNegocio)    p.logoNegocio = '';
+        if (!p.regiaoAtuacao)  p.regiaoAtuacao = '';
         return p;
       }
     } catch { /* ignora */ }
@@ -59,7 +78,6 @@ export function AppProvider({ children }) {
     try { localStorage.setItem('custosFixos', JSON.stringify(custosFixos)); } catch { /* storage cheio */ }
   }, [custosFixos]);
   useEffect(() => {
-    // Não salva o base64 do logo se for muito grande (>400KB em base64 ≈ 300KB de arquivo)
     const parasSalvar = { ...configuracoes };
     if (parasSalvar.logoNegocio && parasSalvar.logoNegocio.length > 400000) {
       parasSalvar.logoNegocio = '';
@@ -73,17 +91,13 @@ export function AppProvider({ children }) {
     const extras = (custosFixos.extras || []).reduce((a, e) => a + Number(e.valor || 0), 0);
     return fixos + extras;
   }
-
   function totalUnidadesMes() {
     if (!produtos.length) return 1;
-    // Usa 0 para produtos sem quantidade (não distorce a média com fallback 1)
     const total = produtos.reduce((a, p) => a + (Number(p.quantidadeMes) || 0), 0);
-    return total > 0 ? total : 1; // evita divisão por zero
+    return total > 0 ? total : 1;
   }
-
   function custoFixoPorUnidade()  { return totalCustosFixos() / totalUnidadesMes(); }
   function custoFixoPorProduto()  { return produtos.length ? totalCustosFixos() / produtos.length : 0; }
-
   function calcularCustoTotal(p) {
     return (
       Number(p.custo || 0) +
@@ -91,11 +105,9 @@ export function AppProvider({ children }) {
       Number(configuracoes.custoHora) * Number(p.tempoProducao || 0)
     );
   }
-
   function calcularPrecoSugerido(p) {
     return calcularCustoTotal(p) * (1 + Number(configuracoes.margemLucro) / 100);
   }
-
   function calcularLucroMensal(precoVenda, custoTotal, quantidade) {
     return (Number(precoVenda) - Number(custoTotal)) * Number(quantidade);
   }
@@ -103,33 +115,40 @@ export function AppProvider({ children }) {
   // ── AUTH ──
   function login(email, senha) {
     const hash = hashSenha(senha);
-    // Suporta contas antigas (senha em texto puro) e novas (hashed)
     const u = usuarios.find(u => u.email === email && (u.senha === hash || u.senha === senha));
     if (u) {
-      // Migra conta antiga para hash
       if (u.senha === senha) {
         setUsuarios(prev => prev.map(x => x.id === u.id ? { ...x, senha: hash } : x));
       }
-      // Não expõe a senha no estado do usuário logado
       const { senha: _s, ...semSenha } = u;
       setUsuarioLogado(semSenha);
       return true;
     }
     return false;
   }
-
   function cadastrar(nome, email, senha) {
     if (usuarios.find(u => u.email === email)) return false;
     setUsuarios(prev => [...prev, { id: Date.now(), nome, email, senha: hashSenha(senha) }]);
     return true;
   }
-
   function logout() { setUsuarioLogado(null); }
 
   // ── PRODUTOS ──
   function adicionarProduto(p)      { setProdutos(prev => [...prev, { ...p, id: Date.now() }]); }
   function editarProduto(id, dados) { setProdutos(prev => prev.map(p => p.id === id ? { ...p, ...dados } : p)); }
   function excluirProduto(id)       { setProdutos(prev => prev.filter(p => p.id !== id)); }
+
+  // ── DEMO ──
+  function carregarDemo() {
+    setProdutos(DADOS_DEMO.produtos);
+    setCustosFixos(DADOS_DEMO.custosFixos);
+    setConfiguracoes(DADOS_DEMO.configuracoes);
+  }
+  function limparDados() {
+    setProdutos([]);
+    setCustosFixos({ aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] });
+    setConfiguracoes({ margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' });
+  }
 
   return (
     <AppContext.Provider value={{
@@ -139,6 +158,7 @@ export function AppProvider({ children }) {
       calcularCustoTotal, calcularPrecoSugerido, calcularLucroMensal,
       login, cadastrar, logout,
       adicionarProduto, editarProduto, excluirProduto,
+      carregarDemo, limparDados,
     }}>
       {children}
     </AppContext.Provider>

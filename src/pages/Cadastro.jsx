@@ -8,8 +8,10 @@ export default function Cadastro() {
   const [email,          setEmail]          = useState('');
   const [senha,          setSenha]          = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
+  const [mostrarSenha,   setMostrarSenha]   = useState(false);
   const [erro,           setErro]           = useState('');
   const [sucesso,        setSucesso]        = useState('');
+  const [carregando,     setCarregando]     = useState(false);
 
   const { cadastrar } = useApp();
   const navegar = useNavigate();
@@ -17,16 +19,20 @@ export default function Cadastro() {
   function handleSubmit(e) {
     e.preventDefault();
     setErro(''); setSucesso('');
-    if (!nome || !email || !senha || !confirmarSenha) { setErro('Preencha todos os campos.'); return; }
+    if (!nome.trim() || !email || !senha || !confirmarSenha) { setErro('Preencha todos os campos.'); return; }
     if (senha.length < 6)         { setErro('A senha deve ter no mínimo 6 caracteres.'); return; }
     if (senha !== confirmarSenha) { setErro('As senhas não coincidem.'); return; }
-    const ok = cadastrar(nome, email, senha);
-    if (ok) {
-      setSucesso('Conta criada com sucesso! Redirecionando...');
-      setTimeout(() => navegar('/login'), 1500);
-    } else {
-      setErro('Este e-mail já está cadastrado.');
-    }
+    setCarregando(true);
+    setTimeout(() => {
+      const ok = cadastrar(nome.trim(), email, senha);
+      setCarregando(false);
+      if (ok) {
+        setSucesso('Conta criada com sucesso! Redirecionando...');
+        setTimeout(() => navegar('/login'), 1500);
+      } else {
+        setErro('Este e-mail já está cadastrado.');
+      }
+    }, 400);
   }
 
   return (
@@ -61,19 +67,30 @@ export default function Cadastro() {
 
             <div className="campo-grupo">
               <label className="input-label" htmlFor="senha">Senha</label>
-              <input id="senha" type="password" className="input-field"
-                placeholder="Mínimo 6 caracteres" value={senha}
-                onChange={e => setSenha(e.target.value)} />
+              <div className="input-senha-wrapper">
+                <input id="senha" type={mostrarSenha ? 'text' : 'password'} className="input-field input-senha"
+                  placeholder="Mínimo 6 caracteres" value={senha}
+                  onChange={e => setSenha(e.target.value)} />
+                <button type="button" className="btn-olho"
+                  onClick={() => setMostrarSenha(v => !v)}
+                  aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}>
+                  {mostrarSenha ? '🙈' : '👁️'}
+                </button>
+              </div>
             </div>
 
             <div className="campo-grupo">
               <label className="input-label" htmlFor="confirmarSenha">Confirmar senha</label>
-              <input id="confirmarSenha" type="password" className="input-field"
-                placeholder="Repita sua senha" value={confirmarSenha}
-                onChange={e => setConfirmarSenha(e.target.value)} />
+              <div className="input-senha-wrapper">
+                <input id="confirmarSenha" type={mostrarSenha ? 'text' : 'password'} className="input-field input-senha"
+                  placeholder="Repita sua senha" value={confirmarSenha}
+                  onChange={e => setConfirmarSenha(e.target.value)} />
+              </div>
             </div>
 
-            <button type="submit" className="btn-primary">Criar conta</button>
+            <button type="submit" className="btn-primary" disabled={carregando}>
+              {carregando ? 'Criando conta...' : 'Criar conta'}
+            </button>
           </form>
 
           <p className="auth-rodape">

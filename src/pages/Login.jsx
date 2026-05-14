@@ -4,9 +4,11 @@ import { useApp } from '../context/AppContext';
 import '../styles/Auth.css';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [erro, setErro]   = useState('');
+  const [email,        setEmail]        = useState('');
+  const [senha,        setSenha]        = useState('');
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [erro,         setErro]         = useState('');
+  const [carregando,   setCarregando]   = useState(false);
 
   const { login } = useApp();
   const navegar   = useNavigate();
@@ -15,9 +17,13 @@ export default function Login() {
     e.preventDefault();
     setErro('');
     if (!email || !senha) { setErro('Preencha todos os campos.'); return; }
-    const sucesso = login(email, senha);
-    if (sucesso) { navegar('/dashboard'); }
-    else { setErro('E-mail ou senha incorretos.'); }
+    setCarregando(true);
+    setTimeout(() => {
+      const sucesso = login(email, senha);
+      setCarregando(false);
+      if (sucesso) { navegar('/dashboard'); }
+      else { setErro('E-mail ou senha incorretos.'); }
+    }, 400);
   }
 
   return (
@@ -44,12 +50,21 @@ export default function Login() {
 
             <div className="campo-grupo">
               <label className="input-label" htmlFor="senha">Senha</label>
-              <input id="senha" type="password" className="input-field"
-                placeholder="Sua senha" value={senha}
-                onChange={e => setSenha(e.target.value)} />
+              <div className="input-senha-wrapper">
+                <input id="senha" type={mostrarSenha ? 'text' : 'password'} className="input-field input-senha"
+                  placeholder="Sua senha" value={senha}
+                  onChange={e => setSenha(e.target.value)} />
+                <button type="button" className="btn-olho"
+                  onClick={() => setMostrarSenha(v => !v)}
+                  aria-label={mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}>
+                  {mostrarSenha ? '🙈' : '👁️'}
+                </button>
+              </div>
             </div>
 
-            <button type="submit" className="btn-primary">Entrar</button>
+            <button type="submit" className="btn-primary" disabled={carregando}>
+              {carregando ? 'Entrando...' : 'Entrar'}
+            </button>
           </form>
 
           <p className="auth-rodape">

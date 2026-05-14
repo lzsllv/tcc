@@ -1,34 +1,26 @@
-/* ============================================================
-   Simulação — estilos específicos
-   ============================================================ */
-
-/* Caixa de sugestão de preço */
 .sim-sugestao {
-  margin-bottom: 0.5rem;
   display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .5rem;
 }
-
-/* Nota de markup no alerta de sugestão */
-.sim-nota-markup {
-  color: var(--texto-sec);
-  font-size: 0.78rem;
-  display: block;
+.sim-nota-markup   { display: block; font-size: .8rem; color: #555; margin-top: .2rem; }
+.sim-nota-margem   { display: block; color: #777; font-size: .8rem; margin: .25rem 0 .5rem; }
+.sim-valor-erro    { color: #dc2626 !important; font-weight: 700; }
+.sim-valor-alerta  { color: #b45309 !important; font-weight: 700; }
+.sim-lucro-mensal  { font-size: 1.2rem; }
+.btn-usar-sugerido {
+  padding: .3rem .75rem;
+  border-radius: .4rem;
+  border: 1.5px solid var(--cor-primaria);
+  background: #fff;
+  color: var(--cor-primaria);
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, color .15s;
+  flex-shrink: 0;
 }
-
-/* Nota abaixo da margem no resultado */
-.sim-nota-margem {
-  display: block;
-  color: var(--texto-sec);
-  font-size: 0.78rem;
-  margin-top: -0.25rem;
-  margin-bottom: 0.5rem;
-}
-
-/* Valores condicionais no resultado */
-.sim-valor-erro   { color: var(--erro); }
-.sim-valor-alerta { color: var(--alerta); }
-
-/* Lucro mensal em destaque */
-.sim-lucro-mensal { font-size: 1.2rem; }
+.btn-usar-sugerido:hover { background: var(--cor-primaria); color: #fff; }

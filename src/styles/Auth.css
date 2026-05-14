@@ -1,105 +1,56 @@
-/* ============================================================
-   Auth — Forest Green
-   ============================================================ */
-
 .auth-page {
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  /* gradiente sutil: fundo verde clarinho para branco */
-  background: linear-gradient(160deg, #EDF6EE 0%, #f5faf5 55%, #eaf3eb 100%);
-}
-
-.auth-main {
-  flex: 1;
-  display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(1.5rem, 6vw, 3rem) 1rem;
+  background: var(--cor-fundo);
+  padding: 1.5rem;
 }
-
+.auth-main { width: 100%; max-width: 420px; }
 .auth-card {
-  width: 100%;
-  max-width: 420px;
-  background: var(--surface);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--sombra-lg);
-  border: 1px solid var(--borda);
-  padding: clamp(1.75rem, 5vw, 2.75rem);
-  animation: auth-entrada .35s var(--ease) both;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,.10);
+  padding: 2.5rem 2rem;
 }
-@keyframes auth-entrada {
-  from { opacity: 0; transform: translateY(20px) scale(.98); }
-  to   { opacity: 1; transform: none; }
-}
-
 .auth-logo {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: .5rem;
-  margin-bottom: 1.75rem;
-  text-decoration: none;
+  gap: .4rem;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--cor-primaria);
+  margin-bottom: 1.5rem;
 }
-.auth-logo-icon {
-  width: 44px; height: 44px;
-  border-radius: var(--radius-lg);
-  background: var(--verde-fundo);
-  border: 1px solid var(--borda);
+.auth-logo-icon  { font-size: 1.4rem; }
+.auth-titulo     { font-size: 1.4rem; font-weight: 700; color: #111; margin-bottom: .25rem; }
+.auth-subtitulo  { color: #666; font-size: .95rem; margin-bottom: 1.5rem; }
+.auth-form       { display: flex; flex-direction: column; gap: .25rem; }
+.auth-rodape     { text-align: center; margin-top: 1.25rem; font-size: .9rem; color: #555; }
+.auth-rodape a   { color: var(--cor-primaria); font-weight: 600; text-decoration: none; }
+.auth-rodape a:hover { text-decoration: underline; }
+
+/* Campo senha com botão olhinho */
+.input-senha-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: var(--verde);
 }
-.auth-logo-nome {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--verde-dark);
-  letter-spacing: -.035em;
+.input-senha-wrapper .input-senha {
+  padding-right: 2.75rem;
+  width: 100%;
 }
-
-.auth-titulo {
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--texto);
-  text-align: center;
-  margin-bottom: .4rem;
-  letter-spacing: -.025em;
-}
-.auth-subtitulo {
-  font-size: .875rem;
-  color: var(--texto-muted);
-  text-align: center;
-  margin-bottom: 1.75rem;
-  line-height: 1.55;
-}
-
-.auth-divider {
-  text-align: center;
-  font-size: .8rem;
-  color: var(--texto-faint);
-  margin: 1.25rem 0 .75rem;
-  position: relative;
-}
-.auth-divider::before,
-.auth-divider::after {
-  content: '';
+.btn-olho {
   position: absolute;
-  top: 50%;
-  width: 38%;
-  height: 1px;
-  background: var(--borda);
+  right: .75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: .25rem;
+  color: #888;
+  line-height: 1;
+  display: flex;
+  align-items: center;
 }
-.auth-divider::before { left: 0; }
-.auth-divider::after  { right: 0; }
-
-.auth-rodape {
-  text-align: center;
-  margin-top: 1.5rem;
-  font-size: .875rem;
-  color: var(--texto-muted);
-}
-.auth-rodape a { color: var(--verde); font-weight: 700; }
-.auth-rodape a:hover { color: var(--verde-dark); text-decoration: underline; }
+.btn-olho:hover { color: #444; }

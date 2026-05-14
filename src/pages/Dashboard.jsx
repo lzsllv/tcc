@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useApp } from '../context/AppContext';
@@ -7,26 +8,40 @@ export default function Dashboard() {
   const {
     usuarioLogado, produtos,
     totalCustosFixos, calcularCustoTotal, calcularPrecoSugerido,
-    configuracoes,
+    configuracoes, carregarDemo, limparDados,
   } = useApp();
+
+  const [confirmarLimpar, setConfirmarLimpar] = useState(false);
+  const [avisoDemo, setAvisoDemo] = useState('');
 
   const totalCustos = totalCustosFixos();
   const precoMedio  = produtos.length > 0
     ? produtos.reduce((acc, p) => acc + calcularPrecoSugerido(p), 0) / produtos.length
     : 0;
+  const lucroTotalMes = produtos.reduce((acc, p) => {
+    const lucroUn = calcularPrecoSugerido(p) - calcularCustoTotal(p);
+    return acc + lucroUn * Number(p.quantidadeMes || 0);
+  }, 0);
 
   function fmt(v) {
     return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 
-  const nome = usuarioLogado?.nome?.split(' ')[0];
+  function handleCarregarDemo() {
+    carregarDemo();
+    setAvisoDemo('✅ Dados de demonstração carregados!');
+    setTimeout(() => setAvisoDemo(''), 3000);
+  }
 
-  // ── Dados para o gráfico de barras ──
-  const MAX_BARRAS = 8;
-  const produtosGrafico = produtos.slice(0, MAX_BARRAS);
-  const maxPreco = produtosGrafico.length
-    ? Math.max(...produtosGrafico.map(p => calcularPrecoSugerido(p)))
-    : 1;
+  function handleLimpar() {
+    if (!confirmarLimpar) { setConfirmarLimpar(true); return; }
+    limparDados();
+    setConfirmarLimpar(false);
+    setAvisoDemo('🗑️ Todos os dados foram apagados.');
+    setTimeout(() => setAvisoDemo(''), 3000);
+  }
+
+  const nome = usuarioLogado?.nome?.split(' ')[0];
 
   return (
     <div>
@@ -34,8 +49,25 @@ export default function Dashboard() {
       <main className="dashboard-container">
 
         <div className="dashboard-welcome">
-          <h1>Olá, {nome}! 👋</h1>
-          <p>Aqui está o resumo do seu negócio hoje.</p>
+          <div>
+            <h1>Olá, {nome}! 👋</h1>
+            <p>Aqui está o resumo do seu negócio hoje.</p>
+          </div>
+          <div className="dashboard-demo-acoes">
+            {avisoDemo && <span className="demo-aviso">{avisoDemo}</span>}
+            <button className="btn-demo" onClick={handleCarregarDemo} title="Preencher com dados de exemplo">
+              🧪 Carregar demo
+            </button>
+            {produtos.length > 0 && (
+              <button
+                className={`btn-limpar ${confirmarLimpar ? 'btn-limpar-confirm' : ''}`}
+                onClick={handleLimpar}
+                title={confirmarLimpar ? 'Clique novamente para confirmar' : 'Apagar todos os dados'}
+              >
+                {confirmarLimpar ? '⚠️ Confirmar limpeza?' : '🗑️ Limpar dados'}
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="dashboard-kpis">
@@ -43,11 +75,13 @@ export default function Dashboard() {
             <span className="kpi-icone">📦</span>
             <p className="kpi-label">Produtos cadastrados</p>
             <p className="kpi-valor">{produtos.length}</p>
+            {produtos.length === 0 && <p className="kpi-hint"><Link to="/produtos">Cadastrar produto →</Link></p>}
           </div>
           <div className="kpi-card">
             <span className="kpi-icone">💸</span>
             <p className="kpi-label">Total de custos fixos</p>
             <p className="kpi-valor verde">{fmt(totalCustos)}</p>
+            {totalCustos === 0 && <p className="kpi-hint"><Link to="/custos-fixos">Preencher custos →</Link></p>}
           </div>
           <div className="kpi-card">
             <span className="kpi-icone">🏷️</span>
@@ -56,8 +90,16 @@ export default function Dashboard() {
           </div>
           <div className="kpi-card">
             <span className="kpi-icone">📈</span>
-            <p className="kpi-label">Margem de lucro</p>
+            <p className="kpi-label">Margem configurada</p>
             <p className="kpi-valor">{configuracoes.margemLucro}%</p>
+          </div>
+          <div className="kpi-card kpi-destaque">
+            <span className="kpi-icone">💰</span>
+            <p className="kpi-label">Lucro mensal projetado</p>
+            <p className={`kpi-valor ${lucroTotalMes > 0 ? 'verde' : ''}`}>{fmt(lucroTotalMes)}</p>
+            {produtos.some(p => !p.quantidadeMes || Number(p.quantidadeMes) === 0) && (
+              <p className="kpi-hint kpi-hint-aviso">⚠️ Alguns produtos sem qtd/mês</p>
+            )}
           </div>
         </div>
 
@@ -87,46 +129,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* ── Gráfico de preços sugeridos ── */}
-        <div className="card dashboard-grafico-card">
-          <h2 className="secao-titulo">📊 Preço sugerido por produto</h2>
-          {produtos.length === 0 ? (
-            <div className="estado-vazio">
-              <span>📦</span>
-              <p>Nenhum produto cadastrado ainda.</p>
-              <Link to="/produtos" className="btn-primary btn-estado-vazio">Cadastrar produto</Link>
-            </div>
-          ) : (
-            <div className="grafico-wrapper">
-              {produtosGrafico.map(p => {
-                const preco = calcularPrecoSugerido(p);
-                const pct   = maxPreco > 0 ? (preco / maxPreco) * 100 : 0;
-                return (
-                  <div key={p.id} className="grafico-linha">
-                    <span className="grafico-label" title={p.nome}>
-                      {p.nome.length > 20 ? p.nome.slice(0, 19) + '…' : p.nome}
-                    </span>
-                    <div className="grafico-barra-fundo">
-                      <div
-                        className="grafico-barra"
-                        style={{ width: `${pct}%` }}
-                        title={fmt(preco)}
-                      />
-                    </div>
-                    <span className="grafico-valor">{fmt(preco)}</span>
-                  </div>
-                );
-              })}
-              {produtos.length > MAX_BARRAS && (
-                <p className="grafico-nota">
-                  Exibindo os primeiros {MAX_BARRAS} produtos.{' '}
-                  <Link to="/relatorio">Ver relatório completo →</Link>
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-
         <div className="card">
           <h2 className="secao-titulo">Seus produtos</h2>
           {produtos.length === 0 ? (
@@ -144,17 +146,24 @@ export default function Dashboard() {
                     <th>Categoria</th>
                     <th>Custo total</th>
                     <th>Preço sugerido</th>
+                    <th>Lucro/mês</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {produtos.map(p => (
-                    <tr key={p.id}>
-                      <td className="tabela-nome-produto">{p.nome}</td>
-                      <td><span className="badge">{p.categoria}</span></td>
-                      <td>{fmt(calcularCustoTotal(p))}</td>
-                      <td className="preco-sugerido">{fmt(calcularPrecoSugerido(p))}</td>
-                    </tr>
-                  ))}
+                  {produtos.map(p => {
+                    const custo = calcularCustoTotal(p);
+                    const preco = calcularPrecoSugerido(p);
+                    const lucroMes = (preco - custo) * Number(p.quantidadeMes || 0);
+                    return (
+                      <tr key={p.id}>
+                        <td className="tabela-nome-produto">{p.nome}</td>
+                        <td><span className="badge">{p.categoria}</span></td>
+                        <td>{fmt(custo)}</td>
+                        <td className="preco-sugerido">{fmt(preco)}</td>
+                        <td className="valor-verde">{fmt(lucroMes)}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

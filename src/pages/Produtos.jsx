@@ -16,9 +16,10 @@ export default function Produtos() {
   const [form, setForm] = useState({
     nome: '', categoria: 'Outro', custo: '', tempoProducao: '', quantidadeMes: '',
   });
-  const [editandoId, setEditandoId] = useState(null);
-  const [erro,    setErro]    = useState('');
-  const [sucesso, setSucesso] = useState('');
+  const [editandoId,    setEditandoId]    = useState(null);
+  const [erro,          setErro]          = useState('');
+  const [sucesso,       setSucesso]       = useState('');
+  const [excluindoId,   setExcluindoId]   = useState(null);
 
   function handleChange(campo, valor) {
     setForm(prev => ({ ...prev, [campo]: valor }));
@@ -28,6 +29,7 @@ export default function Produtos() {
     e.preventDefault();
     setErro(''); setSucesso('');
     if (!form.nome.trim())               { setErro('Informe o nome do produto.'); return; }
+    if (form.custo === '')               { setErro('Informe o custo direto (pode ser 0).'); return; }
     if (Number(form.custo) < 0)          { setErro('O custo direto não pode ser negativo.'); return; }
     if (Number(form.tempoProducao) < 0)  { setErro('O tempo de produção não pode ser negativo.'); return; }
     if (Number(form.quantidadeMes) < 0)  { setErro('A quantidade mensal não pode ser negativa.'); return; }
@@ -58,9 +60,13 @@ export default function Produtos() {
     setErro('');
   }
 
-  function confirmarExclusao(p) {
-    if (window.confirm(`Excluir "${p.nome}"? Esta ação não pode ser desfeita.`)) {
-      excluirProduto(p.id);
+  function handleExcluir(id) {
+    if (excluindoId === id) {
+      excluirProduto(id);
+      setExcluindoId(null);
+    } else {
+      setExcluindoId(id);
+      setTimeout(() => setExcluindoId(null), 3000);
     }
   }
 
@@ -95,7 +101,7 @@ export default function Produtos() {
                 <label className="input-label">Nome do produto</label>
                 <input className="input-field" type="text" value={form.nome}
                   onChange={e => handleChange('nome', e.target.value)}
-                  placeholder="Ex: Vela aromática" required />
+                  placeholder="Ex: Vela aromática" />
               </div>
 
               <div className="campo-grupo">
@@ -111,7 +117,7 @@ export default function Produtos() {
                 <input className="input-field" type="number" min="0" step="0.01"
                   value={form.custo}
                   onChange={e => handleChange('custo', e.target.value)}
-                  placeholder="Soma de materiais, embalagem..." required />
+                  placeholder="Soma de materiais, embalagem..." />
                 <small className="input-hint">Soma de todos os materiais e insumos para produzir 1 unidade.</small>
               </div>
 
@@ -166,6 +172,7 @@ export default function Produtos() {
                 const custo = calcularCustoTotal(p);
                 const preco = calcularPrecoSugerido(p);
                 const semQtd = !p.quantidadeMes || Number(p.quantidadeMes) === 0;
+                const confirmando = excluindoId === p.id;
                 return (
                   <div key={p.id} className="card produto-card">
                     <div className="produto-card-header">
@@ -175,7 +182,13 @@ export default function Produtos() {
                       </div>
                       <div className="acoes">
                         <button className="btn-editar" onClick={() => handleEditar(p)}>✏️ Editar</button>
-                        <button className="btn-excluir" onClick={() => confirmarExclusao(p)}>🗑️</button>
+                        <button
+                          className={`btn-excluir ${confirmando ? 'btn-excluir-confirm' : ''}`}
+                          onClick={() => handleExcluir(p.id)}
+                          title={confirmando ? 'Clique novamente para confirmar exclusão' : 'Excluir produto'}
+                        >
+                          {confirmando ? '⚠️ Confirmar?' : '🗑️'}
+                        </button>
                       </div>
                     </div>
 
