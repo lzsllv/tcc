@@ -14,14 +14,12 @@
   transition: background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 
-/* Logado: verde floresta sóbrio e profissional */
 .navbar-logado {
-  background: var(--nav-bg);  /* #2F5233 */
+  background: var(--nav-bg);
   box-shadow: 0 1px 0 rgba(119,196,128,.10) inset,
               0 2px 16px rgba(4,12,5,.20);
 }
 
-/* Deslogado: branco limpo */
 .navbar-deslogado {
   background: rgba(255,255,255,.95);
   backdrop-filter: blur(14px);
@@ -82,12 +80,13 @@
   display: flex;
   align-items: center;
   gap: .4rem;
-  padding: .4rem .8rem;
+  padding: .42rem .82rem;
   border-radius: 8px;
-  color: rgba(237,246,238,.62);  /* #EDF6EE a 62% */
+  color: rgba(237,246,238,.60);
   font-size: .835rem;
   font-weight: 500;
   text-decoration: none;
+  position: relative;
   transition: background var(--dur) var(--ease),
               color     var(--dur) var(--ease);
   white-space: nowrap;
@@ -96,12 +95,32 @@
   background: rgba(119,196,128,.14);
   color: #B1D8B7;
 }
+/* Indicador de ativo: underline + cor */
 .navbar-link-ativo {
-  background: rgba(119,196,128,.20);
+  background: rgba(119,196,128,.18);
   color: #94EE9E;
   font-weight: 700;
 }
+.navbar-link-ativo::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: .82rem;
+  right: .82rem;
+  height: 2px;
+  background: #94EE9E;
+  border-radius: 2px;
+}
 .navbar-link-icone { font-size: .88rem; line-height: 1; }
+
+/* ── Separador entre links e usuário ── */
+.navbar-sep {
+  width: 1px;
+  height: 22px;
+  background: rgba(237,246,238,.15);
+  margin: 0 .5rem;
+  flex-shrink: 0;
+}
 
 /* ── Usuário ── */
 .navbar-usuario {
@@ -113,7 +132,7 @@
 .navbar-usuario-nome {
   font-size: .825rem;
   font-weight: 600;
-  color: rgba(237,246,238,.8);
+  color: rgba(237,246,238,.80);
   max-width: 110px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -302,6 +321,7 @@
   .navbar-links     { display: none; }
   .navbar-hamburger { display: flex; }
   .navbar-sair      { display: none; }
+  .navbar-sep       { display: none; }
 }
 @media (max-width: 640px) {
   .navbar-logo-nome    { display: none; }

@@ -17,35 +17,27 @@ html {
   /* ── Fonte ── */
   --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
-  /* ── Paleta Forest Green ──
-     Claro → Escuro
-     #EDF6EE  #94EE9E  #B1D8B7  #77C480  #90B095
-     #5D9B64  #728D76  #47774C  #546857  #2F5233
-     #354337  #172D1A  #19201A  #040C05
-  ── */
+  /* ── Paleta Forest Green ── */
+  --accent:          #77C480;
+  --accent-hover:    #5D9B64;
+  --accent-dark:     #47774C;
+  --accent-glow:     rgba(119,196,128,.30);
 
-  /* Accent / CTA — vibrante, chama atenção */
-  --accent:         #77C480;
-  --accent-hover:   #5D9B64;
-  --accent-dark:    #47774C;
-  --accent-glow:    rgba(119,196,128,.30);
+  --verde:           #5D9B64;
+  --verde-hover:     #47774C;
+  --verde-dark:      #2F5233;
+  --verde-fundo:     #EDF6EE;
+  --verde-fundo-2:   #B1D8B7;
+  --verde-borda:     #90B095;
 
-  /* Verde principal — ações, links, estados ativos */
-  --verde:          #5D9B64;
-  --verde-hover:    #47774C;
-  --verde-dark:     #2F5233;
-  --verde-fundo:    #EDF6EE;
-  --verde-fundo-2:  #B1D8B7;
-  --verde-borda:    #90B095;
-
-  /* Superfícies — base neutra levemente esverdeada */
-  --bg:        #EDF6EE;   /* fundo geral */
+  /* Superfícies */
+  --bg:        #EDF6EE;
   --surface:   #ffffff;
-  --surface-2: #f5faf5;   /* card alt */
-  --surface-3: #eaf3eb;   /* thead, offset */
+  --surface-2: #f5faf5;
+  --surface-3: #eaf3eb;
 
   /* Texto */
-  --texto:       #172D1A;   /* quase-preto vegetal */
+  --texto:       #172D1A;
   --texto-sec:   #354337;
   --texto-muted: #728D76;
   --texto-faint: #90B095;
@@ -55,8 +47,8 @@ html {
   --borda-forte: #90B095;
 
   /* Navbar */
-  --nav-bg:      #2F5233;   /* verde escuro sóbrio */
-  --nav-accent:  #77C480;   /* destaque na nav */
+  --nav-bg:      #2F5233;
+  --nav-accent:  #77C480;
 
   /* Semânticas */
   --erro:         #c0392b;
@@ -69,12 +61,12 @@ html {
   --info-fundo:   #f0f9ff;
   --info-borda:   #7dd3fc;
 
-  /* Sombras (matizadas com o verde escuro) */
+  /* Sombras matizadas verde-escuro */
   --sombra-xs: 0 1px 2px rgba(23,45,26,.06);
   --sombra-sm: 0 1px 4px rgba(23,45,26,.07), 0 4px 14px rgba(23,45,26,.05);
   --sombra-md: 0 2px 8px rgba(23,45,26,.08), 0 10px 28px rgba(23,45,26,.07);
   --sombra-lg: 0 4px 16px rgba(23,45,26,.08), 0 24px 56px rgba(23,45,26,.12);
-  --sombra-verde: 0 4px 16px rgba(93,155,100,.36);
+  --sombra-verde:  0 4px 16px rgba(93,155,100,.36);
   --sombra-accent: 0 4px 20px rgba(119,196,128,.40);
 
   /* Raios */
@@ -88,14 +80,14 @@ html {
   --ease: cubic-bezier(.16,1,.3,1);
 
   /* Layout */
-  --nav-h:   64px;
-  --content: 1100px;   /* ligeiramente mais estreito → melhor centralização */
+  --nav-h:      64px;
+  --content:    1100px;
   --content-sm: 720px;
 }
 
 body {
   font-family: var(--font);
-  font-size: 15px;
+  font-size: 16px;          /* subiu de 15 → 16 */
   line-height: 1.65;
   color: var(--texto);
   background: var(--bg);
@@ -114,12 +106,12 @@ button { cursor: pointer; font-family: inherit; }
   padding-inline: clamp(1rem, 4vw, 2rem);
 }
 
-/* ── Input global ── */
+/* ── Inputs ── */
 .campo-grupo {
   display: flex;
   flex-direction: column;
   gap: .35rem;
-  margin-bottom: .8rem;
+  margin-bottom: .9rem;
 }
 .campo-sem-margem { margin-bottom: 0; }
 
@@ -133,10 +125,10 @@ button { cursor: pointer; font-family: inherit; }
 
 .input-field {
   width: 100%;
-  padding: .6rem .9rem;
+  padding: .62rem .95rem;
   border: 1.5px solid var(--borda);
   border-radius: var(--radius);
-  font-size: .9rem;
+  font-size: .925rem;
   font-family: var(--font);
   color: var(--texto);
   background: var(--surface);
@@ -159,12 +151,12 @@ button { cursor: pointer; font-family: inherit; }
   justify-content: center;
   gap: .45rem;
   width: 100%;
-  padding: .68rem 1.5rem;
+  padding: .7rem 1.5rem;
   background: var(--verde);
   color: #fff;
   border: none;
   border-radius: var(--radius);
-  font-size: .9rem;
+  font-size: .925rem;
   font-weight: 700;
   font-family: var(--font);
   letter-spacing: .015em;
@@ -183,6 +175,12 @@ button { cursor: pointer; font-family: inherit; }
   color: #fff;
 }
 .btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled {
+  opacity: .65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
 
 /* ── Botão secundário ── */
 .btn-secondary {
@@ -191,12 +189,12 @@ button { cursor: pointer; font-family: inherit; }
   justify-content: center;
   gap: .45rem;
   width: 100%;
-  padding: .68rem 1.5rem;
+  padding: .7rem 1.5rem;
   background: var(--surface);
   color: var(--texto-sec);
   border: 1.5px solid var(--borda);
   border-radius: var(--radius);
-  font-size: .9rem;
+  font-size: .925rem;
   font-weight: 600;
   font-family: var(--font);
   cursor: pointer;
@@ -208,15 +206,15 @@ button { cursor: pointer; font-family: inherit; }
   color: var(--verde);
   transform: translateY(-1px);
 }
+.btn-secondary:disabled { opacity: .6; cursor: not-allowed; transform: none; }
 
 /* ── Card ── */
 .card {
   background: var(--surface);
   border: 1px solid var(--borda);
   border-radius: var(--radius-lg);
-  padding: 1.5rem;
+  padding: 1.6rem;
   box-shadow: var(--sombra-sm);
-  margin-bottom: 1.25rem;
 }
 
 /* ── Badge ── */
@@ -231,40 +229,48 @@ button { cursor: pointer; font-family: inherit; }
   text-transform: uppercase;
   white-space: nowrap;
 }
-.badge-alimento  { background:#EDF6EE; color:#47774C; border:1px solid #B1D8B7; }
-.badge-bebida    { background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; }
-.badge-artesanato{ background:#fdf4ff; color:#7e22ce; border:1px solid #e9d5ff; }
-.badge-moda      { background:#fff1f2; color:#be123c; border:1px solid #fecdd3; }
-.badge-higiene   { background:#f0fdfa; color:#0f766e; border:1px solid #99f6e4; }
-.badge-presente  { background:#fefce8; color:#92400e; border:1px solid #fde68a; }
-.badge-servico   { background:#f0f9ff; color:#0369a1; border:1px solid #bae6fd; }
-.badge-outro     { background:var(--surface-3); color:var(--texto-muted); border:1px solid var(--borda); }
+.badge-alimento   { background:#EDF6EE; color:#47774C; border:1px solid #B1D8B7; }
+.badge-bebida     { background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; }
+.badge-artesanato { background:#fdf4ff; color:#7e22ce; border:1px solid #e9d5ff; }
+.badge-moda       { background:#fff1f2; color:#be123c; border:1px solid #fecdd3; }
+.badge-higiene    { background:#f0fdfa; color:#0f766e; border:1px solid #99f6e4; }
+.badge-presente   { background:#fefce8; color:#92400e; border:1px solid #fde68a; }
+.badge-servico    { background:#f0f9ff; color:#0369a1; border:1px solid #bae6fd; }
+.badge-outro      { background:var(--surface-3); color:var(--texto-muted); border:1px solid var(--borda); }
 .badge:not([class*='badge-']) { background:var(--verde-fundo); color:var(--verde-dark); border:1px solid var(--borda); }
 
 /* ── Alertas ── */
 .alerta-erro {
   background: var(--erro-fundo); color: var(--erro);
   border: 1px solid var(--erro-borda); border-left: 3px solid var(--erro);
-  border-radius: var(--radius); padding: .8rem 1rem;
+  border-radius: var(--radius); padding: .85rem 1rem;
   font-size: .875rem; font-weight: 500; margin-bottom: .75rem;
 }
 .alerta-sucesso {
   background: var(--verde-fundo); color: var(--verde-dark);
   border: 1px solid var(--borda); border-left: 3px solid var(--verde);
-  border-radius: var(--radius); padding: .8rem 1rem;
+  border-radius: var(--radius); padding: .85rem 1rem;
   font-size: .875rem; font-weight: 500; margin-bottom: .75rem;
 }
 .alerta-aviso {
   background: var(--alerta-fundo); color: var(--alerta);
   border: 1px solid var(--alerta-borda); border-left: 3px solid var(--alerta);
-  border-radius: var(--radius); padding: .8rem 1rem;
+  border-radius: var(--radius); padding: .85rem 1rem;
   font-size: .875rem; font-weight: 500; margin-bottom: .75rem;
 }
 .alerta-info {
   background: var(--info-fundo); color: var(--info);
   border: 1px solid var(--info-borda); border-left: 3px solid var(--info);
-  border-radius: var(--radius); padding: .8rem 1rem;
+  border-radius: var(--radius); padding: .85rem 1rem;
   font-size: .875rem; font-weight: 500; margin-bottom: .75rem;
+}
+
+/* ── Input hint ── */
+.input-hint {
+  font-size: .77rem;
+  color: var(--texto-muted);
+  margin-top: .25rem;
+  line-height: 1.4;
 }
 
 /* ── Focus ring ── */
