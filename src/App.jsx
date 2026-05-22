@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 
-import LandingPage   from './pages/LandingPage';
+import LandingPage    from './pages/LandingPage';
 import Login         from './pages/Login';
 import Cadastro      from './pages/Cadastro';
 import Dashboard     from './pages/Dashboard';
@@ -14,7 +14,9 @@ import NotFound      from './pages/NotFound';
 
 function RotaProtegida({ children }) {
   const { usuarioLogado } = useApp();
-  if (!usuarioLogado) return <Navigate to="/login" replace />;
+  if (!usuarioLogado) {
+    return <Navigate to="/login" replace />;
+  }
   return children;
 }
 
@@ -23,17 +25,23 @@ export default function App() {
     <AppProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/"            element={<LandingPage />} />
-          <Route path="/login"       element={<Login />} />
-          <Route path="/cadastro"    element={<Cadastro />} />
-          <Route path="/dashboard"   element={<RotaProtegida><Dashboard /></RotaProtegida>} />
-          <Route path="/produtos"    element={<RotaProtegida><Produtos /></RotaProtegida>} />
+          {/* Página inicial */}
+          <Route path="/" element={<LandingPage />} />
+
+          {/* Rotas públicas */}
+          <Route path="/login"    element={<Login />} />
+          <Route path="/cadastro" element={<Cadastro />} />
+
+          {/* Rotas protegidas */}
+          <Route path="/dashboard"    element={<RotaProtegida><Dashboard /></RotaProtegida>} />
+          <Route path="/produtos"     element={<RotaProtegida><Produtos /></RotaProtegida>} />
           <Route path="/custos-fixos" element={<RotaProtegida><CustosFixos /></RotaProtegida>} />
           <Route path="/configuracoes" element={<RotaProtegida><Configuracoes /></RotaProtegida>} />
-          <Route path="/simulacao"   element={<RotaProtegida><Simulacao /></RotaProtegida>} />
-          <Route path="/relatorio"   element={<RotaProtegida><Relatorio /></RotaProtegida>} />
-          {/* 404 — rota dedicada em vez de redirect silencioso */}
-          <Route path="*"            element={<NotFound />} />
+          <Route path="/simulacao"    element={<RotaProtegida><Simulacao /></RotaProtegida>} />
+          <Route path="/relatorio"    element={<RotaProtegida><Relatorio /></RotaProtegida>} />
+
+          {/* Página 404 */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </AppProvider>

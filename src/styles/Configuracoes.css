@@ -2,144 +2,90 @@
 .config-card { margin-top: 1.5rem; }
 
 .config-secao-titulo {
-  font-size: .9rem;
+  font-size: .95rem;
   font-weight: 700;
   color: var(--texto-sec);
-  text-transform: uppercase;
-  letter-spacing: .04em;
-  margin: 1.5rem 0 .75rem;
+  margin: 1.4rem 0 .9rem;
   padding-bottom: .4rem;
-  border-bottom: 1.5px solid var(--borda);
+  border-bottom: 1px solid var(--borda);
 }
-.config-secao-titulo:first-child { margin-top: 0; }
+.config-secao-titulo:first-of-type { margin-top: 0; }
 
-/* Logo */
+/* Logo upload */
 .config-logo-preview {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: .75rem;
+  padding: .9rem 1rem;
   border: 1.5px solid var(--borda);
   border-radius: var(--radius);
   background: var(--surface-2);
 }
-.config-logo-img {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--borda);
-  background: #fff;
-}
-.config-logo-ok { font-size: .85rem; color: var(--verde-dark); font-weight: 600; margin-bottom: .4rem; }
+.config-logo-img { width: 64px; height: 64px; object-fit: contain; border-radius: var(--radius-sm); }
+.config-logo-info { display: flex; flex-direction: column; gap: .35rem; }
+.config-logo-ok   { font-size: .875rem; color: var(--verde); font-weight: 600; }
 .btn-remover-logo {
-  font-size: .78rem;
-  color: var(--erro);
-  background: none;
-  border: 1px solid var(--erro-borda);
-  border-radius: var(--radius-sm);
-  padding: .25rem .7rem;
-  cursor: pointer;
-  transition: background var(--dur) var(--ease);
+  font-size: .8rem; font-weight: 600; color: var(--erro);
+  background: none; border: none; cursor: pointer; padding: 0;
+  text-align: left;
 }
-.btn-remover-logo:hover { background: var(--erro-fundo); }
+.btn-remover-logo:hover { text-decoration: underline; }
 
 .config-logo-drop {
-  border: 2px dashed var(--borda-forte);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  text-align: center;
-  cursor: pointer;
-  background: var(--surface-2);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: .3rem; padding: 1.4rem; border: 2px dashed var(--borda);
+  border-radius: var(--radius); cursor: pointer; background: var(--surface-2);
   transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
 }
 .config-logo-drop:hover { border-color: var(--verde); background: var(--verde-fundo); }
-.config-logo-drop-icone { font-size: 1.8rem; margin-bottom: .4rem; }
+.config-logo-drop-icone { font-size: 1.8rem; }
 .config-logo-drop-texto { font-size: .9rem; font-weight: 600; color: var(--texto-sec); }
-.config-logo-drop-hint  { font-size: .75rem; color: var(--texto-muted); margin-top: .2rem; }
-
+.config-logo-drop-hint  { font-size: .78rem; color: var(--texto-muted); }
 .input-hidden { display: none; }
 
-/* ── Bloco Demo ── */
-.config-demo-bloco {
-  border: 2px solid var(--verde-borda);
-  background: var(--verde-fundo);
+/* ── Bloco demo ── */
+.config-demo-card {
   margin-bottom: 0;
+  background: linear-gradient(135deg, var(--verde-fundo) 0%, #f0faf1 100%);
+  border: 1.5px solid var(--verde-borda);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
-.config-demo-topo { margin-bottom: 1.25rem; }
-
-.config-demo-badge {
-  display: inline-block;
-  background: var(--verde);
-  color: #fff;
-  font-size: .68rem;
-  font-weight: 800;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  padding: .2rem .65rem;
-  border-radius: 99px;
-  margin-bottom: .6rem;
+.config-demo-info {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  flex: 1;
+  min-width: 200px;
 }
-
-.config-demo-titulo {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--verde-dark);
-  margin-bottom: .4rem;
-}
-
-.config-demo-desc {
-  font-size: .875rem;
-  color: var(--texto-sec);
-  line-height: 1.55;
-  max-width: 58ch;
-}
+.config-demo-icone { font-size: 1.8rem; line-height: 1; margin-top: .1rem; }
+.config-demo-info strong { display: block; font-size: .95rem; color: var(--texto); margin-bottom: .2rem; }
+.config-demo-info p { font-size: .85rem; color: var(--texto-muted); margin: 0; }
 
 .config-demo-acoes {
   display: flex;
   gap: .75rem;
   flex-wrap: wrap;
 }
+.config-demo-btn { width: auto; white-space: nowrap; }
 
-.btn-demo {
-  display: inline-flex;
-  align-items: center;
-  gap: .45rem;
-  padding: .65rem 1.35rem;
-  border-radius: var(--radius);
-  font-size: .9rem;
-  font-weight: 700;
-  font-family: var(--font);
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: all var(--dur) var(--ease);
-  white-space: nowrap;
-}
-
-.btn-demo-carregar {
-  background: var(--verde);
-  color: #fff;
-  border-color: var(--verde);
-  box-shadow: var(--sombra-verde);
-}
-.btn-demo-carregar:hover {
-  background: var(--verde-hover);
-  border-color: var(--verde-hover);
-  transform: translateY(-1px);
-}
-
-.btn-demo-limpar {
-  background: #fff;
-  color: var(--erro);
+/* Estado de confirmação de limpeza */
+.btn-secondary.confirmar {
   border-color: var(--erro-borda);
-}
-.btn-demo-limpar:hover {
+  color: var(--erro);
   background: var(--erro-fundo);
-  transform: translateY(-1px);
+}
+.btn-secondary.confirmar:hover {
+  background: #fde8e8;
+  border-color: var(--erro);
 }
 
-@media (max-width: 480px) {
-  .config-demo-acoes { flex-direction: column; }
-  .btn-demo { width: 100%; justify-content: center; }
+@media (max-width: 600px) {
+  .config-demo-card { flex-direction: column; align-items: flex-start; }
+  .config-demo-acoes { width: 100%; }
+  .config-demo-btn { width: 100%; }
 }

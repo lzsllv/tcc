@@ -1,9 +1,31 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useApp } from '../context/AppContext';
 import '../styles/LandingPage.css';
 
 export default function LandingPage() {
   const [menuAberto, setMenuAberto] = useState(false);
+  const [demoCarregando, setDemoCarregando] = useState(false);
+  const { carregarDadosDemo, login, cadastrar } = useApp();
+  const navigate = useNavigate();
+
+  function handleDemo() {
+    setDemoCarregando(true);
+    // Cria/reutiliza conta demo e loga automaticamente
+    const emailDemo  = 'demo@precifique.com';
+    const senhaDemo  = 'demo1234';
+    const nomeDemo   = 'Maria (Demo)';
+    const jaExiste   = !cadastrar(nomeDemo, emailDemo, senhaDemo); // retorna false se já existia
+    if (!jaExiste) {
+      // conta já existia, tenta login normal
+    }
+    login(emailDemo, senhaDemo);
+    carregarDadosDemo();
+    setTimeout(() => {
+      setDemoCarregando(false);
+      navigate('/dashboard');
+    }, 600);
+  }
 
   return (
     <div className="lp-wrapper">
@@ -22,14 +44,14 @@ export default function LandingPage() {
             <a href="#faq"             onClick={() => setMenuAberto(false)}>FAQ</a>
           </nav>
           <div className="lp-header-acoes">
-            <Link to="/login"   className="lp-btn-ghost">Entrar</Link>
+            <Link to="/login" className="lp-btn-ghost">Entrar</Link>
             <Link to="/cadastro" className="lp-btn-verde">Criar conta grátis</Link>
           </div>
+          {/* Menu mobile */}
           <button
-            className="lp-menu-toggle"
+            className={`lp-menu-toggle${menuAberto ? ' aberto' : ''}`}
+            onClick={() => setMenuAberto(prev => !prev)}
             aria-label={menuAberto ? 'Fechar menu' : 'Abrir menu'}
-            aria-expanded={menuAberto}
-            onClick={() => setMenuAberto(v => !v)}
           >
             <span></span><span></span><span></span>
           </button>
@@ -54,6 +76,21 @@ export default function LandingPage() {
             <a href="#como-funciona" className="lp-btn-outline lp-btn-lg">Ver como funciona</a>
           </div>
           <p className="lp-hero-nota">✓ Sem instalação    ✓ Dados salvos automaticamente    ✓ Funciona no celular</p>
+
+          {/* Botão de demo para avaliadores */}
+          <div className="lp-demo-banner">
+            <div className="lp-demo-texto">
+              <span className="lp-demo-tag">🎓 Para avaliadores</span>
+              <p>Veja o sistema funcionando com dados reais de uma confeiteira — sem precisar cadastrar.</p>
+            </div>
+            <button
+              className="lp-btn-demo"
+              onClick={handleDemo}
+              disabled={demoCarregando}
+            >
+              {demoCarregando ? '⏳ Carregando...' : '▶ Entrar na demo'}
+            </button>
+          </div>
         </div>
 
         {/* Mockup visual */}
@@ -70,15 +107,15 @@ export default function LandingPage() {
               <div className="lp-mockup-cards">
                 <div className="lp-mockup-stat">
                   <span className="lp-mockup-stat-label">Produtos</span>
-                  <span className="lp-mockup-stat-val">12</span>
+                  <span className="lp-mockup-stat-val">5</span>
                 </div>
                 <div className="lp-mockup-stat">
                   <span className="lp-mockup-stat-label">Custos fixos</span>
-                  <span className="lp-mockup-stat-val">R$ 1.800</span>
+                  <span className="lp-mockup-stat-val">R$ 1.350</span>
                 </div>
                 <div className="lp-mockup-stat verde">
                   <span className="lp-mockup-stat-label">Preço médio</span>
-                  <span className="lp-mockup-stat-val">R$ 62,50</span>
+                  <span className="lp-mockup-stat-val">R$ 68,40</span>
                 </div>
                 <div className="lp-mockup-stat">
                   <span className="lp-mockup-stat-label">Margem</span>
@@ -90,13 +127,13 @@ export default function LandingPage() {
                   <span>Produto</span><span>Custo total</span><span>Preço sugerido</span>
                 </div>
                 <div className="lp-mockup-row">
-                  <span>Bolo de chocolate</span><span>R$ 35,00</span><span className="verde">R$ 47,25</span>
+                  <span>Bolo de chocolate</span><span>R$ 52,60</span><span className="verde">R$ 68,40</span>
                 </div>
                 <div className="lp-mockup-row">
-                  <span>Brigadeiro (caixa)</span><span>R$ 18,00</span><span className="verde">R$ 24,30</span>
+                  <span>Brigadeiro (caixa)</span><span>R$ 32,10</span><span className="verde">R$ 41,70</span>
                 </div>
                 <div className="lp-mockup-row">
-                  <span>Torta de limão</span><span>R$ 28,00</span><span className="verde">R$ 37,80</span>
+                  <span>Torta de limão</span><span>R$ 43,50</span><span className="verde">R$ 56,55</span>
                 </div>
               </div>
             </div>

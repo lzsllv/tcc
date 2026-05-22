@@ -9,14 +9,20 @@ export default function Configuracoes() {
   const [sucesso, setSucesso] = useState('');
   const [erro,    setErro]    = useState('');
   const [aviso,   setAviso]   = useState('');
+  const [confirmarLimpar, setConfirmarLimpar] = useState(false);
   const inputLogoRef = useRef(null);
+  const timerRef = useRef(null);
 
-  // Limpa a mensagem de sucesso após 3s sem memory leak
+  // Limpa o timer ao desmontar para evitar memory leak
   useEffect(() => {
-    if (!sucesso) return;
-    const t = setTimeout(() => setSucesso(''), 3000);
-    return () => clearTimeout(t);
-  }, [sucesso]);
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, []);
+
+  function mostrarSucesso(msg) {
+    setSucesso(msg);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setSucesso(''), 3000);
+  }
 
   function handleChange(campo, valor) {
     setConfiguracoes(prev => ({ ...prev, [campo]: valor }));
@@ -44,19 +50,23 @@ export default function Configuracoes() {
     if (margem < 1)    { setErro('A margem de lucro deve ser maior que 0%.'); return; }
     if (custoHora < 0) { setErro('O custo/hora não pode ser negativo.'); return; }
     if (margem < 10)   setAviso('⚠️ Margem abaixo de 10% pode ser insuficiente para cobrir imprevistos.');
-    setSucesso('Configurações salvas com sucesso!');
+    mostrarSucesso('Configurações salvas com sucesso!');
   }
 
   function handleCarregarDemo() {
-    setErro(''); setAviso('');
     carregarDadosDemo();
-    setSucesso('✅ Dados de demonstração carregados! Explore o sistema como avaliador.');
+    mostrarSucesso('Dados de demonstração carregados! Explore o sistema.');
   }
 
-  function handleLimparDemo() {
-    setErro(''); setAviso('');
+  function handleLimparDados() {
+    if (!confirmarLimpar) {
+      setConfirmarLimpar(true);
+      setTimeout(() => setConfirmarLimpar(false), 4000);
+      return;
+    }
     limparDadosDemo();
-    setSucesso('🧹 Dados de demonstração removidos. Sistema limpo.');
+    setConfirmarLimpar(false);
+    mostrarSucesso('Todos os dados foram apagados.');
   }
 
   return (
@@ -71,35 +81,33 @@ export default function Configuracoes() {
         </div>
 
         {/* ── BLOCO DEMO ── */}
-        <div className="card config-demo-bloco">
-          <div className="config-demo-topo">
-            <span className="config-demo-badge">🧪 DEMO</span>
-            <h2 className="config-demo-titulo">Modo demonstração</h2>
-            <p className="config-demo-desc">
-              Carrega produtos, custos fixos e configurações de exemplo para que avaliadores
-              e visitantes possam explorar todas as funcionalidades do sistema sem precisar
-              cadastrar nada manualmente.
-            </p>
+        <div className="card config-demo-card">
+          <div className="config-demo-info">
+            <span className="config-demo-icone">🎓</span>
+            <div>
+              <strong>Modo demonstração</strong>
+              <p>Preenche o sistema com dados reais de uma confeiteira para você explorar todas as funcionalidades.</p>
+            </div>
           </div>
           <div className="config-demo-acoes">
-            <button type="button" className="btn-demo btn-demo-carregar" onClick={handleCarregarDemo}>
+            <button type="button" className="btn-primary config-demo-btn" onClick={handleCarregarDemo}>
               ▶ Carregar dados demo
             </button>
-            <button type="button" className="btn-demo btn-demo-limpar" onClick={handleLimparDemo}>
-              🗑 Limpar dados demo
+            <button
+              type="button"
+              className={`btn-secondary config-demo-btn${confirmarLimpar ? ' confirmar' : ''}`}
+              onClick={handleLimparDados}
+            >
+              {confirmarLimpar ? '⚠️ Confirmar limpeza' : '🗑️ Limpar todos os dados'}
             </button>
           </div>
-          <small className="input-hint" style={{marginTop:'.5rem', display:'block'}}>
-            Após carregar, navegue por Produtos, Custos Fixos, Simulação e Relatório para ver o sistema em ação.
-          </small>
-          {sucesso && <div className="alerta-sucesso" style={{marginTop:'1rem'}}>{sucesso}</div>}
-          {erro    && <div className="alerta-erro"    style={{marginTop:'1rem'}}>{erro}</div>}
         </div>
 
-        {/* ── FORMULÁRIO ── */}
         <div className="card config-card">
           <form onSubmit={handleSalvar} className="auth-form">
-            {aviso && <div className="alerta-aviso">{aviso}</div>}
+            {erro    && <div className="alerta-erro">{erro}</div>}
+            {aviso   && <div className="alerta-aviso">{aviso}</div>}
+            {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
 
             <h3 className="config-secao-titulo">🏢 Identidade do negócio</h3>
 

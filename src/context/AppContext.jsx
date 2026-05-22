@@ -1,17 +1,82 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { DEMO_PRODUTOS, DEMO_CUSTOS_FIXOS, DEMO_CONFIGURACOES } from '../utils/demoData';
 
 const AppContext = createContext();
 export function useApp() { return useContext(AppContext); }
 
-// AVISO: btoa é encoding Base64, não criptografia real.
-// Evita senha em texto puro visível no localStorage, mas não é seguro para produção.
+// AVISO: btoa é ofuscação simples, não criptografia real.
+// Para produção real, use bcrypt no servidor. Para este TCC (client-only) é suficiente.
 function hashSenha(senha) {
   return btoa(unescape(encodeURIComponent(senha + ':precifique')));
 }
 
-const CUSTOS_VAZIOS = { aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] };
-const CONFIG_PADRAO = { margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' };
+// ── DADOS DE DEMONSTRAÇÃO ──
+const DEMO_CONFIGURACOES = {
+  margemLucro: 30,
+  custoHora: 25,
+  regiaoAtuacao: 'São Paulo - SP',
+  nomeNegocio: 'Doces da Maria 🍰',
+  logoNegocio: '',
+};
+
+const DEMO_CUSTOS_FIXOS = {
+  aluguel: 800,
+  energia: 180,
+  internet: 100,
+  salarios: 0,
+  outros: 120,
+  extras: [
+    { id: 'demo-extra-1', nome: 'Embalagens avulsas', valor: 90 },
+    { id: 'demo-extra-2', nome: 'Material de limpeza', valor: 60 },
+  ],
+};
+
+const DEMO_PRODUTOS = [
+  {
+    id: 'demo-prod-1',
+    nome: 'Bolo de Chocolate',
+    categoria: 'alimento',
+    custo: 38.50,
+    tempoProducao: 2.5,
+    quantidadeMes: 20,
+    descricao: 'Bolo recheado com ganache e cobertura de chocolate belga',
+  },
+  {
+    id: 'demo-prod-2',
+    nome: 'Brigadeiro Gourmet (caixa 30un)',
+    categoria: 'alimento',
+    custo: 22.00,
+    tempoProducao: 1.5,
+    quantidadeMes: 40,
+    descricao: 'Caixa com 30 brigadeiros gourmet sortidos',
+  },
+  {
+    id: 'demo-prod-3',
+    nome: 'Torta de Limão',
+    categoria: 'alimento',
+    custo: 31.00,
+    tempoProducao: 2,
+    quantidadeMes: 15,
+    descricao: 'Torta com massa amanteigada, creme de limão e merengue',
+  },
+  {
+    id: 'demo-prod-4',
+    nome: 'Cupcake Decorado (kit 6un)',
+    categoria: 'alimento',
+    custo: 18.00,
+    tempoProducao: 1,
+    quantidadeMes: 30,
+    descricao: 'Kit com 6 cupcakes decorados com chantilly e confeitos',
+  },
+  {
+    id: 'demo-prod-5',
+    nome: 'Consultoria de Cardápio',
+    categoria: 'servico',
+    custo: 0,
+    tempoProducao: 3,
+    quantidadeMes: 5,
+    descricao: 'Montagem de cardápio personalizado para eventos',
+  },
+];
 
 export function AppProvider({ children }) {
   const [usuarioLogado, setUsuarioLogado] = useState(() => {
@@ -35,7 +100,7 @@ export function AppProvider({ children }) {
         return p;
       }
     } catch { /* ignora */ }
-    return { ...CUSTOS_VAZIOS };
+    return { aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] };
   });
   const [configuracoes, setConfiguracoes] = useState(() => {
     try {
@@ -48,7 +113,7 @@ export function AppProvider({ children }) {
         return p;
       }
     } catch { /* ignora */ }
-    return { ...CONFIG_PADRAO };
+    return { margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' };
   });
 
   useEffect(() => {
@@ -64,19 +129,16 @@ export function AppProvider({ children }) {
     try { localStorage.setItem('custosFixos', JSON.stringify(custosFixos)); } catch { /* storage cheio */ }
   }, [custosFixos]);
   useEffect(() => {
-    const parasSalvar = { ...configuracoes };
-    // Não persiste logos muito grandes (> 400 KB em base64)
-    if (parasSalvar.logoNegocio && parasSalvar.logoNegocio.length > 400000) {
-      parasSalvar.logoNegocio = '';
+    const paraSalvar = { ...configuracoes };
+    if (paraSalvar.logoNegocio && paraSalvar.logoNegocio.length > 400000) {
+      paraSalvar.logoNegocio = '';
     }
-    try { localStorage.setItem('configuracoes', JSON.stringify(parasSalvar)); } catch { /* storage cheio */ }
+    try { localStorage.setItem('configuracoes', JSON.stringify(paraSalvar)); } catch { /* storage cheio */ }
   }, [configuracoes]);
 
   // ── CÁLCULOS ──
   function totalCustosFixos() {
-    const fixos  = Object.entries(custosFixos)
-      .filter(([k]) => k !== 'extras')
-      .reduce((a, [, v]) => a + Number(v), 0);
+    const fixos  = Object.entries(custosFixos).filter(([k]) => k !== 'extras').reduce((a, [, v]) => a + Number(v), 0);
     const extras = (custosFixos.extras || []).reduce((a, e) => a + Number(e.valor || 0), 0);
     return fixos + extras;
   }
@@ -106,6 +168,19 @@ export function AppProvider({ children }) {
     return (Number(precoVenda) - Number(custoTotal)) * Number(quantidade);
   }
 
+  // ── DEMO ──
+  function carregarDadosDemo() {
+    setProdutos(DEMO_PRODUTOS);
+    setCustosFixos(DEMO_CUSTOS_FIXOS);
+    setConfiguracoes(prev => ({ ...DEMO_CONFIGURACOES, logoNegocio: prev.logoNegocio || '' }));
+  }
+
+  function limparDadosDemo() {
+    setProdutos([]);
+    setCustosFixos({ aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] });
+    setConfiguracoes({ margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' });
+  }
+
   // ── AUTH ──
   function login(email, senha) {
     const hash = hashSenha(senha);
@@ -123,28 +198,13 @@ export function AppProvider({ children }) {
 
   function cadastrar(nome, email, senha) {
     if (usuarios.find(u => u.email === email)) return false;
-    // Usa crypto.randomUUID() para IDs únicos e seguros
     setUsuarios(prev => [...prev, { id: crypto.randomUUID(), nome, email, senha: hashSenha(senha) }]);
     return true;
   }
 
   function logout() { setUsuarioLogado(null); }
 
-  // ── DEMO ──
-  function carregarDadosDemo() {
-    setProdutos(DEMO_PRODUTOS);
-    setCustosFixos(DEMO_CUSTOS_FIXOS);
-    setConfiguracoes(prev => ({ ...prev, ...DEMO_CONFIGURACOES }));
-  }
-
-  function limparDadosDemo() {
-    setProdutos([]);
-    setCustosFixos({ ...CUSTOS_VAZIOS });
-    setConfiguracoes(prev => ({ ...prev, ...CONFIG_PADRAO, logoNegocio: '' }));
-  }
-
   // ── PRODUTOS ──
-  // Usa crypto.randomUUID() em vez de Date.now() para evitar colisões
   function adicionarProduto(p)      { setProdutos(prev => [...prev, { ...p, id: crypto.randomUUID() }]); }
   function editarProduto(id, dados) { setProdutos(prev => prev.map(p => p.id === id ? { ...p, ...dados } : p)); }
   function excluirProduto(id)       { setProdutos(prev => prev.filter(p => p.id !== id)); }
@@ -156,8 +216,8 @@ export function AppProvider({ children }) {
       totalCustosFixos, totalUnidadesMes, custoFixoPorUnidade, custoFixoPorProduto,
       calcularCustoTotal, calcularPrecoSugerido, calcularLucroMensal,
       login, cadastrar, logout,
-      carregarDadosDemo, limparDadosDemo,
       adicionarProduto, editarProduto, excluirProduto,
+      carregarDadosDemo, limparDadosDemo,
     }}>
       {children}
     </AppContext.Provider>
