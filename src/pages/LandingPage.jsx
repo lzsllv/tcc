@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/LandingPage.css';
 
 export default function LandingPage() {
+  const [menuAberto, setMenuAberto] = useState(false);
+
   return (
     <div className="lp-wrapper">
 
@@ -12,21 +15,22 @@ export default function LandingPage() {
             <span className="lp-logo-icone">💰</span>
             <span className="lp-logo-nome">Precifique</span>
           </div>
-          <nav className="lp-nav">
-            <a href="#funcionalidades">Funcionalidades</a>
-            <a href="#como-funciona">Como funciona</a>
-            <a href="#depoimentos">Depoimentos</a>
-            <a href="#faq">FAQ</a>
+          <nav className={`lp-nav${menuAberto ? ' aberto' : ''}`}>
+            <a href="#funcionalidades" onClick={() => setMenuAberto(false)}>Funcionalidades</a>
+            <a href="#como-funciona"   onClick={() => setMenuAberto(false)}>Como funciona</a>
+            <a href="#depoimentos"     onClick={() => setMenuAberto(false)}>Depoimentos</a>
+            <a href="#faq"             onClick={() => setMenuAberto(false)}>FAQ</a>
           </nav>
           <div className="lp-header-acoes">
-            <Link to="/login" className="lp-btn-ghost">Entrar</Link>
+            <Link to="/login"   className="lp-btn-ghost">Entrar</Link>
             <Link to="/cadastro" className="lp-btn-verde">Criar conta grátis</Link>
           </div>
-          {/* Menu mobile */}
-          <button className="lp-menu-toggle" onClick={() => {
-            const nav = document.querySelector('.lp-nav');
-            nav.classList.toggle('aberto');
-          }}>
+          <button
+            className="lp-menu-toggle"
+            aria-label={menuAberto ? 'Fechar menu' : 'Abrir menu'}
+            aria-expanded={menuAberto}
+            onClick={() => setMenuAberto(v => !v)}
+          >
             <span></span><span></span><span></span>
           </button>
         </div>
@@ -46,10 +50,10 @@ export default function LandingPage() {
             Feito para autônomos que querem crescer de verdade.
           </p>
           <div className="lp-hero-acoes">
-            <Link to="/cadastro" className="lp-btn-verde lp-btn-lg">Comecar agora — é grátis</Link>
+            <Link to="/cadastro" className="lp-btn-verde lp-btn-lg">Começar agora — é grátis</Link>
             <a href="#como-funciona" className="lp-btn-outline lp-btn-lg">Ver como funciona</a>
           </div>
-          <p className="lp-hero-nota">✓ Sem instalação    ✓ Dados salvos automaticamente    ✓ Funciona no celular</p>
+          <p className="lp-hero-nota">✓ Sem instalação    ✓ Dados salvos automaticamente    ✓ Funciona no celular</p>
         </div>
 
         {/* Mockup visual */}
@@ -86,13 +90,13 @@ export default function LandingPage() {
                   <span>Produto</span><span>Custo total</span><span>Preço sugerido</span>
                 </div>
                 <div className="lp-mockup-row">
-                  <span>Bolo de chocolate</span><span>R$ 35,00</span><span className="verde">R$ 45,50</span>
+                  <span>Bolo de chocolate</span><span>R$ 35,00</span><span className="verde">R$ 47,25</span>
                 </div>
                 <div className="lp-mockup-row">
-                  <span>Brigadeiro (caixa)</span><span>R$ 18,00</span><span className="verde">R$ 23,40</span>
+                  <span>Brigadeiro (caixa)</span><span>R$ 18,00</span><span className="verde">R$ 24,30</span>
                 </div>
                 <div className="lp-mockup-row">
-                  <span>Torta de limão</span><span>R$ 28,00</span><span className="verde">R$ 36,40</span>
+                  <span>Torta de limão</span><span>R$ 28,00</span><span className="verde">R$ 37,80</span>
                 </div>
               </div>
             </div>
@@ -283,7 +287,7 @@ export default function LandingPage() {
             <span className="lp-logo-icone">💰</span>
             <span className="lp-logo-nome">Precifique</span>
           </div>
-          <p className="lp-footer-copy">© 2025 Precifique. Feito com ♥ para autônomos brasileiros.</p>
+          <p className="lp-footer-copy">© 2026 Precifique. Feito com ♥ para autônomos brasileiros.</p>
           <div className="lp-footer-links">
             <Link to="/login">Entrar</Link>
             <Link to="/cadastro">Cadastrar</Link>

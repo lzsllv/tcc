@@ -1,15 +1,22 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import { useApp } from '../context/AppContext';
 import '../styles/Pagina.css';
 import '../styles/Configuracoes.css';
 
 export default function Configuracoes() {
-  const { configuracoes, setConfiguracoes } = useApp();
+  const { configuracoes, setConfiguracoes, carregarDadosDemo, limparDadosDemo } = useApp();
   const [sucesso, setSucesso] = useState('');
   const [erro,    setErro]    = useState('');
   const [aviso,   setAviso]   = useState('');
   const inputLogoRef = useRef(null);
+
+  // Limpa a mensagem de sucesso após 3s sem memory leak
+  useEffect(() => {
+    if (!sucesso) return;
+    const t = setTimeout(() => setSucesso(''), 3000);
+    return () => clearTimeout(t);
+  }, [sucesso]);
 
   function handleChange(campo, valor) {
     setConfiguracoes(prev => ({ ...prev, [campo]: valor }));
@@ -38,7 +45,18 @@ export default function Configuracoes() {
     if (custoHora < 0) { setErro('O custo/hora não pode ser negativo.'); return; }
     if (margem < 10)   setAviso('⚠️ Margem abaixo de 10% pode ser insuficiente para cobrir imprevistos.');
     setSucesso('Configurações salvas com sucesso!');
-    setTimeout(() => setSucesso(''), 3000);
+  }
+
+  function handleCarregarDemo() {
+    setErro(''); setAviso('');
+    carregarDadosDemo();
+    setSucesso('✅ Dados de demonstração carregados! Explore o sistema como avaliador.');
+  }
+
+  function handleLimparDemo() {
+    setErro(''); setAviso('');
+    limparDadosDemo();
+    setSucesso('🧹 Dados de demonstração removidos. Sistema limpo.');
   }
 
   return (
@@ -52,11 +70,36 @@ export default function Configuracoes() {
           </div>
         </div>
 
+        {/* ── BLOCO DEMO ── */}
+        <div className="card config-demo-bloco">
+          <div className="config-demo-topo">
+            <span className="config-demo-badge">🧪 DEMO</span>
+            <h2 className="config-demo-titulo">Modo demonstração</h2>
+            <p className="config-demo-desc">
+              Carrega produtos, custos fixos e configurações de exemplo para que avaliadores
+              e visitantes possam explorar todas as funcionalidades do sistema sem precisar
+              cadastrar nada manualmente.
+            </p>
+          </div>
+          <div className="config-demo-acoes">
+            <button type="button" className="btn-demo btn-demo-carregar" onClick={handleCarregarDemo}>
+              ▶ Carregar dados demo
+            </button>
+            <button type="button" className="btn-demo btn-demo-limpar" onClick={handleLimparDemo}>
+              🗑 Limpar dados demo
+            </button>
+          </div>
+          <small className="input-hint" style={{marginTop:'.5rem', display:'block'}}>
+            Após carregar, navegue por Produtos, Custos Fixos, Simulação e Relatório para ver o sistema em ação.
+          </small>
+          {sucesso && <div className="alerta-sucesso" style={{marginTop:'1rem'}}>{sucesso}</div>}
+          {erro    && <div className="alerta-erro"    style={{marginTop:'1rem'}}>{erro}</div>}
+        </div>
+
+        {/* ── FORMULÁRIO ── */}
         <div className="card config-card">
           <form onSubmit={handleSalvar} className="auth-form">
-            {erro    && <div className="alerta-erro">{erro}</div>}
-            {aviso   && <div className="alerta-aviso">{aviso}</div>}
-            {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
+            {aviso && <div className="alerta-aviso">{aviso}</div>}
 
             <h3 className="config-secao-titulo">🏢 Identidade do negócio</h3>
 
@@ -65,7 +108,7 @@ export default function Configuracoes() {
               <input className="input-field" type="text"
                 value={configuracoes.nomeNegocio || ''}
                 onChange={e => handleChange('nomeNegocio', e.target.value)}
-                placeholder="Ex: Doces da Maria, Atelê Ana Paula..."
+                placeholder="Ex: Doces da Maria, Ateliê Ana Paula..."
               />
               <small className="input-hint">Aparece no cabeçalho dos relatórios gerados.</small>
             </div>
