@@ -1,53 +1,107 @@
-/* ── Configurações ── */
-.config-card { margin-top: 1.5rem; }
+/* Configuracoes.css */
+
+.config-card {
+  max-width: 640px;
+}
 
 .config-secao-titulo {
-  font-size: .95rem;
-  font-weight: 700;
-  color: var(--texto-sec);
-  margin: 1.4rem 0 .9rem;
-  padding-bottom: .4rem;
-  border-bottom: 1px solid var(--borda);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--cor-texto, #1a1a1a);
+  margin: 1.5rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--cor-borda, #e5e7eb);
 }
-.config-secao-titulo:first-of-type { margin-top: 0; }
 
-/* Logo upload */
+.config-secao-titulo:first-of-type {
+  margin-top: 0;
+}
+
 .config-logo-preview {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: .9rem 1rem;
-  border: 1.5px solid var(--borda);
-  border-radius: var(--radius);
-  background: var(--surface-2);
+  padding: 1rem;
+  border: 1px solid var(--cor-borda, #e5e7eb);
+  border-radius: 8px;
+  background: #fafafa;
 }
-.config-logo-img { width: 64px; height: 64px; object-fit: contain; border-radius: var(--radius-sm); }
-.config-logo-info { display: flex; flex-direction: column; gap: .35rem; }
-.config-logo-ok   { font-size: .875rem; color: var(--verde); font-weight: 600; }
+
+.config-logo-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 6px;
+  border: 1px solid var(--cor-borda, #e5e7eb);
+}
+
+.config-logo-ok {
+  font-size: 0.875rem;
+  color: #16a34a;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
 .btn-remover-logo {
-  font-size: .8rem; font-weight: 600; color: var(--erro);
-  background: none; border: none; cursor: pointer; padding: 0;
-  text-align: left;
+  font-size: 0.8rem;
+  color: #dc2626;
+  background: none;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  transition: background 0.15s;
 }
-.btn-remover-logo:hover { text-decoration: underline; }
+
+.btn-remover-logo:hover {
+  background: #fef2f2;
+}
 
 .config-logo-drop {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: .3rem; padding: 1.4rem; border: 2px dashed var(--borda);
-  border-radius: var(--radius); cursor: pointer; background: var(--surface-2);
-  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  border: 2px dashed var(--cor-borda, #e5e7eb);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
 }
-.config-logo-drop:hover { border-color: var(--verde); background: var(--verde-fundo); }
-.config-logo-drop-icone { font-size: 1.8rem; }
-.config-logo-drop-texto { font-size: .9rem; font-weight: 600; color: var(--texto-sec); }
-.config-logo-drop-hint  { font-size: .78rem; color: var(--texto-muted); }
-.input-hidden { display: none; }
 
-/* ── Bloco demo ── */
-.config-demo-card {
-  margin-bottom: 0;
-  background: linear-gradient(135deg, var(--verde-fundo) 0%, #f0faf1 100%);
-  border: 1.5px solid var(--verde-borda);
+.config-logo-drop:hover {
+  border-color: var(--cor-primaria, #2563eb);
+  background: #f0f9ff;
+}
+
+.config-logo-drop-icone {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.config-logo-drop-texto {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--cor-texto, #1a1a1a);
+}
+
+.config-logo-drop-hint {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.input-hidden {
+  display: none;
+}
+
+/* ===== BLOCO DEMO ===== */
+
+.demo-card {
+  max-width: 640px;
+  margin-bottom: 1.25rem;
+  border: 1.5px solid #bbf7d0;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+.demo-card-conteudo {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -55,37 +109,101 @@
   flex-wrap: wrap;
 }
 
-.config-demo-info {
+.demo-card-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #15803d;
+  margin-bottom: 0.35rem;
+}
+
+.demo-card-descricao {
+  font-size: 0.9rem;
+  color: #166534;
+  line-height: 1.4;
+  max-width: 38ch;
+}
+
+.demo-card-acao {
+  flex-shrink: 0;
+}
+
+.btn-demo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.btn-demo:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+}
+
+.btn-demo:active {
+  transform: translateY(0);
+}
+
+.demo-confirmacao {
   display: flex;
-  align-items: flex-start;
-  gap: .75rem;
-  flex: 1;
-  min-width: 200px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
 }
-.config-demo-icone { font-size: 1.8rem; line-height: 1; margin-top: .1rem; }
-.config-demo-info strong { display: block; font-size: .95rem; color: var(--texto); margin-bottom: .2rem; }
-.config-demo-info p { font-size: .85rem; color: var(--texto-muted); margin: 0; }
 
-.config-demo-acoes {
+.demo-confirmacao-texto {
+  font-size: 0.82rem;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem;
+  text-align: right;
+}
+
+.demo-confirmacao-botoes {
   display: flex;
-  gap: .75rem;
-  flex-wrap: wrap;
-}
-.config-demo-btn { width: auto; white-space: nowrap; }
-
-/* Estado de confirmação de limpeza */
-.btn-secondary.confirmar {
-  border-color: var(--erro-borda);
-  color: var(--erro);
-  background: var(--erro-fundo);
-}
-.btn-secondary.confirmar:hover {
-  background: #fde8e8;
-  border-color: var(--erro);
+  gap: 0.5rem;
 }
 
-@media (max-width: 600px) {
-  .config-demo-card { flex-direction: column; align-items: flex-start; }
-  .config-demo-acoes { width: 100%; }
-  .config-demo-btn { width: 100%; }
+.btn-demo-confirmar {
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 0.45rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-demo-confirmar:hover {
+  background: #15803d;
+}
+
+.btn-demo-cancelar {
+  background: #fff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  padding: 0.45rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-demo-cancelar:hover {
+  background: #f9fafb;
 }
