@@ -10,16 +10,15 @@ export default function Produtos() {
   const {
     produtos, adicionarProduto, editarProduto, excluirProduto,
     calcularCustoTotal, calcularPrecoSugerido,
-    totalCustosFixos, totalUnidadesMes, custoFixoPorUnidade,
+    custoFixoPorUnidade,
   } = useApp();
 
   const [form, setForm] = useState({
     nome: '', categoria: 'Outro', custo: '', tempoProducao: '', quantidadeMes: '',
   });
-  const [editandoId,    setEditandoId]    = useState(null);
-  const [erro,          setErro]          = useState('');
-  const [sucesso,       setSucesso]       = useState('');
-  const [excluindoId,   setExcluindoId]   = useState(null);
+  const [editandoId, setEditandoId] = useState(null);
+  const [erro,    setErro]    = useState('');
+  const [sucesso, setSucesso] = useState('');
 
   function handleChange(campo, valor) {
     setForm(prev => ({ ...prev, [campo]: valor }));
@@ -29,7 +28,6 @@ export default function Produtos() {
     e.preventDefault();
     setErro(''); setSucesso('');
     if (!form.nome.trim())               { setErro('Informe o nome do produto.'); return; }
-    if (form.custo === '')               { setErro('Informe o custo direto (pode ser 0).'); return; }
     if (Number(form.custo) < 0)          { setErro('O custo direto não pode ser negativo.'); return; }
     if (Number(form.tempoProducao) < 0)  { setErro('O tempo de produção não pode ser negativo.'); return; }
     if (Number(form.quantidadeMes) < 0)  { setErro('A quantidade mensal não pode ser negativa.'); return; }
@@ -60,13 +58,9 @@ export default function Produtos() {
     setErro('');
   }
 
-  function handleExcluir(id) {
-    if (excluindoId === id) {
-      excluirProduto(id);
-      setExcluindoId(null);
-    } else {
-      setExcluindoId(id);
-      setTimeout(() => setExcluindoId(null), 3000);
+  function confirmarExclusao(p) {
+    if (window.confirm(`Excluir "${p.nome}"? Esta ação não pode ser desfeita.`)) {
+      excluirProduto(p.id);
     }
   }
 
@@ -74,9 +68,7 @@ export default function Produtos() {
     return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 
-  const totalCF = totalCustosFixos();
-  const totalUn = totalUnidadesMes();
-  const fixo    = custoFixoPorUnidade();
+  const fixo = custoFixoPorUnidade();
 
   return (
     <div>
@@ -101,7 +93,7 @@ export default function Produtos() {
                 <label className="input-label">Nome do produto</label>
                 <input className="input-field" type="text" value={form.nome}
                   onChange={e => handleChange('nome', e.target.value)}
-                  placeholder="Ex: Vela aromática" />
+                  placeholder="Ex: Vela aromática" required />
               </div>
 
               <div className="campo-grupo">
@@ -117,7 +109,7 @@ export default function Produtos() {
                 <input className="input-field" type="number" min="0" step="0.01"
                   value={form.custo}
                   onChange={e => handleChange('custo', e.target.value)}
-                  placeholder="Soma de materiais, embalagem..." />
+                  placeholder="Soma de materiais, embalagem..." required />
                 <small className="input-hint">Soma de todos os materiais e insumos para produzir 1 unidade.</small>
               </div>
 
@@ -153,13 +145,6 @@ export default function Produtos() {
 
           {/* Lista */}
           <div>
-            {produtos.length > 0 && totalCF > 0 && (
-              <div className="alerta-info produtos-rateio-info">
-                ℹ️ <strong>Custo fixo rateado:</strong>{' '}
-                {fmt(totalCF)} ÷ {totalUn} un = <strong>{fmt(fixo)}/unidade</strong>
-              </div>
-            )}
-
             {produtos.length === 0 ? (
               <div className="card">
                 <div className="estado-vazio">
@@ -172,7 +157,6 @@ export default function Produtos() {
                 const custo = calcularCustoTotal(p);
                 const preco = calcularPrecoSugerido(p);
                 const semQtd = !p.quantidadeMes || Number(p.quantidadeMes) === 0;
-                const confirmando = excluindoId === p.id;
                 return (
                   <div key={p.id} className="card produto-card">
                     <div className="produto-card-header">
@@ -182,13 +166,7 @@ export default function Produtos() {
                       </div>
                       <div className="acoes">
                         <button className="btn-editar" onClick={() => handleEditar(p)}>✏️ Editar</button>
-                        <button
-                          className={`btn-excluir ${confirmando ? 'btn-excluir-confirm' : ''}`}
-                          onClick={() => handleExcluir(p.id)}
-                          title={confirmando ? 'Clique novamente para confirmar exclusão' : 'Excluir produto'}
-                        >
-                          {confirmando ? '⚠️ Confirmar?' : '🗑️'}
-                        </button>
+                        <button className="btn-excluir" onClick={() => confirmarExclusao(p)}>🗑️</button>
                       </div>
                     </div>
 

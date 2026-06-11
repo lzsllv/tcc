@@ -18,7 +18,7 @@ const MESES = [
 export default function Relatorio() {
   const {
     produtos, custosFixos, configuracoes,
-    totalCustosFixos, totalUnidadesMes, custoFixoPorUnidade,
+    totalCustosFixos, custoFixoPorUnidade,
     calcularCustoTotal, calcularPrecoSugerido,
   } = useApp();
 
@@ -32,7 +32,6 @@ export default function Relatorio() {
   }
 
   const totalCustos    = totalCustosFixos();
-  const totalUnidades  = totalUnidadesMes();
   const fixoPorUnidade = custoFixoPorUnidade();
   const custosZerados  = totalCustos === 0;
 
@@ -196,13 +195,6 @@ export default function Relatorio() {
         <div className="card relatorio-secao">
           <h2 className="secao-titulo">Produção e projeção — {MESES[mesSel]} {anoSel}</h2>
 
-          {produtos.length > 0 && !custosZerados && (
-            <div className="alerta-info relatorio-rateio-info">
-              ℹ️ <strong>Rateio do custo fixo:</strong> {fmt(totalCustos)} ÷ {totalUnidades} un totais
-              {' '}= <strong>{fmt(fixoPorUnidade)}/un</strong> para qualquer produto.
-            </div>
-          )}
-
           {produtos.length === 0 ? (
             <div className="estado-vazio">
               <span>📦</span>
@@ -254,9 +246,6 @@ export default function Relatorio() {
                   </tr>
                 </tfoot>
               </table>
-              <p className="tabela-nota">
-                * Fixo/un = {fmt(totalCustos)} ÷ {totalUnidades} un = {fmt(fixoPorUnidade)}/un
-              </p>
             </div>
           )}
         </div>
