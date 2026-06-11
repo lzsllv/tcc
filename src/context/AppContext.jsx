@@ -3,80 +3,10 @@ import { createContext, useContext, useState, useEffect } from 'react';
 const AppContext = createContext();
 export function useApp() { return useContext(AppContext); }
 
-// AVISO: btoa é ofuscação simples, não criptografia real.
-// Para produção real, use bcrypt no servidor. Para este TCC (client-only) é suficiente.
+// Ofuscação simples de senha (não é criptografia real, mas evita texto puro visível)
 function hashSenha(senha) {
   return btoa(unescape(encodeURIComponent(senha + ':precifique')));
 }
-
-// ── DADOS DE DEMONSTRAÇÃO ──
-const DEMO_CONFIGURACOES = {
-  margemLucro: 30,
-  custoHora: 25,
-  regiaoAtuacao: 'São Paulo - SP',
-  nomeNegocio: 'Doces da Maria 🍰',
-  logoNegocio: '',
-};
-
-const DEMO_CUSTOS_FIXOS = {
-  aluguel: 800,
-  energia: 180,
-  internet: 100,
-  salarios: 0,
-  outros: 120,
-  extras: [
-    { id: 'demo-extra-1', nome: 'Embalagens avulsas', valor: 90 },
-    { id: 'demo-extra-2', nome: 'Material de limpeza', valor: 60 },
-  ],
-};
-
-const DEMO_PRODUTOS = [
-  {
-    id: 'demo-prod-1',
-    nome: 'Bolo de Chocolate',
-    categoria: 'alimento',
-    custo: 38.50,
-    tempoProducao: 2.5,
-    quantidadeMes: 20,
-    descricao: 'Bolo recheado com ganache e cobertura de chocolate belga',
-  },
-  {
-    id: 'demo-prod-2',
-    nome: 'Brigadeiro Gourmet (caixa 30un)',
-    categoria: 'alimento',
-    custo: 22.00,
-    tempoProducao: 1.5,
-    quantidadeMes: 40,
-    descricao: 'Caixa com 30 brigadeiros gourmet sortidos',
-  },
-  {
-    id: 'demo-prod-3',
-    nome: 'Torta de Limão',
-    categoria: 'alimento',
-    custo: 31.00,
-    tempoProducao: 2,
-    quantidadeMes: 15,
-    descricao: 'Torta com massa amanteigada, creme de limão e merengue',
-  },
-  {
-    id: 'demo-prod-4',
-    nome: 'Cupcake Decorado (kit 6un)',
-    categoria: 'alimento',
-    custo: 18.00,
-    tempoProducao: 1,
-    quantidadeMes: 30,
-    descricao: 'Kit com 6 cupcakes decorados com chantilly e confeitos',
-  },
-  {
-    id: 'demo-prod-5',
-    nome: 'Consultoria de Cardápio',
-    categoria: 'servico',
-    custo: 0,
-    tempoProducao: 3,
-    quantidadeMes: 5,
-    descricao: 'Montagem de cardápio personalizado para eventos',
-  },
-];
 
 export function AppProvider({ children }) {
   const [usuarioLogado, setUsuarioLogado] = useState(() => {
@@ -107,9 +37,9 @@ export function AppProvider({ children }) {
       const s = localStorage.getItem('configuracoes');
       if (s) {
         const p = JSON.parse(s);
-        if (!p.nomeNegocio)    p.nomeNegocio    = '';
-        if (!p.logoNegocio)    p.logoNegocio    = '';
-        if (!p.regiaoAtuacao)  p.regiaoAtuacao  = '';
+        if (!p.nomeNegocio) p.nomeNegocio = '';
+        if (!p.logoNegocio) p.logoNegocio = '';
+        if (!p.regiaoAtuacao) p.regiaoAtuacao = '';
         return p;
       }
     } catch { /* ignora */ }
@@ -129,11 +59,12 @@ export function AppProvider({ children }) {
     try { localStorage.setItem('custosFixos', JSON.stringify(custosFixos)); } catch { /* storage cheio */ }
   }, [custosFixos]);
   useEffect(() => {
-    const paraSalvar = { ...configuracoes };
-    if (paraSalvar.logoNegocio && paraSalvar.logoNegocio.length > 400000) {
-      paraSalvar.logoNegocio = '';
+    // Não salva o base64 do logo se for muito grande (>400KB em base64 ≈ 300KB de arquivo)
+    const parasSalvar = { ...configuracoes };
+    if (parasSalvar.logoNegocio && parasSalvar.logoNegocio.length > 400000) {
+      parasSalvar.logoNegocio = '';
     }
-    try { localStorage.setItem('configuracoes', JSON.stringify(paraSalvar)); } catch { /* storage cheio */ }
+    try { localStorage.setItem('configuracoes', JSON.stringify(parasSalvar)); } catch { /* storage cheio */ }
   }, [configuracoes]);
 
   // ── CÁLCULOS ──
@@ -168,19 +99,6 @@ export function AppProvider({ children }) {
     return (Number(precoVenda) - Number(custoTotal)) * Number(quantidade);
   }
 
-  // ── DEMO ──
-  function carregarDadosDemo() {
-    setProdutos(DEMO_PRODUTOS);
-    setCustosFixos(DEMO_CUSTOS_FIXOS);
-    setConfiguracoes(prev => ({ ...DEMO_CONFIGURACOES, logoNegocio: prev.logoNegocio || '' }));
-  }
-
-  function limparDadosDemo() {
-    setProdutos([]);
-    setCustosFixos({ aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] });
-    setConfiguracoes({ margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' });
-  }
-
   // ── AUTH ──
   function login(email, senha) {
     const hash = hashSenha(senha);
@@ -198,13 +116,14 @@ export function AppProvider({ children }) {
 
   function cadastrar(nome, email, senha) {
     if (usuarios.find(u => u.email === email)) return false;
-    setUsuarios(prev => [...prev, { id: crypto.randomUUID(), nome, email, senha: hashSenha(senha) }]);
+    setUsuarios(prev => [...prev, { id: Date.now(), nome, email, senha: hashSenha(senha) }]);
     return true;
   }
 
   function logout() { setUsuarioLogado(null); }
 
   // ── PRODUTOS ──
+  // IDs como string (UUID) para compatibilidade com o valor do <select> na Simulacao
   function adicionarProduto(p)      { setProdutos(prev => [...prev, { ...p, id: crypto.randomUUID() }]); }
   function editarProduto(id, dados) { setProdutos(prev => prev.map(p => p.id === id ? { ...p, ...dados } : p)); }
   function excluirProduto(id)       { setProdutos(prev => prev.filter(p => p.id !== id)); }
@@ -217,7 +136,6 @@ export function AppProvider({ children }) {
       calcularCustoTotal, calcularPrecoSugerido, calcularLucroMensal,
       login, cadastrar, logout,
       adicionarProduto, editarProduto, excluirProduto,
-      carregarDadosDemo, limparDadosDemo,
     }}>
       {children}
     </AppContext.Provider>
