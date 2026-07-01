@@ -11,6 +11,7 @@ export default function Navbar() {
   const [menuAberto, setMenuAberto] = useState(false);
 
   function handleLogout() {
+    setMenuAberto(false);
     logout();
     navegar('/login');
   }
@@ -26,12 +27,14 @@ export default function Navbar() {
     { caminho: '/configuracoes', icone: '⚙️',  nome: 'Configurações' },
   ];
 
+  const primeiroNome = usuarioLogado?.nome?.split(' ')[0] ?? '';
+
   return (
     <>
-      <nav className={`navbar ${logado ? 'navbar-logado' : 'navbar-deslogado'}`}>
+      <nav className="navbar">
         {/* Logo */}
         <Link to={logado ? '/dashboard' : '/'} className="navbar-logo" onClick={fecharMenu}>
-          <span className="navbar-logo-icon">💰</span>
+          <span className="navbar-logo-icone">💰</span>
           <span className="navbar-logo-nome">Precifique</span>
         </Link>
 
@@ -42,7 +45,7 @@ export default function Navbar() {
               <li key={link.caminho}>
                 <Link
                   to={link.caminho}
-                  className={`navbar-link ${location.pathname === link.caminho ? 'navbar-link-ativo' : ''}`}
+                  className={`navbar-link ${location.pathname === link.caminho ? 'ativo' : ''}`}
                 >
                   <span className="navbar-link-icone">{link.icone}</span>
                   <span className="navbar-link-nome">{link.nome}</span>
@@ -56,10 +59,8 @@ export default function Navbar() {
         <div className="navbar-usuario">
           {logado ? (
             <>
-              <span className="navbar-usuario-nome">
-                Olá, {usuarioLogado?.nome?.split(' ')[0]}
-              </span>
-              <button onClick={handleLogout} className="navbar-sair">Sair</button>
+              <span className="navbar-usuario-nome">Olá, {primeiroNome}</span>
+              <button onClick={handleLogout} className="navbar-logout">Sair</button>
 
               {/* Hamburguer — mobile */}
               <button
@@ -80,30 +81,34 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Menu mobile — drawer */}
+      {/* Menu mobile — dropdown */}
       {logado && (
         <>
           {menuAberto && (
-            <div className="navbar-overlay" onClick={fecharMenu} aria-hidden="true" />
+            <div
+              className="navbar-overlay"
+              onClick={fecharMenu}
+              aria-hidden="true"
+            />
           )}
-          <div className={`navbar-drawer ${menuAberto ? 'drawer-aberto' : ''}`}>
-            <ul className="drawer-links">
+          <div className={`navbar-mobile ${menuAberto ? 'aberto' : ''}`}>
+            <ul className="navbar-mobile-links">
               {links.map(link => (
                 <li key={link.caminho}>
                   <Link
                     to={link.caminho}
-                    className={`drawer-link ${location.pathname === link.caminho ? 'drawer-link-ativo' : ''}`}
+                    className={`navbar-link ${location.pathname === link.caminho ? 'ativo' : ''}`}
                     onClick={fecharMenu}
                   >
-                    <span className="drawer-link-icone">{link.icone}</span>
+                    <span className="navbar-link-icone">{link.icone}</span>
                     <span>{link.nome}</span>
                   </Link>
                 </li>
               ))}
             </ul>
-            <div className="drawer-rodape">
-              <span className="drawer-usuario">{usuarioLogado?.nome}</span>
-              <button onClick={() => { fecharMenu(); handleLogout(); }} className="drawer-sair">Sair</button>
+            <div className="navbar-mobile-rodape">
+              <span className="navbar-mobile-usuario">{usuarioLogado?.nome}</span>
+              <button onClick={handleLogout} className="navbar-logout">Sair</button>
             </div>
           </div>
         </>
