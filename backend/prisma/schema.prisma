@@ -3,79 +3,14 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id            String       @id @default(uuid())
+  id            String   @id @default(uuid())
   name          String
-  email         String       @unique
+  email         String   @unique
   password_hash String
-  created_at    DateTime     @default(now())
-
-  businesses    Business[]
-  products      Product[]
-  fixed_costs   FixedCost[]
-  simulations   Simulation[]
-}
-
-model Business {
-  id             String   @id @default(uuid())
-  user_id        String
-  business_name  String
-  logo_url       String?
-  hourly_cost    Decimal  @default(0) @db.Decimal(12, 2)
-  markup_percent Decimal  @default(0) @db.Decimal(5, 2)
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@index([user_id])
-}
-
-model Product {
-  id                    String       @id @default(uuid())
-  user_id               String
-  name                  String
-  direct_cost           Decimal      @default(0) @db.Decimal(12, 2)
-  production_time_hours Decimal      @default(0) @db.Decimal(12, 2)
-  monthly_quantity      Int          @default(0)
-  created_at            DateTime     @default(now())
-  updated_at            DateTime     @updatedAt
-
-  user        User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  simulations Simulation[]
-
-  @@index([user_id])
-}
-
-model FixedCost {
-  id         String   @id @default(uuid())
-  user_id    String
-  label      String
-  amount     Decimal  @default(0) @db.Decimal(12, 2)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@index([user_id])
-}
-
-model Simulation {
-  id              String    @id @default(uuid())
-  user_id         String
-  product_id      String?
-  simulated_price Decimal   @default(0) @db.Decimal(12, 2)
-  result_profit   Decimal   @default(0) @db.Decimal(12, 2)
-  created_at      DateTime  @default(now())
-
-  user    User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  product Product? @relation(fields: [product_id], references: [id], onDelete: SetNull)
-
-  @@index([user_id])
-  @@index([product_id])
+  created_at    DateTime @default(now())
 }

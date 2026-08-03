@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const prisma = require('./prisma'); // importa o client
 
 const authRoutes = require('./routes/authRoutes');
 
@@ -12,14 +11,8 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 
-app.get('/api/test-db', async (req, res) => {
-  try {
-    const users = await prisma.user.findMany({ take: 1 });
-    res.json({ ok: true, users });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ ok: false, error: 'Erro ao conectar ao banco.' });
-  }
+app.get('/', (req, res) => {
+  res.json({ message: 'API do Precifique rodando com sucesso! 🚀' });
 });
 
 const PORT = process.env.PORT || 3333;
