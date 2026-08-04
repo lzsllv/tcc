@@ -1,0 +1,86 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+/* ── Fonte Inter via Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ── Reset / Base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Tipografia fluida ── */
+h1 { font-size: clamp(1.75rem, 4vw, 2.25rem); font-weight: var(--font-bold);     line-height: var(--leading-tight); }
+h2 { font-size: clamp(1.375rem, 3vw, 1.875rem); font-weight: var(--font-semibold); line-height: var(--leading-tight); }
+h3 { font-size: clamp(1.125rem, 2.5vw, 1.5rem);  font-weight: var(--font-semibold); }
+h4 { font-size: var(--text-lg);  font-weight: var(--font-medium); }
+h5 { font-size: var(--text-base); font-weight: var(--font-medium); }
+h6 { font-size: var(--text-sm);  font-weight: var(--font-medium); }
+
+p { line-height: var(--leading-normal); color: var(--color-text-secondary); }
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+a:hover { color: var(--color-accent-hover); }
+
+/* ── Imagens responsivas ── */
+img, video {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Focus rings acessíveis ── */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Scrollbar customizada (Webkit) ── */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: var(--color-surface); }
+::-webkit-scrollbar-thumb  { background: var(--color-border-strong); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
+
+/* ── Utilitários globais ── */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+@media (min-width: 640px)  { .container { padding-inline: var(--space-6); } }
+@media (min-width: 1024px) { .container { padding-inline: var(--space-8); } }
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border-width: 0;
+}
