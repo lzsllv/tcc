@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signUp } from '../services/authService';
 import { useApp } from '../context/AppContext';
@@ -12,6 +12,12 @@ export default function Cadastro() {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -38,15 +44,10 @@ export default function Cadastro() {
         setMessage('Cadastro realizado. Verifique seu e-mail para confirmar a conta.');
       }
     } catch (submitError) {
-      setError(getSignUpErrorMessage(subError));
+      setError(getSignUpErrorMessage(submitError));
     } finally {
       setLoading(false);
     }
-  }
-
-  if (isAuthenticated) {
-    navigate('/dashboard', { replace: true });
-    return null;
   }
 
   return (

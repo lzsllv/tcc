@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signIn } from '../services/authService';
 import { useApp } from '../context/AppContext';
@@ -10,6 +10,12 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -24,11 +30,6 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
-  }
-
-  if (isAuthenticated) {
-    navigate('/dashboard', { replace: true });
-    return null;
   }
 
   return (
