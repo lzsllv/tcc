@@ -14,24 +14,39 @@ export function AppProvider({ children }) {
   useEffect(() => {
     let mounted = true;
 
-    getCurrentSession()
-      .then((currentSession) => {
+    async function loadSession() {
+      try {
+        const currentSession = await getCurrentSession();
         if (mounted) setSession(currentSession);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Erro ao recuperar sessão:', error);
-      })
-      .finally(() => {
+      } finally {
         if (mounted) setLoading(false);
-      });
+      }
+    }
 
-    const { data } = onAuthStateChange((_event, nextSession) => {
-      if (mounted) setSession(nextSession);
+    loadSession();
+
+    const {
+      data: { subscription },
+    } = onAuthStateChange((_event, nextSession) => {
+      if (!mounted) return;
+
+      setSession((currentSession) => {
+        const currentUserId = currentSession?.user?.id ?? null;
+        const nextUserId = nextSession?.user?.id ?? null;
+
+        if (currentUserId === nextUserId) {
+          return currentSession;
+        }
+
+        return nextSession;
+      });
     });
 
     return () => {
       mounted = false;
-      data.subscription.unsubscribe();
+      subscription.unsubscribe();
     };
   }, []);
 

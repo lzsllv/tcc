@@ -12,7 +12,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && window.location.pathname !== '/dashboard') {
       navigate('/dashboard', { replace: true });
     }
   }, [isAuthenticated, navigate]);
@@ -37,30 +37,11 @@ export default function Login() {
       <h1>Entrar</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="email">E-mail</label>
-        <input
-          id="email"
-          type="email"
-          autoComplete="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
-        />
-
+        <input id="email" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
         <label htmlFor="password">Senha</label>
-        <input
-          id="password"
-          type="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-        />
-
+        <input id="password" type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} required />
         {error && <p role="alert">{error}</p>}
-
-        <button type="submit" disabled={loading}>
-          {loading ? 'Entrando...' : 'Entrar'}
-        </button>
+        <button type="submit" disabled={loading}>{loading ? 'Entrando...' : 'Entrar'}</button>
       </form>
     </main>
   );
@@ -68,14 +49,7 @@ export default function Login() {
 
 function getAuthErrorMessage(error) {
   const message = error?.message?.toLowerCase() ?? '';
-
-  if (message.includes('invalid login credentials')) {
-    return 'E-mail ou senha inválidos.';
-  }
-
-  if (message.includes('email not confirmed')) {
-    return 'Confirme seu e-mail antes de entrar.';
-  }
-
+  if (message.includes('invalid login credentials')) return 'E-mail ou senha inválidos.';
+  if (message.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar.';
   return 'Não foi possível entrar. Tente novamente.';
 }
