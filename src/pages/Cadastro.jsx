@@ -21,17 +21,31 @@ export default function Cadastro() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+
+    if (loading) return;
+
     setError('');
     setMessage('');
+
     if (password.length < 6) {
       setError('A senha deve ter pelo menos 6 caracteres.');
       return;
     }
+
     setLoading(true);
+
     try {
-      const data = await signUp({ name: name.trim(), email: email.trim(), password });
-      if (data.session) navigate('/dashboard');
-      else setMessage('Cadastro realizado. Verifique seu e-mail para confirmar a conta.');
+      const data = await signUp({
+        name: name.trim(),
+        email: email.trim(),
+        password,
+      });
+
+      if (data.session) {
+        navigate('/dashboard');
+      } else {
+        setMessage('Cadastro realizado. Verifique seu e-mail para confirmar a conta.');
+      }
     } catch (submitError) {
       setError(getSignUpErrorMessage(submitError));
     } finally {
@@ -44,14 +58,45 @@ export default function Cadastro() {
       <h1>Criar conta</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="name">Nome</label>
-        <input id="name" type="text" autoComplete="name" value={name} onChange={(event) => setName(event.target.value)} required />
+        <input
+          id="name"
+          type="text"
+          autoComplete="name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          required
+          disabled={loading}
+        />
+
         <label htmlFor="email">E-mail</label>
-        <input id="email" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
+        <input
+          id="email"
+          type="email"
+          autoComplete="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+          disabled={loading}
+        />
+
         <label htmlFor="password">Senha</label>
-        <input id="password" type="password" autoComplete="new-password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={6} required />
+        <input
+          id="password"
+          type="password"
+          autoComplete="new-password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          minLength={6}
+          required
+          disabled={loading}
+        />
+
         {error && <p role="alert">{error}</p>}
         {message && <p role="status">{message}</p>}
-        <button type="submit" disabled={loading}>{loading ? 'Criando conta...' : 'Criar conta'}</button>
+
+        <button type="submit" disabled={loading}>
+          {loading ? 'Criando conta...' : 'Criar conta'}
+        </button>
       </form>
     </main>
   );
@@ -59,7 +104,18 @@ export default function Cadastro() {
 
 function getSignUpErrorMessage(error) {
   const message = error?.message?.toLowerCase() ?? '';
-  if (message.includes('already registered')) return 'Este e-mail já está cadastrado.';
-  if (message.includes('password')) return 'A senha não atende aos requisitos configurados.';
+
+  if (message.includes('429') || message.includes('too many requests') || message.includes('rate limit')) {
+    return 'Muitas tentativas de cadastro. Aguarde alguns minutos e tente novamente.';
+  }
+
+  if (message.includes('already registered') || message.includes('already been registered')) {
+    return 'Este e-mail já está cadastrado. Tente fazer login.';
+  }
+
+  if (message.includes('password')) {
+    return 'A senha não atende aos requisitos configurados.';
+  }
+
   return 'Não foi possível criar a conta. Tente novamente.';
 }
