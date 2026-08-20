@@ -1,86 +1,121 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { signUp } from '../services/authService';
 import { useApp } from '../context/AppContext';
-import '../styles/Auth.css';
 
 export default function Cadastro() {
-  const [nome,           setNome]           = useState('');
-  const [email,          setEmail]          = useState('');
-  const [senha,          setSenha]          = useState('');
-  const [confirmarSenha, setConfirmarSenha] = useState('');
-  const [erro,           setErro]           = useState('');
-  const [sucesso,        setSucesso]        = useState('');
+  const navigate = useNavigate();
+  const { isAuthenticated } = useApp();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const { cadastrar } = useApp();
-  const navegar = useNavigate();
+  useEffect(() => {
+    if (isAuthenticated && window.location.pathname !== '/dashboard') {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    setErro(''); setSucesso('');
-    if (!nome || !email || !senha || !confirmarSenha) { setErro('Preencha todos os campos.'); return; }
-    if (senha.length < 6)         { setErro('A senha deve ter no mínimo 6 caracteres.'); return; }
-    if (senha !== confirmarSenha) { setErro('As senhas não coincidem.'); return; }
-    const ok = cadastrar(nome, email, senha);
-    if (ok) {
-      setSucesso('Conta criada com sucesso! Redirecionando...');
-      setTimeout(() => navegar('/login'), 1500);
-    } else {
-      setErro('Este e-mail já está cadastrado.');
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    if (loading) return;
+
+    setError('');
+    setMessage('');
+
+    if (password.length < 6) {
+      setError('A senha deve ter pelo menos 6 caracteres.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const data = await signUp({
+        name: name.trim(),
+        email: email.trim(),
+        password,
+      });
+
+      if (data.session) {
+        navigate('/dashboard');
+      } else {
+        setMessage('Cadastro realizado. Verifique seu e-mail para confirmar a conta.');
+      }
+    } catch (submitError) {
+      setError(getSignUpErrorMessage(submitError));
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div className="auth-page">
-      <main className="auth-main">
-        <div className="auth-card">
-          <div className="auth-logo">
-            <span className="auth-logo-icon">💰</span>
-            <span className="auth-logo-nome">Precifique</span>
-          </div>
+    <main>
+      <h1>Criar conta</h1>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="name">Nome</label>
+        <input
+          id="name"
+          type="text"
+          autoComplete="name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          required
+          disabled={loading}
+        />
 
-          <h1 className="auth-titulo">Criar conta grátis</h1>
-          <p className="auth-subtitulo">Precifique seus produtos com inteligência</p>
+        <label htmlFor="email">E-mail</label>
+        <input
+          id="email"
+          type="email"
+          autoComplete="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+          disabled={loading}
+        />
 
-          <form onSubmit={handleSubmit} className="auth-form">
-            {erro    && <div className="alerta-erro">{erro}</div>}
-            {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
+        <label htmlFor="password">Senha</label>
+        <input
+          id="password"
+          type="password"
+          autoComplete="new-password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          minLength={6}
+          required
+          disabled={loading}
+        />
 
-            <div className="campo-grupo">
-              <label className="input-label" htmlFor="nome">Nome completo</label>
-              <input id="nome" type="text" className="input-field"
-                placeholder="Seu nome" value={nome}
-                onChange={e => setNome(e.target.value)} autoFocus />
-            </div>
+        {error && <p role="alert">{error}</p>}
+        {message && <p role="status">{message}</p>}
 
-            <div className="campo-grupo">
-              <label className="input-label" htmlFor="email">E-mail</label>
-              <input id="email" type="email" className="input-field"
-                placeholder="seu@email.com" value={email}
-                onChange={e => setEmail(e.target.value)} />
-            </div>
-
-            <div className="campo-grupo">
-              <label className="input-label" htmlFor="senha">Senha</label>
-              <input id="senha" type="password" className="input-field"
-                placeholder="Mínimo 6 caracteres" value={senha}
-                onChange={e => setSenha(e.target.value)} />
-            </div>
-
-            <div className="campo-grupo">
-              <label className="input-label" htmlFor="confirmarSenha">Confirmar senha</label>
-              <input id="confirmarSenha" type="password" className="input-field"
-                placeholder="Repita sua senha" value={confirmarSenha}
-                onChange={e => setConfirmarSenha(e.target.value)} />
-            </div>
-
-            <button type="submit" className="btn-primary">Criar conta</button>
-          </form>
-
-          <p className="auth-rodape">
-            Já tem conta? <Link to="/login">Entrar</Link>
-          </p>
-        </div>
-      </main>
-    </div>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Criando conta...' : 'Criar conta'}
+        </button>
+      </form>
+    </main>
   );
+}
+
+function getSignUpErrorMessage(error) {
+  const message = error?.message?.toLowerCase() ?? '';
+
+  if (message.includes('429') || message.includes('too many requests') || message.includes('rate limit')) {
+    return 'Muitas tentativas de cadastro. Aguarde alguns minutos e tente novamente.';
+  }
+
+  if (message.includes('already registered') || message.includes('already been registered')) {
+    return 'Este e-mail já está cadastrado. Tente fazer login.';
+  }
+
+  if (message.includes('password')) {
+    return 'A senha não atende aos requisitos configurados.';
+  }
+
+  return 'Não foi possível criar a conta. Tente novamente.';
 }
