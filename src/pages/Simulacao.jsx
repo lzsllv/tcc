@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Package } from '@phosphor-icons/react';
 import Navbar from '../components/Navbar';
 import { useApp } from '../context/AppContext';
 import '../styles/Pagina.css';
@@ -38,7 +39,7 @@ export default function Simulacao() {
       <main className="pagina-container">
         <div className="pagina-cabecalho">
           <div>
-            <h1 className="pagina-titulo">📈 Simulação de Lucro</h1>
+            <h1 className="pagina-titulo">Simulação de Lucro</h1>
             <p className="pagina-subtitulo">Simule seus ganhos antes de definir o preço</p>
           </div>
         </div>
@@ -49,7 +50,7 @@ export default function Simulacao() {
             <h2 className="secao-titulo">Parâmetros da simulação</h2>
             {produtos.length === 0 ? (
               <div className="estado-vazio">
-                <span>📦</span>
+                <span><Package size={30} /></span>
                 <p>Cadastre produtos para simular.</p>
               </div>
             ) : (
@@ -98,11 +99,11 @@ export default function Simulacao() {
           {/* Resultado */}
           {resultado && (
             <div className="card">
-              <h2 className="secao-titulo">📊 Resultado</h2>
+              <h2 className="secao-titulo">Resultado</h2>
 
               {resultado.emPrejuizo && (
                 <div className="alerta-erro">
-                  ⚠️ Atenção! O preço definido está abaixo do custo total. Você terá prejuízo!
+                  Atenção! O preço definido está abaixo do custo total. Você terá prejuízo!
                 </div>
               )}
 
@@ -133,11 +134,11 @@ export default function Simulacao() {
                 </strong>
               </div>
               <small className="sim-nota-margem">
-                ℹ️ Margem calculada sobre o preço de venda (diferente do markup configurado).
+                Margem calculada sobre o preço de venda (diferente do markup configurado).
               </small>
 
               <div className="resumo-linha destaque">
-                <span>💰 Lucro mensal estimado:</span>
+                <span>Lucro mensal estimado:</span>
                 <strong className={`sim-lucro-mensal ${resultado.emPrejuizo ? 'sim-valor-erro' : 'valor-verde'}`}>
                   {fmt(resultado.lucroMensal)}
                 </strong>

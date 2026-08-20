@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Package, PencilSimple, Trash } from '@phosphor-icons/react';
 import Navbar from '../components/Navbar';
 import { useApp } from '../context/AppContext';
 import '../styles/Pagina.css';
@@ -78,7 +79,7 @@ export default function Produtos() {
       <main className="pagina-container">
         <div className="pagina-cabecalho">
           <div>
-            <h1 className="pagina-titulo">📦 Produtos</h1>
+            <h1 className="pagina-titulo">Produtos</h1>
             <p className="pagina-subtitulo">Gerencie os produtos do seu negócio</p>
           </div>
         </div>
@@ -86,7 +87,7 @@ export default function Produtos() {
         <div className="pagina-grid">
           {/* Formulário */}
           <div className="card">
-            <h2 className="secao-titulo">{editandoId !== null ? '✏️ Editar produto' : '➕ Novo produto'}</h2>
+            <h2 className="secao-titulo">{editandoId !== null ? 'Editar produto' : 'Novo produto'}</h2>
             <form onSubmit={handleSubmit} className="auth-form">
               {erro    && <div className="alerta-erro">{erro}</div>}
               {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
@@ -107,7 +108,7 @@ export default function Produtos() {
               </div>
 
               <div className="campo-grupo">
-                <label className="input-label">💰 Custo direto (R$)</label>
+                <label className="input-label">Custo direto (R$)</label>
                 <input className="input-field" type="number" min="0" step="0.01"
                   value={form.custo}
                   onChange={e => handleChange('custo', e.target.value)}
@@ -116,7 +117,7 @@ export default function Produtos() {
               </div>
 
               <div className="campo-grupo">
-                <label className="input-label">⏱️ Tempo de produção (horas)</label>
+                <label className="input-label">Tempo de produção (horas)</label>
                 <input className="input-field" type="number" min="0" step="0.25"
                   value={form.tempoProducao}
                   onChange={e => handleChange('tempoProducao', e.target.value)}
@@ -125,7 +126,7 @@ export default function Produtos() {
               </div>
 
               <div className="campo-grupo">
-                <label className="input-label">📦 Quantidade produzida por mês</label>
+                <label className="input-label">Quantidade produzida por mês</label>
                 <input className="input-field" type="number" min="1"
                   value={form.quantidadeMes}
                   onChange={e => handleChange('quantidadeMes', e.target.value)}
@@ -149,7 +150,7 @@ export default function Produtos() {
           <div>
             {produtos.length > 0 && totalCF > 0 && (
               <div className="alerta-info produtos-rateio-info">
-                ℹ️ <strong>Custo fixo rateado:</strong>{' '}
+                <strong>Custo fixo rateado:</strong>{' '}
                 {fmt(totalCF)} ÷ {totalUn} un = <strong>{fmt(fixo)}/unidade</strong>
               </div>
             )}
@@ -157,7 +158,7 @@ export default function Produtos() {
             {produtos.length === 0 ? (
               <div className="card">
                 <div className="estado-vazio">
-                  <span>📦</span>
+                  <span><Package size={30} /></span>
                   <p>Nenhum produto cadastrado ainda.<br />Use o formulário ao lado para começar.</p>
                 </div>
               </div>
@@ -174,8 +175,8 @@ export default function Produtos() {
                         <span className="badge">{p.categoria}</span>
                       </div>
                       <div className="acoes">
-                        <button className="btn-editar" onClick={() => handleEditar(p)}>✏️ Editar</button>
-                        <button className="btn-excluir" onClick={() => confirmarExclusao(p)}>🗑️</button>
+                        <button className="btn-editar" onClick={() => handleEditar(p)}><PencilSimple size={15} /> Editar</button>
+                        <button className="btn-excluir" onClick={() => confirmarExclusao(p)} aria-label={`Excluir ${p.nome}`}><Trash size={15} /></button>
                       </div>
                     </div>
 
@@ -195,7 +196,7 @@ export default function Produtos() {
                       <div className="resumo-linha produto-detalhe-linha">
                         <span>Qtd/mês:</span>
                         {semQtd
-                          ? <span className="texto-aviso">⚠️ Não informado</span>
+                          ? <span className="texto-aviso">Não informado</span>
                           : <strong>{p.quantidadeMes} un.</strong>
                         }
                       </div>
@@ -204,7 +205,7 @@ export default function Produtos() {
                         <strong>{fmt(custo)}</strong>
                       </div>
                       <div className="resumo-linha produto-preco produto-detalhe-linha">
-                        <span>💚 Preço sugerido:</span>
+                        <span>Preço sugerido:</span>
                         <strong className="valor-verde produto-preco-valor">{fmt(preco)}</strong>
                       </div>
                     </div>

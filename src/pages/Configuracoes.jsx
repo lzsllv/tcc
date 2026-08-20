@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { ImageSquare } from '@phosphor-icons/react';
 import Navbar from '../components/Navbar';
 import { useApp } from '../context/AppContext';
 import '../styles/Pagina.css';
@@ -36,7 +37,7 @@ export default function Configuracoes() {
     const custoHora = Number(configuracoes.custoHora);
     if (margem < 1)    { setErro('A margem de lucro deve ser maior que 0%.'); return; }
     if (custoHora < 0) { setErro('O custo/hora não pode ser negativo.'); return; }
-    if (margem < 10)   setAviso('⚠️ Margem abaixo de 10% pode ser insuficiente para cobrir imprevistos.');
+    if (margem < 10)   setAviso('Margem abaixo de 10% pode ser insuficiente para cobrir imprevistos.');
     setSucesso('Configurações salvas com sucesso!');
     setTimeout(() => setSucesso(''), 3000);
   }
@@ -47,7 +48,7 @@ export default function Configuracoes() {
       <main className="pagina-container">
         <div className="pagina-cabecalho">
           <div>
-            <h1 className="pagina-titulo">⚙️ Configurações</h1>
+            <h1 className="pagina-titulo">Configurações</h1>
             <p className="pagina-subtitulo">Defina sua margem de lucro e informações do negócio</p>
           </div>
         </div>
@@ -58,7 +59,7 @@ export default function Configuracoes() {
             {aviso   && <div className="alerta-aviso">{aviso}</div>}
             {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
 
-            <h3 className="config-secao-titulo">🏢 Identidade do negócio</h3>
+            <h3 className="config-secao-titulo">Identidade do negócio</h3>
 
             <div className="campo-grupo">
               <label className="input-label">Nome do negócio</label>
@@ -71,12 +72,12 @@ export default function Configuracoes() {
             </div>
 
             <div className="campo-grupo">
-              <label className="input-label">🖼️ Logo do negócio</label>
+              <label className="input-label">Logo do negócio</label>
               {configuracoes.logoNegocio ? (
                 <div className="config-logo-preview">
                   <img src={configuracoes.logoNegocio} alt="Logo do negócio" className="config-logo-img" />
                   <div className="config-logo-info">
-                    <p className="config-logo-ok">Logo carregado ✅</p>
+                    <p className="config-logo-ok">Logo carregado </p>
                     <button type="button" onClick={removerLogo} className="btn-remover-logo">
                       Remover logo
                     </button>
@@ -84,19 +85,19 @@ export default function Configuracoes() {
                 </div>
               ) : (
                 <div className="config-logo-drop" onClick={() => inputLogoRef.current?.click()}>
-                  <p className="config-logo-drop-icone">🖼️</p>
+                  <p className="config-logo-drop-icone"><ImageSquare size={30} /></p>
                   <p className="config-logo-drop-texto">Clique para enviar seu logo</p>
-                  <p className="config-logo-drop-hint">PNG, JPG ou SVG · máx. 500 KB</p>
+                  <p className="config-logo-drop-hint">PNG, JPG ou SVG - máx. 500 KB</p>
                 </div>
               )}
               <input ref={inputLogoRef} type="file" accept="image/png,image/jpeg,image/svg+xml"
                 className="input-hidden" onChange={handleLogoUpload} />
             </div>
 
-            <h3 className="config-secao-titulo">💰 Precificação</h3>
+            <h3 className="config-secao-titulo">Precificação</h3>
 
             <div className="campo-grupo">
-              <label className="input-label">📈 Margem de lucro desejada (%)</label>
+              <label className="input-label">Margem de lucro desejada (%)</label>
               <input className="input-field" type="number" min="1" max="500" step="0.5"
                 value={configuracoes.margemLucro}
                 onChange={e => handleChange('margemLucro', e.target.value)}
@@ -107,7 +108,7 @@ export default function Configuracoes() {
             </div>
 
             <div className="campo-grupo">
-              <label className="input-label">💰 Custo da sua hora de trabalho (R$)</label>
+              <label className="input-label">Custo da sua hora de trabalho (R$)</label>
               <input className="input-field" type="number" min="0" step="0.01"
                 value={configuracoes.custoHora}
                 onChange={e => handleChange('custoHora', e.target.value)}
@@ -117,7 +118,7 @@ export default function Configuracoes() {
             </div>
 
             <div className="campo-grupo">
-              <label className="input-label">📍 Região de atuação</label>
+              <label className="input-label">Região de atuação</label>
               <input className="input-field" type="text"
                 value={configuracoes.regiaoAtuacao}
                 onChange={e => handleChange('regiaoAtuacao', e.target.value)}
