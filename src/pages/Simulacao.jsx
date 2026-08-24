@@ -13,7 +13,7 @@ export default function Simulacao() {
   const [quantidade,         setQuantidade]         = useState('');
   const [resultado,          setResultado]          = useState(null);
 
-  const produtoAtual      = produtos.find(p => p.id === Number(produtoSelecionado)) || null;
+  const produtoAtual      = produtos.find(p => String(p.id) === produtoSelecionado) || null;
   const precoSugeridoRef  = produtoAtual ? calcularPrecoSugerido(produtoAtual) : null;
 
   function fmt(v) {

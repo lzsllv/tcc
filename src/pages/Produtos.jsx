@@ -29,6 +29,7 @@ export default function Produtos() {
     e.preventDefault();
     setErro(''); setSucesso('');
     if (!form.nome.trim())               { setErro('Informe o nome do produto.'); return; }
+    if (form.custo === '')               { setErro('Informe o custo direto do produto.'); return; }
     if (Number(form.custo) < 0)          { setErro('O custo direto não pode ser negativo.'); return; }
     if (Number(form.tempoProducao) < 0)  { setErro('O tempo de produção não pode ser negativo.'); return; }
     if (Number(form.quantidadeMes) < 0)  { setErro('A quantidade mensal não pode ser negativa.'); return; }

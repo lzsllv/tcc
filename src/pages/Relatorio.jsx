@@ -178,7 +178,7 @@ export default function Relatorio() {
                       <tr key={k}><td>{NOMES_CUSTOS[k] || k}</td><td>{fmt(v)}</td></tr>
                     ))}
                   {(custosFixos.extras || []).filter(e => Number(e.valor) > 0).map(e => (
-                    <tr key={e.id}><td>{e.descricao || 'Extra'}</td><td>{fmt(e.valor)}</td></tr>
+                    <tr key={e.id}><td>{e.nome || e.descricao || 'Extra'}</td><td>{fmt(e.valor)}</td></tr>
                   ))}
                   <tr className="tabela-total">
                     <td>Total</td>

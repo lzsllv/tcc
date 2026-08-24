@@ -14,6 +14,7 @@ export default function Navbar() {
   const [menuAberto, setMenuAberto] = useState(false);
 
   function handleLogout() {
+    setMenuAberto(false);
     logout();
     navegar('/login');
   }
