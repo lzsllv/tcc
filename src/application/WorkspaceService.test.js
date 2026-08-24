@@ -8,6 +8,14 @@ class MemoryStorage {
   getItem(key) { return this.data.has(key) ? this.data.get(key) : null; }
   setItem(key, value) { this.data.set(key, String(value)); }
 }
+class CountingStorage extends MemoryStorage {
+  constructor(entries) { super(entries); this.backupWrites = 0; }
+  setItem(key, value) {
+    if (key.startsWith('precifique:backup:v1:')) this.backupWrites += 1;
+    super.setItem(key, value);
+  }
+}
+
 
 function createService(storage) {
   const repository = new LocalWorkspaceRepository(storage, () => '2026-08-24T18:00:00.000Z');
@@ -55,4 +63,15 @@ test('exporta o workspace inicializado', async () => {
   const service = createService(storage);
   await service.initialize('user-1');
   assert.equal(JSON.parse(await service.export('user-1')).schemaVersion, 2);
+});
+
+test('deduplica inicializações simultâneas do mesmo usuário', async () => {
+  const storage = new CountingStorage();
+  const service = createService(storage);
+  const [first, second] = await Promise.all([
+    service.initialize('user-1'),
+    service.initialize('user-1'),
+  ]);
+  assert.deepEqual(second, first);
+  assert.equal(storage.backupWrites, 1);
 });

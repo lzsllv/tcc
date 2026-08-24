@@ -1,4 +1,8 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useState, useEffect, useReducer } from 'react';
+import { WorkspaceService } from '../application/WorkspaceService.js';
+import { initialWorkspaceState, workspaceReducer } from '../application/workspaceState.js';
+import { LocalWorkspaceRepository } from '../persistence/index.js';
 
 const AppContext = createContext();
 export function useApp() { return useContext(AppContext); }
@@ -35,6 +39,12 @@ const DADOS_DEMO = {
 };
 
 export function AppProvider({ children }) {
+  const [workspaceService] = useState(() => (
+    typeof localStorage !== 'undefined'
+      ? new WorkspaceService(new LocalWorkspaceRepository(localStorage), localStorage)
+      : null
+  ));
+  const [workspaceState, dispatchWorkspace] = useReducer(workspaceReducer, initialWorkspaceState);
   const [usuarioLogado, setUsuarioLogado] = useState(() => {
     try { const s = localStorage.getItem('usuarioLogado'); return s ? JSON.parse(s) : null; }
     catch { return null; }
@@ -73,8 +83,27 @@ export function AppProvider({ children }) {
   });
 
   useEffect(() => {
+    let active = true;
+    if (!usuarioLogado) {
+      dispatchWorkspace({ type: 'reset' });
+      return undefined;
+    }
+
+    const service = workspaceService;
+    dispatchWorkspace({ type: 'loadStarted' });
+    service.initialize(String(usuarioLogado.id))
+      .then(workspace => {
+        if (active) dispatchWorkspace({ type: 'loadSucceeded', workspace });
+      })
+      .catch(error => {
+        if (active) dispatchWorkspace({ type: 'failed', error });
+      });
+
+    return () => { active = false; };
+  }, [usuarioLogado, workspaceService]);
+  useEffect(() => {
     try { localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado)); } catch { /* storage cheio */ }
-  }, [usuarioLogado]);
+  }, [usuarioLogado, workspaceService]);
   useEffect(() => {
     try { localStorage.setItem('usuarios', JSON.stringify(usuarios)); } catch { /* storage cheio */ }
   }, [usuarios]);
@@ -139,7 +168,8 @@ export function AppProvider({ children }) {
       if (u.senha === senha) {
         setUsuarios(prev => prev.map(x => x.id === u.id ? { ...x, senha: hash } : x));
       }
-      const { senha: _s, ...semSenha } = u;
+      const semSenha = { ...u };
+      delete semSenha.senha;
       setUsuarioLogado(semSenha);
       return true;
     }
@@ -159,15 +189,41 @@ export function AppProvider({ children }) {
   function editarProduto(id, dados) { setProdutos(prev => prev.map(p => p.id === id ? { ...p, ...dados } : p)); }
   function excluirProduto(id)       { setProdutos(prev => prev.filter(p => p.id !== id)); }
 
+  async function atualizarWorkspace(updater) {
+    if (!usuarioLogado || !workspaceState.data || !workspaceService) {
+      throw new Error('Workspace ainda não está pronto para atualização.');
+    }
+    dispatchWorkspace({ type: 'saveStarted' });
+    try {
+      const workspace = await workspaceService.update(
+        String(usuarioLogado.id),
+        workspaceState.data,
+        updater,
+      );
+      dispatchWorkspace({ type: 'saveSucceeded', workspace });
+      return workspace;
+    } catch (error) {
+      dispatchWorkspace({ type: 'failed', error });
+      throw error;
+    }
+  }
+
+  async function exportarWorkspace() {
+    if (!usuarioLogado || !workspaceService) {
+      throw new Error('Entre na sua conta para exportar os dados.');
+    }
+    return workspaceService.export(String(usuarioLogado.id));
+  }
   return (
     <AppContext.Provider value={{
       usuarioLogado, usuarios, produtos, custosFixos, configuracoes,
+      workspace: workspaceState.data, workspaceStatus: workspaceState.status, workspaceError: workspaceState.error,
       setCustosFixos, setConfiguracoes,
       totalCustosFixos, totalUnidadesMes, custoFixoPorUnidade, custoFixoPorProduto,
       calcularCustoTotal, calcularPrecoSugerido, calcularLucroMensal,
       login, cadastrar, logout,
       adicionarProduto, editarProduto, excluirProduto,
-      carregarDemo,
+      carregarDemo, atualizarWorkspace, exportarWorkspace,
     }}>
       {children}
     </AppContext.Provider>

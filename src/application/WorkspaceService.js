@@ -11,9 +11,23 @@ export class WorkspaceService {
     }
     this.repository = repository;
     this.legacyStorage = legacyStorage;
+    this.initializations = new Map();
   }
 
   async initialize(ownerId) {
+    if (this.initializations.has(ownerId)) {
+      return this.initializations.get(ownerId);
+    }
+    const initialization = this.initializeOnce(ownerId);
+    this.initializations.set(ownerId, initialization);
+    try {
+      return await initialization;
+    } finally {
+      this.initializations.delete(ownerId);
+    }
+  }
+
+  async initializeOnce(ownerId) {
     const existing = await this.repository.loadWorkspace(ownerId);
     if (existing) return existing;
     const legacyData = readLegacyData(this.legacyStorage);
