@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  ChartBar, ChartLineUp, Coins, GearSix, House, List, Package, SignOut, X,
+  Archive, ChartBar, ChartLineUp, Coins, GearSix, House, List, Package, SignOut, X,
 } from '@phosphor-icons/react';
 import { useApp } from '../context/AppContext';
 import '../styles/Navbar.css';
@@ -24,6 +24,7 @@ export default function Navbar() {
   const links = [
     { caminho: '/dashboard', Icon: House, nome: 'Início' },
     { caminho: '/produtos', Icon: Package, nome: 'Produtos' },
+    { caminho: '/insumos', Icon: Archive, nome: 'Insumos' },
     { caminho: '/custos-fixos', Icon: Coins, nome: 'Custos Fixos' },
     { caminho: '/simulacao', Icon: ChartLineUp, nome: 'Simulação' },
     { caminho: '/relatorio', Icon: ChartBar, nome: 'Relatório' },
