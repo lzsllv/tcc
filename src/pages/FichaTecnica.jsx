@@ -42,17 +42,25 @@ function numberFromInput(value) {
 
 export default function FichaTecnica() {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const { workspace, workspaceStatus, workspaceError, atualizarWorkspace } = useApp();
-  const existing = workspace?.offers?.find(offer => offer.id === id);
-  const [loadedId, setLoadedId] = useState(null);
-  const [form, setForm] = useState(EMPTY_FORM);
-  const [message, setMessage] = useState('');
+  const app = useApp();
+  const loading = app.workspaceStatus === 'loading' || app.workspaceStatus === 'idle';
+  const existing = app.workspace?.offers?.find(offer => offer.id === id);
 
-  if (id && existing && loadedId !== id) {
-    setForm(offerToForm(existing));
-    setLoadedId(id);
+  if (loading) {
+    return <div><Navbar /><main className="pagina-container"><div className="card estado-vazio"><p>Carregando ficha técnica...</p></div></main></div>;
   }
+  if (id && !existing) {
+    return <div><Navbar /><main className="pagina-container"><div className="card estado-vazio"><p>Ficha técnica não encontrada.</p><Link className="btn-primary btn-estado-vazio" to="/produtos">Voltar aos produtos</Link></div></main></div>;
+  }
+  const editorKey = id ? `${id}:${existing.updatedAt}` : 'new';
+  return <FichaTecnicaEditor key={editorKey} editingId={id} existing={existing} app={app} />;
+}
+
+function FichaTecnicaEditor({ editingId: id, existing, app }) {
+  const navigate = useNavigate();
+  const { workspace, workspaceStatus, workspaceError, atualizarWorkspace } = app;
+  const [form, setForm] = useState(() => existing ? offerToForm(existing) : EMPTY_FORM);
+  const [message, setMessage] = useState('');
 
   const ingredientsById = useMemo(() => Object.fromEntries((workspace?.ingredients ?? []).map(item => [item.id, item])), [workspace]);
   const selectableIngredients = useMemo(() => {
@@ -150,11 +158,8 @@ export default function FichaTecnica() {
     }
   }
 
-  const loading = workspaceStatus === 'loading' || workspaceStatus === 'idle';
   const saving = workspaceStatus === 'saving';
-  if (!loading && id && !existing) {
-    return <div><Navbar /><main className="pagina-container"><div className="card estado-vazio"><p>Ficha técnica não encontrada.</p><Link className="btn-primary btn-estado-vazio" to="/produtos">Voltar aos produtos</Link></div></main></div>;
-  }
+
 
   return (
     <div>
@@ -171,8 +176,7 @@ export default function FichaTecnica() {
         {workspaceError && <div className="alerta-erro">Não foi possível acessar seus dados: {workspaceError}</div>}
         {message && <div className="alerta-erro">{message}</div>}
 
-        {loading ? <div className="card estado-vazio"><p>Carregando ficha técnica...</p></div> : (
-          <form onSubmit={submit} className="ficha-layout">
+        <form onSubmit={submit} className="ficha-layout">
             <div className="ficha-secoes">
               <section className="card ficha-secao">
                 <div className="ficha-secao-cabecalho"><span>01</span><div><h2>Identificação</h2><p>Defina o que será vendido.</p></div></div>
@@ -195,11 +199,12 @@ export default function FichaTecnica() {
                       const family = ingredient ? getUnitFamily(ingredient.purchaseUnit) : 'count';
                       let cost = null;
                       try { cost = calculateIngredientCost(ingredient, numberFromInput(component.quantity), component.unit, percentToBps(component.waste || 0)); } catch { /* aguarda dados válidos */ }
-                      return <div className="ficha-componente" key={component.id ?? component.localId}>
-                        <div className="campo-grupo"><label className="input-label">Insumo</label><select className="input-field" value={component.ingredientId} onChange={event => updateComponent(index, 'ingredientId', event.target.value)}>{selectableIngredients.filter(item => item.id === component.ingredientId || !form.components.some(current => current.ingredientId === item.id)).map(item => <option key={item.id} value={item.id}>{item.name}{item.active ? '' : ' (arquivado)'}</option>)}</select></div>
-                        <div className="campo-grupo"><label className="input-label">Quantidade</label><input className="input-field" type="number" min="0.001" step="any" value={component.quantity} onChange={event => updateComponent(index, 'quantity', event.target.value)} required /></div>
-                        <div className="campo-grupo"><label className="input-label">Unidade</label><select className="input-field" value={component.unit} onChange={event => updateComponent(index, 'unit', event.target.value)}>{UNITS_BY_FAMILY[family].map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>
-                        <div className="campo-grupo"><label className="input-label">Perda (%)</label><input className="input-field" type="number" min="0" max="100" step="0.01" value={component.waste} onChange={event => updateComponent(index, 'waste', event.target.value)} /></div>
+                      const fieldId = component.id ?? component.localId ?? index;
+                      return <div className="ficha-componente" key={fieldId}>
+                        <div className="campo-grupo"><label className="input-label" htmlFor={`component-ingredient-${fieldId}`}>Insumo</label><select id={`component-ingredient-${fieldId}`} className="input-field" value={component.ingredientId} onChange={event => updateComponent(index, 'ingredientId', event.target.value)}>{selectableIngredients.filter(item => item.id === component.ingredientId || !form.components.some(current => current.ingredientId === item.id)).map(item => <option key={item.id} value={item.id}>{item.name}{item.active ? '' : ' (arquivado)'}</option>)}</select></div>
+                        <div className="campo-grupo"><label className="input-label" htmlFor={`component-quantity-${fieldId}`}>Quantidade</label><input id={`component-quantity-${fieldId}`} className="input-field" type="number" min="0.001" step="any" value={component.quantity} onChange={event => updateComponent(index, 'quantity', event.target.value)} required /></div>
+                        <div className="campo-grupo"><label className="input-label" htmlFor={`component-unit-${fieldId}`}>Unidade</label><select id={`component-unit-${fieldId}`} className="input-field" value={component.unit} onChange={event => updateComponent(index, 'unit', event.target.value)}>{UNITS_BY_FAMILY[family].map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>
+                        <div className="campo-grupo"><label className="input-label" htmlFor={`component-waste-${fieldId}`}>Perda (%)</label><input id={`component-waste-${fieldId}`} className="input-field" type="number" min="0" max="100" step="0.01" value={component.waste} onChange={event => updateComponent(index, 'waste', event.target.value)} /></div>
                         <div className="ficha-componente-custo"><span>Custo</span><strong>{cost === null ? '—' : formatCents(cost)}</strong></div>
                         <button type="button" className="btn-excluir ficha-remover" onClick={() => removeComponent(index)} aria-label={`Remover ${ingredient?.name ?? 'insumo'}`}><Trash size={16} /></button>
                       </div>;
@@ -231,8 +236,7 @@ export default function FichaTecnica() {
               <p>Os valores são recalculados sempre que um insumo ou o custo da hora mudar.</p>
               <div className="ficha-resumo-acoes"><button className="btn-primary" type="submit" disabled={saving}>{saving ? 'Salvando...' : id ? 'Salvar alterações' : 'Criar ficha técnica'}</button><Link className="btn-secondary" to="/produtos">Cancelar</Link></div>
             </aside>
-          </form>
-        )}
+        </form>
       </main>
     </div>
   );

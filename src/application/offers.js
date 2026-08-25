@@ -66,6 +66,14 @@ function normalizeOfferInput(workspace, input, componentIds, allowedArchivedIds 
   if (desiredMarginBps !== null && (!Number.isInteger(desiredMarginBps) || desiredMarginBps < 0 || desiredMarginBps > 10000)) {
     throw new RangeError('Margem desejada deve estar entre 0 e 10000 pontos-base.');
   }
+  const effectiveMarginBps = desiredMarginBps ?? workspace.settings.defaultMarginBps;
+  const invalidChannel = (workspace.salesChannels ?? []).filter(channel => channel.active).some(channel => {
+    const percentageFeesBps = (channel.fees ?? [])
+      .filter(fee => fee.kind === 'percentage')
+      .reduce((total, fee) => total + fee.value, 0);
+    return effectiveMarginBps + percentageFeesBps >= 10000;
+  });
+  if (invalidChannel) throw new RangeError('A soma da margem com as taxas percentuais deve ser menor que 100%.');
   return {
     kind: input.kind,
     name,

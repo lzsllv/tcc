@@ -60,6 +60,15 @@ test('rejeita campos inválidos e componentes incompatíveis', () => {
   assert.throws(() => createOffer(workspace, product({ components: [{ ingredientId: 'old', quantity: 1, unit: 'g' }] })), /arquivado/i);
 });
 
+test('rejeita margem que somada às taxas percentuais alcança cem por cento', () => {
+  const workspace = workspaceWithIngredients();
+  workspace.settings.defaultMarginBps = 2000;
+  workspace.salesChannels[0].fees = [{
+    id: 'fee-1', name: 'Marketplace', kind: 'percentage', category: 'marketplace', value: 8000,
+  }];
+  assert.throws(() => createOffer(workspace, product({ desiredMarginBps: 2000 })), /margem.*taxas/i);
+  assert.throws(() => createOffer(workspace, product({ desiredMarginBps: null })), /margem.*taxas/i);
+});
 test('edita oferta preservando identidade, criação e componente arquivado já usado', () => {
   const workspace = {
     ...workspaceWithIngredients(),
