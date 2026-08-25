@@ -7,6 +7,7 @@ import Cadastro      from './pages/Cadastro';
 import Dashboard     from './pages/Dashboard';
 import Produtos      from './pages/Produtos';
 import Insumos       from './pages/Insumos';
+import FichaTecnica  from './pages/FichaTecnica';
 import CustosFixos   from './pages/CustosFixos';
 import Configuracoes from './pages/Configuracoes';
 import Simulacao     from './pages/Simulacao';
@@ -41,6 +42,8 @@ export default function App() {
           {/* Rotas protegidas */}
           <Route path="/dashboard"    element={<RotaProtegida><Dashboard /></RotaProtegida>} />
           <Route path="/produtos"     element={<RotaProtegida><Produtos /></RotaProtegida>} />
+          <Route path="/produtos/novo" element={<RotaProtegida><FichaTecnica /></RotaProtegida>} />
+          <Route path="/produtos/:id/editar" element={<RotaProtegida><FichaTecnica /></RotaProtegida>} />
           <Route path="/insumos"      element={<RotaProtegida><Insumos /></RotaProtegida>} />
           <Route path="/custos-fixos" element={<RotaProtegida><CustosFixos /></RotaProtegida>} />
           <Route path="/configuracoes" element={<RotaProtegida><Configuracoes /></RotaProtegida>} />
