@@ -51,15 +51,25 @@ export function priceOfferForChannel(workspace, offerId, channelId) {
   const fixedAllocationCents = calculateFixedCostAllocation(totalFixedCosts(workspace.fixedCosts), activeOffers);
   const marginBps = offer.desiredMarginBps ?? workspace.settings.defaultMarginBps;
   const fees = summarizeFees(channel.fees);
-  const calculated = calculatePriceReferences({
+  const input = {
     variableCostCents: costs.unitCostCents,
     fixedAllocationCents: fixedAllocationCents ?? 0,
     percentageFeesBps: fees.percentageFeesBps,
     fixedFeesCents: fees.fixedFeesCents,
-    desiredMarginBps: marginBps,
-  });
-  const prices = fixedAllocationCents === null
-    ? { ...calculated, sustainablePriceCents: null, recommendedPriceCents: null }
-    : calculated;
-  return { costs, fixedAllocationCents, marginBps, fees, prices };
+  };
+  const basePrices = calculatePriceReferences({ ...input, desiredMarginBps: 0 });
+  let recommendedPriceCents = null;
+  let pricingError = null;
+  try {
+    recommendedPriceCents = calculatePriceReferences({ ...input, desiredMarginBps: marginBps }).recommendedPriceCents;
+  } catch (error) {
+    if (!(error instanceof RangeError) || !/taxas e margem/i.test(error.message)) throw error;
+    pricingError = error.message;
+  }
+  const prices = {
+    minimumPriceCents: basePrices.minimumPriceCents,
+    sustainablePriceCents: fixedAllocationCents === null ? null : basePrices.sustainablePriceCents,
+    recommendedPriceCents: fixedAllocationCents === null ? null : recommendedPriceCents,
+  };
+  return { costs, fixedAllocationCents, marginBps, fees, prices, pricingError };
 }

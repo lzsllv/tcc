@@ -89,8 +89,23 @@ test('rejeita oferta ou canal ausente e canal arquivado', () => {
   assert.throws(() => priceOfferForChannel(workspace, 'offer-1', 'channel-card'), /ativo/i);
 });
 
-test('explica denominador inválido de margem e taxas', () => {
+test('preserva referências calculáveis quando margem e taxas invalidam o recomendado', () => {
   const workspace = workspaceFixture();
   workspace.settings.defaultMarginBps = 9000;
-  assert.throws(() => priceOfferForChannel(workspace, 'offer-1', 'channel-card'), /taxas e margem/i);
+  const result = priceOfferForChannel(workspace, 'offer-1', 'channel-card');
+  assert.equal(result.prices.minimumPriceCents, 167);
+  assert.equal(result.prices.sustainablePriceCents, 1278);
+  assert.equal(result.prices.recommendedPriceCents, null);
+  assert.match(result.pricingError, /taxas e margem/i);
+});
+
+test('mantém mínimo disponível sem planejamento mesmo com margem inviável', () => {
+  const workspace = workspaceFixture();
+  workspace.settings.defaultMarginBps = 9000;
+  workspace.offers[0].expectedMonthlySales = 0;
+  const result = priceOfferForChannel(workspace, 'offer-1', 'channel-card');
+  assert.equal(result.prices.minimumPriceCents, 167);
+  assert.equal(result.prices.sustainablePriceCents, null);
+  assert.equal(result.prices.recommendedPriceCents, null);
+  assert.match(result.pricingError, /taxas e margem/i);
 });

@@ -113,6 +113,7 @@ export default function Produtos() {
               </div>
               <div className="produto-metricas"><div><span>Materiais do lote</span><strong>{value ? formatCents(value.materialCostCents) : 'Indisponível'}</strong></div><div><span>Mão de obra do lote</span><strong>{value ? formatCents(value.laborCostCents) : 'Indisponível'}</strong></div><div className="produto-custo-chave"><span>Custo por unidade</span><strong>{value ? formatCents(value.unitCostCents) : 'Indisponível'}</strong></div><div><span>Planejamento mensal</span><strong>{offer.expectedMonthlySales || 0} vendas</strong></div></div>
               {offer.active && channelPricing?.error && <div className="produto-precos-erro">Não foi possível calcular os preços: {channelPricing.error}</div>}
+              {offer.active && channelPricing?.value?.pricingError && <div className="produto-precos-erro">Preço recomendado indisponível: {channelPricing.value.pricingError}</div>}
               {offer.active && channelPricing?.value && <div className="produto-precos">
                 <div><span>Preço mínimo</span><strong>{formatCents(channelPricing.value.prices.minimumPriceCents)}</strong><small>Cobre o custo variável e as taxas da venda.</small></div>
                 <div><span>Preço sustentável</span><strong>{channelPricing.value.prices.sustainablePriceCents === null ? 'Planejamento mensal necessário' : formatCents(channelPricing.value.prices.sustainablePriceCents)}</strong><small>Também cobre o rateio dos custos fixos.</small></div>
