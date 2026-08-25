@@ -54,3 +54,16 @@ test('propaga falha de gravação sem apagar dados existentes', async () => {
   await assert.rejects(repository.saveWorkspace('user-1', original), /quota/);
   assert.equal((await repository.loadWorkspace('user-1')).ownerId, 'user-1');
 });
+
+test('preenche em memória o canal selecionado em workspaces v2 anteriores', async () => {
+  const storage = new MemoryStorage();
+  const workspace = createEmptyWorkspace('user-1');
+  delete workspace.settings.selectedSalesChannelId;
+  storage.setItem('precifique:workspace:v2:user-1', JSON.stringify(workspace));
+  const repository = new LocalWorkspaceRepository(storage);
+
+  const loaded = await repository.loadWorkspace('user-1');
+
+  assert.equal(loaded.settings.selectedSalesChannelId, 'channel-direct');
+  assert.equal(JSON.parse(storage.getItem('precifique:workspace:v2:user-1')).settings.selectedSalesChannelId, undefined);
+});

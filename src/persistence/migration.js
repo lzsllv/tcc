@@ -65,6 +65,7 @@ export function migrateLegacyData(ownerId, legacyData, timestamp) {
     region: settings.regiaoAtuacao || '',
     laborHourCents: money(settings.custoHora),
     defaultMarginBps: markupBpsToMarginBps(percentToBps(Number(settings.margemLucro || 0))),
+    selectedSalesChannelId: 'channel-direct',
   };
   return workspace;
 }

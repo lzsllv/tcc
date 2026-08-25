@@ -9,6 +9,7 @@ import Produtos      from './pages/Produtos';
 import Insumos       from './pages/Insumos';
 import FichaTecnica  from './pages/FichaTecnica';
 import CustosFixos   from './pages/CustosFixos';
+import CanaisVenda   from './pages/CanaisVenda';
 import Configuracoes from './pages/Configuracoes';
 import Simulacao     from './pages/Simulacao';
 import Relatorio     from './pages/Relatorio';
@@ -46,6 +47,7 @@ export default function App() {
           <Route path="/produtos/:id/editar" element={<RotaProtegida><FichaTecnica /></RotaProtegida>} />
           <Route path="/insumos"      element={<RotaProtegida><Insumos /></RotaProtegida>} />
           <Route path="/custos-fixos" element={<RotaProtegida><CustosFixos /></RotaProtegida>} />
+          <Route path="/canais-venda" element={<RotaProtegida><CanaisVenda /></RotaProtegida>} />
           <Route path="/configuracoes" element={<RotaProtegida><Configuracoes /></RotaProtegida>} />
           <Route path="/simulacao"    element={<RotaProtegida><Simulacao /></RotaProtegida>} />
           <Route path="/relatorio"    element={<RotaProtegida><Relatorio /></RotaProtegida>} />

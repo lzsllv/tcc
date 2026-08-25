@@ -8,6 +8,15 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+function normalizeWorkspace(workspace) {
+  if (!workspace || workspace.settings?.selectedSalesChannelId) return workspace;
+  const selectedChannelId = workspace.salesChannels?.find(channel => channel.active && channel.isDefault)?.id
+    ?? workspace.salesChannels?.find(channel => channel.active)?.id;
+  return selectedChannelId
+    ? { ...workspace, settings: { ...workspace.settings, selectedSalesChannelId: selectedChannelId } }
+    : workspace;
+}
+
 export class LocalWorkspaceRepository {
   constructor(storage = globalThis.localStorage, now = () => new Date().toISOString()) {
     if (!storage?.getItem || !storage?.setItem) {
@@ -24,7 +33,7 @@ export class LocalWorkspaceRepository {
 
   async loadWorkspace(ownerId) {
     const serialized = this.storage.getItem(this.workspaceKey(ownerId));
-    return serialized === null ? null : JSON.parse(serialized);
+    return serialized === null ? null : normalizeWorkspace(JSON.parse(serialized));
   }
 
   async saveWorkspace(ownerId, workspace) {
