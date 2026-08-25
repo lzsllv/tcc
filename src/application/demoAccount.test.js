@@ -50,3 +50,22 @@ test('não muta entrada e protege conta não vazia', () => {
 });
 
 
+
+test('aceita apenas o canal direto baseline e a configuração inicial legada', () => {
+  assert.equal(isDemoAccountEmpty({ ownerId: 'owner-1', salesChannels: [{ id: 'channel-direct', ownerId: 'owner-1', name: 'Venda direta', active: true, isDefault: true, fees: [], createdAt: 'a', updatedAt: 'b' }], settings: { margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' } }), true);
+  for (const change of [{ name: 'Outra' }, { active: false }, { isDefault: false }, { fees: [{ value: 1 }] }]) {
+    const channel = { id: 'channel-direct', ownerId: 'owner-1', name: 'Venda direta', active: true, isDefault: true, fees: [], ...change };
+    assert.equal(isDemoAccountEmpty({ ownerId: 'owner-1', salesChannels: [channel] }), false);
+  }
+});
+
+test('mantém embalagem coerente e unidades compatíveis', () => {
+  const account = createDemoAccount({ ownerId: 'owner-1' }, now);
+  const bolo = account.offers.find(item => item.id === 'demo-offer-bolo');
+  const packaging = bolo.components.find(component => component.ingredientId === 'demo-ingredient-packaging');
+  assert.equal(packaging.quantity, 1);
+  for (const offer of account.offers) for (const component of offer.components) {
+    const item = account.ingredients.find(ingredient => ingredient.id === component.ingredientId);
+    assert.equal(component.unit, item.purchaseUnit);
+  }
+});
