@@ -47,6 +47,8 @@ export default function CanaisVenda() {
 
   const channels = useMemo(() => (workspace?.salesChannels ?? [])
     .toSorted((a, b) => Number(b.isDefault) - Number(a.isDefault) || Number(b.active) - Number(a.active) || a.name.localeCompare(b.name, 'pt-BR')), [workspace]);
+  const activeChannelCount = workspace?.salesChannels?.filter(channel => channel.active).length ?? 0;
+  const selectedChannelId = workspace?.settings?.selectedSalesChannelId;
   const saving = workspaceStatus === 'saving';
   const loading = workspaceStatus === 'loading' || workspaceStatus === 'idle';
 
@@ -137,7 +139,7 @@ export default function CanaisVenda() {
       <main className="pagina-container">
         <div className="pagina-cabecalho">
           <div><h1 className="pagina-titulo">Canais de venda</h1><p className="pagina-subtitulo">Configure taxas de cartão, marketplace, impostos e outras cobranças por venda.</p></div>
-          <span className="canais-contador">{workspace?.salesChannels?.filter(channel => channel.active).length ?? 0} ativos</span>
+          <span className="canais-contador">{activeChannelCount} {activeChannelCount === 1 ? 'ativo' : 'ativos'}</span>
         </div>
 
         {workspaceError && <div className="alerta-erro">Não foi possível acessar seus dados: {workspaceError}</div>}
@@ -174,8 +176,8 @@ export default function CanaisVenda() {
                     {channel.active && <button className="btn-editar" onClick={() => edit(channel)} disabled={saving}><PencilSimple size={15} /> Editar</button>}
                     <button className="canal-acao" onClick={() => duplicate(channel)} disabled={saving} title="Duplicar" aria-label={`Duplicar ${channel.name}`}><Copy size={16} /></button>
                     {channel.active && !channel.isDefault && <button className="canal-acao" onClick={() => makeDefault(channel)} disabled={saving} title="Tornar padrão" aria-label={`Tornar ${channel.name} o canal padrão`}><Star size={16} /></button>}
-                    {channel.active && <button className="canal-arquivar" onClick={() => archive(channel)} disabled={saving} title="Arquivar" aria-label={`Arquivar ${channel.name}`}><Archive size={16} /></button>}
-                    <button className="btn-excluir" onClick={() => remove(channel)} disabled={saving} title="Excluir" aria-label={`Excluir ${channel.name}`}><Trash size={15} /></button>
+                    {channel.active && !channel.isDefault && activeChannelCount > 1 && <button className="canal-arquivar" onClick={() => archive(channel)} disabled={saving} title="Arquivar" aria-label={`Arquivar ${channel.name}`}><Archive size={16} /></button>}
+                    {!channel.isDefault && selectedChannelId !== channel.id && <button className="btn-excluir" onClick={() => remove(channel)} disabled={saving} title="Excluir" aria-label={`Excluir ${channel.name}`}><Trash size={15} /></button>}
                   </div>
                 </div>
                 <div className="canal-resumo"><div><span>Taxas percentuais</span><strong>{(totals.percentage / 100).toLocaleString('pt-BR')}%</strong></div><div><span>Taxas fixas</span><strong>{formatCents(totals.fixed)}</strong><small>por venda</small></div></div>
