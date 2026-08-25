@@ -69,3 +69,9 @@ test('mantém embalagem coerente e unidades compatíveis', () => {
     assert.equal(component.unit, item.purchaseUnit);
   }
 });
+
+test('aceita a configuração inicial no caminho legado configuracoes e recusa alteração', () => {
+  const initial = { margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' };
+  assert.equal(isDemoAccountEmpty({ ownerId: 'owner-1', configuracoes: initial }), true);
+  assert.equal(isDemoAccountEmpty({ ownerId: 'owner-1', configuracoes: { ...initial, nomeNegocio: 'Negócio do usuário' } }), false);
+});
