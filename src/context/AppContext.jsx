@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect, useReducer } from 'reac
 import { WorkspaceService } from '../application/WorkspaceService.js';
 import { initialWorkspaceState, workspaceReducer } from '../application/workspaceState.js';
 import { LocalWorkspaceRepository } from '../persistence/index.js';
+import { createDemoAccount, isDemoAccountEmpty } from '../application/demoAccount.js';
 
 const AppContext = createContext();
 export function useApp() { return useContext(AppContext); }
@@ -10,33 +11,6 @@ export function useApp() { return useContext(AppContext); }
 function hashSenha(senha) {
   return btoa(unescape(encodeURIComponent(senha + ':precifique')));
 }
-
-const DADOS_DEMO = {
-  configuracoes: {
-    margemLucro: 30,
-    custoHora: 25,
-    regiaoAtuacao: 'Sao Paulo - SP',
-    nomeNegocio: 'Doces da Maria',
-    logoNegocio: '',
-  },
-  custosFixos: {
-    aluguel: 800,
-    energia: 150,
-    internet: 100,
-    salarios: 0,
-    outros: 80,
-    extras: [
-      { id: 'demo-1', nome: 'Embalagens (fixo mensal)', valor: 220 },
-    ],
-  },
-  produtos: [
-    { id: 'demo-p1', nome: 'Bolo de Chocolate', custo: 38.50, tempoProducao: 2, quantidadeMes: 20, categoria: 'Bolos' },
-    { id: 'demo-p2', nome: 'Brigadeiro (caixa 20un)', custo: 16.00, tempoProducao: 1, quantidadeMes: 50, categoria: 'Doces' },
-    { id: 'demo-p3', nome: 'Torta de Limao', custo: 27.00, tempoProducao: 1.5, quantidadeMes: 15, categoria: 'Tortas' },
-    { id: 'demo-p4', nome: 'Cupcake (duzia)', custo: 22.00, tempoProducao: 1.5, quantidadeMes: 30, categoria: 'Doces' },
-    { id: 'demo-p5', nome: 'Bolo de Cenoura', custo: 31.00, tempoProducao: 1.5, quantidadeMes: 25, categoria: 'Bolos' },
-  ],
-};
 
 export function AppProvider({ children }) {
   const [workspaceService] = useState(() => (
@@ -154,12 +128,25 @@ export function AppProvider({ children }) {
   }
 
   // ── DEMO ──
-  function carregarDemo() {
-    setProdutos(DADOS_DEMO.produtos);
-    setCustosFixos(DADOS_DEMO.custosFixos);
-    setConfiguracoes(DADOS_DEMO.configuracoes);
-  }
+  const podeCarregarDemo = workspaceState.status === 'ready' && isDemoAccountEmpty({
+    workspace: workspaceState.data,
+    produtos,
+    custosFixos,
+    configuracoes,
+  });
 
+  async function carregarDemo() {
+    const demo = createDemoAccount({
+      workspace: workspaceState.data,
+      produtos,
+      custosFixos,
+      configuracoes,
+    });
+    await atualizarWorkspace(() => demo.workspace);
+    setProdutos(demo.produtos);
+    setCustosFixos(demo.custosFixos);
+    setConfiguracoes(demo.configuracoes);
+  }
   // ── AUTH ──
   function login(email, senha) {
     const hash = hashSenha(senha);
@@ -223,7 +210,7 @@ export function AppProvider({ children }) {
       calcularCustoTotal, calcularPrecoSugerido, calcularLucroMensal,
       login, cadastrar, logout,
       adicionarProduto, editarProduto, excluirProduto,
-      carregarDemo, atualizarWorkspace, exportarWorkspace,
+      podeCarregarDemo, carregarDemo, atualizarWorkspace, exportarWorkspace,
     }}>
       {children}
     </AppContext.Provider>
