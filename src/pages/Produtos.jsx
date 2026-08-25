@@ -4,6 +4,8 @@ import { Link, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useApp } from '../context/AppContext';
 import { archiveOffer, deleteOffer } from '../application/offers.js';
+import { priceOfferForChannel } from '../application/offerPricing.js';
+import { selectSalesChannel } from '../application/salesChannels.js';
 import { calculateOfferVariableCost } from '../domain/pricing/offers.js';
 import { formatCents } from '../domain/pricing/money.js';
 import '../styles/Pagina.css';
@@ -18,6 +20,10 @@ export default function Produtos() {
   const [message, setMessage] = useState(location.state?.saved ? { type: 'success', text: 'Ficha técnica salva com sucesso.' } : null);
 
   const ingredientsById = useMemo(() => Object.fromEntries((workspace?.ingredients ?? []).map(item => [item.id, item])), [workspace]);
+  const activeChannels = useMemo(() => (workspace?.salesChannels ?? []).filter(channel => channel.active), [workspace]);
+  const selectedChannelId = activeChannels.some(channel => channel.id === workspace?.settings?.selectedSalesChannelId)
+    ? workspace.settings.selectedSalesChannelId
+    : activeChannels.find(channel => channel.isDefault)?.id ?? activeChannels[0]?.id;
   const categories = useMemo(() => [...new Set((workspace?.offers ?? []).map(offer => offer.category))].sort((a, b) => a.localeCompare(b, 'pt-BR')), [workspace]);
   const offers = useMemo(() => {
     const term = search.trim().toLocaleLowerCase('pt-BR');
@@ -31,6 +37,18 @@ export default function Produtos() {
   function costs(offer) {
     try { return calculateOfferVariableCost(offer, ingredientsById, workspace.settings.laborHourCents); }
     catch { return null; }
+  }
+
+  function pricing(offer) {
+    if (!offer.active || !selectedChannelId) return null;
+    try { return { value: priceOfferForChannel(workspace, offer.id, selectedChannelId), error: null }; }
+    catch (error) { return { value: null, error: error.message }; }
+  }
+
+  async function changeChannel(event) {
+    setMessage(null);
+    try { await atualizarWorkspace(current => selectSalesChannel(current, event.target.value)); }
+    catch (error) { setMessage({ type: 'error', text: error.message }); }
   }
 
   async function archive(item) {
@@ -72,6 +90,14 @@ export default function Produtos() {
           <span className="produtos-total">{offers.length} {offers.length === 1 ? 'oferta' : 'ofertas'}</span>
         </div>
 
+        <div className="card produtos-canal">
+          <div><label htmlFor="sales-channel">Canal usado na precificação</label><p>A troca recalcula os preços sem alterar as fichas técnicas.</p></div>
+          <select id="sales-channel" className="input-field" value={selectedChannelId ?? ''} onChange={changeChannel} disabled={saving || activeChannels.length === 0}>
+            {activeChannels.length === 0 ? <option value="">Nenhum canal ativo</option> : activeChannels.map(channel => <option key={channel.id} value={channel.id}>{channel.name}{channel.isDefault ? ' — padrão' : ''}</option>)}
+          </select>
+          <Link to="/canais-venda" className="btn-secondary">Configurar canais</Link>
+        </div>
+
         {loading ? (
           <div className="card estado-vazio"><span><Package size={30} /></span><p>Carregando produtos e serviços...</p></div>
         ) : offers.length === 0 ? (
@@ -79,12 +105,19 @@ export default function Produtos() {
         ) : (
           <div className="produtos-lista">{offers.map(offer => {
             const value = costs(offer);
+            const channelPricing = pricing(offer);
             return <article key={offer.id} className={`card produto-card ${offer.active ? '' : 'produto-card-arquivado'}`}>
               <div className="produto-card-header">
                 <div><div className="produto-identidade"><h2>{offer.name}</h2>{!offer.active && <span className="produto-status">Arquivado</span>}</div><div className="produto-badges"><span className="badge">{offer.kind === 'product' ? 'Produto' : 'Serviço'}</span><span>{offer.category}</span></div></div>
                 {offer.active && <div className="acoes"><Link className="btn-editar" to={`/produtos/${offer.id}/editar`} aria-disabled={saving} onClick={event => saving && event.preventDefault()}><PencilSimple size={15} /> Editar</Link><button className="produto-arquivar" onClick={() => archive(offer)} title="Arquivar" disabled={saving}><Archive size={16} /></button><button className="btn-excluir" onClick={() => remove(offer)} title="Excluir" disabled={saving}><Trash size={15} /></button></div>}
               </div>
               <div className="produto-metricas"><div><span>Materiais do lote</span><strong>{value ? formatCents(value.materialCostCents) : 'Indisponível'}</strong></div><div><span>Mão de obra do lote</span><strong>{value ? formatCents(value.laborCostCents) : 'Indisponível'}</strong></div><div className="produto-custo-chave"><span>Custo por unidade</span><strong>{value ? formatCents(value.unitCostCents) : 'Indisponível'}</strong></div><div><span>Planejamento mensal</span><strong>{offer.expectedMonthlySales || 0} vendas</strong></div></div>
+              {offer.active && channelPricing?.error && <div className="produto-precos-erro">Não foi possível calcular os preços: {channelPricing.error}</div>}
+              {offer.active && channelPricing?.value && <div className="produto-precos">
+                <div><span>Preço mínimo</span><strong>{formatCents(channelPricing.value.prices.minimumPriceCents)}</strong><small>Cobre o custo variável e as taxas da venda.</small></div>
+                <div><span>Preço sustentável</span><strong>{channelPricing.value.prices.sustainablePriceCents === null ? 'Planejamento mensal necessário' : formatCents(channelPricing.value.prices.sustainablePriceCents)}</strong><small>Também cobre o rateio dos custos fixos.</small></div>
+                <div className="produto-preco-recomendado"><span>Preço recomendado</span><strong>{channelPricing.value.prices.recommendedPriceCents === null ? 'Planejamento mensal necessário' : formatCents(channelPricing.value.prices.recommendedPriceCents)}</strong><small>Adiciona a margem líquida desejada.</small></div>
+              </div>}
               <div className="produto-card-rodape"><span>{offer.components.length} {offer.components.length === 1 ? 'insumo' : 'insumos'}</span><span>{offer.batchTimeMinutes || 0} min por lote</span><span>Rendimento: {offer.batchYield}</span></div>
             </article>;
           })}</div>

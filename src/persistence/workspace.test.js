@@ -11,6 +11,7 @@ test('cria workspace v2 isolado pelo proprietário', () => {
   assert.equal(workspace.salesChannels.length, 1);
   assert.equal(workspace.salesChannels[0].name, 'Venda direta');
   assert.equal(workspace.salesChannels[0].isDefault, true);
+  assert.equal(workspace.settings.selectedSalesChannelId, 'channel-direct');
   assert.equal(workspace.updatedAt, '2026-08-24T12:00:00.000Z');
 });
 

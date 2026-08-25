@@ -37,6 +37,7 @@ export function createEmptyWorkspace(ownerId, updatedAt = new Date().toISOString
       region: '',
       laborHourCents: 0,
       defaultMarginBps: 0,
+      selectedSalesChannelId: 'channel-direct',
     },
     updatedAt,
   };

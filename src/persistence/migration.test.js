@@ -27,6 +27,7 @@ test('migra dados legados preservando custo, tempo, quantidade e preço equivale
   assert.equal(workspace.fixedCosts.aluguel, 10000);
   assert.equal(workspace.fixedCosts.extras[0].valueCents, 2500);
   assert.equal(workspace.salesChannels[0].name, 'Venda direta');
+  assert.equal(workspace.settings.selectedSalesChannelId, 'channel-direct');
 });
 
 test('migração é idempotente e cria apenas um backup', async () => {
