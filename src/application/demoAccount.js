@@ -8,7 +8,9 @@ export function isDemoAccountEmpty(account = {}) {
   const workspace = account.workspace ?? account;
   const ownerId = account.ownerId ?? workspace.ownerId;
   const modern = [workspace.ingredients, workspace.offers, workspace.fixedCosts];
-  if (modern.some(hasUserEntries) || (Object.hasOwn(workspace, 'settings') && !isInitialWorkspaceSettings(workspace.settings)) || (workspace.salesChannels ?? []).some(channel => !isBaselineDirectChannel(channel, ownerId))) return false;
+  const hasWorkspaceSettings = Object.hasOwn(workspace, 'settings');
+  const isWorkspaceV2 = workspace.schemaVersion === 2;
+  if (modern.some(hasUserEntries) || ((isWorkspaceV2 || hasWorkspaceSettings) && !isInitialWorkspaceSettings(workspace.settings)) || (workspace.salesChannels ?? []).some(channel => !isBaselineDirectChannel(channel, ownerId))) return false;
   return !(hasUserEntries(account.produtos) || hasUserEntries(account.custosFixos) || (hasUserEntries(account.configuracoes) && !isInitialLegacySettings(account.configuracoes)));
 }
 

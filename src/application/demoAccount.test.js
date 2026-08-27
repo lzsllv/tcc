@@ -70,6 +70,9 @@ test('aceita o workspace v2 baseline real e recusa cada alteração de settings'
   const settingsWithoutChannel = { ...workspace.settings };
   delete settingsWithoutChannel.selectedSalesChannelId;
   assert.equal(isDemoAccountEmpty({ workspace: { ...workspace, settings: settingsWithoutChannel } }), false);
+  const workspaceWithoutSettings = { ...workspace };
+  delete workspaceWithoutSettings.settings;
+  assert.equal(isDemoAccountEmpty({ workspace: workspaceWithoutSettings }), false);
 });
 
 test('mantém embalagem coerente e unidades compatíveis', () => {
