@@ -1,7 +1,10 @@
+import { markupBpsToMarginBps, percentToBps } from '../domain/pricing/index.js';
+
 const DEMO_LOGO = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 48" role="img" aria-label="Doces da Maria"><rect width="160" height="48" rx="10" fill="#7d3f67"/><text x="80" y="30" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700" fill="#fff">Doces da Maria</text></svg>')}`;
 const hasUserEntries = value => Array.isArray(value) ? value.length > 0 : value && typeof value === 'object' ? Object.values(value).some(item => Array.isArray(item) ? item.length > 0 : item !== '' && item !== 0 && item !== null && item !== undefined) : value !== undefined && value !== null && value !== '';
 const isInitialLegacySettings = value => value && value.margemLucro === 20 && value.custoHora === 0 && value.regiaoAtuacao === '' && value.nomeNegocio === '' && value.logoNegocio === '' && Object.keys(value).every(key => ['margemLucro', 'custoHora', 'regiaoAtuacao', 'nomeNegocio', 'logoNegocio'].includes(key));
-const isInitialWorkspaceSettings = value => value && value.businessName === '' && value.logo === '' && value.region === '' && value.laborHourCents === 0 && value.defaultMarginBps === 0 && value.selectedSalesChannelId === 'channel-direct' && Object.keys(value).every(key => ['businessName', 'logo', 'region', 'laborHourCents', 'defaultMarginBps', 'selectedSalesChannelId'].includes(key));
+const initialLegacyMarginBps = markupBpsToMarginBps(percentToBps(20));
+const isInitialWorkspaceSettings = (value, legacySettings) => value && value.businessName === '' && value.logo === '' && value.region === '' && value.laborHourCents === 0 && (value.defaultMarginBps === 0 || (isInitialLegacySettings(legacySettings) && value.defaultMarginBps === initialLegacyMarginBps)) && value.selectedSalesChannelId === 'channel-direct' && Object.keys(value).every(key => ['businessName', 'logo', 'region', 'laborHourCents', 'defaultMarginBps', 'selectedSalesChannelId'].includes(key));
 const isBaselineDirectChannel = (channel, ownerId) => channel && channel.id === 'channel-direct' && channel.ownerId === ownerId && channel.name === 'Venda direta' && channel.active === true && channel.isDefault === true && Array.isArray(channel.fees) && channel.fees.length === 0;
 
 export function isDemoAccountEmpty(account = {}) {
@@ -10,7 +13,7 @@ export function isDemoAccountEmpty(account = {}) {
   const modern = [workspace.ingredients, workspace.offers, workspace.fixedCosts];
   const hasWorkspaceSettings = Object.hasOwn(workspace, 'settings');
   const isWorkspaceV2 = workspace.schemaVersion === 2;
-  if (modern.some(hasUserEntries) || ((isWorkspaceV2 || hasWorkspaceSettings) && !isInitialWorkspaceSettings(workspace.settings)) || (workspace.salesChannels ?? []).some(channel => !isBaselineDirectChannel(channel, ownerId))) return false;
+  if (modern.some(hasUserEntries) || ((isWorkspaceV2 || hasWorkspaceSettings) && !isInitialWorkspaceSettings(workspace.settings, account.configuracoes)) || (workspace.salesChannels ?? []).some(channel => !isBaselineDirectChannel(channel, ownerId))) return false;
   return !(hasUserEntries(account.produtos) || hasUserEntries(account.custosFixos) || (hasUserEntries(account.configuracoes) && !isInitialLegacySettings(account.configuracoes)));
 }
 

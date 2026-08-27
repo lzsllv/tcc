@@ -1,9 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createDemoAccount, isDemoAccountEmpty } from './demoAccount.js';
+import { migrateLegacyData } from '../persistence/migration.js';
 import { createEmptyWorkspace } from '../persistence/workspace.js';
 
 const now = '2026-08-25T12:00:00.000Z';
+const initialLegacyData = {
+  produtos: [],
+  custosFixos: { aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] },
+  configuracoes: { margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' },
+};
 
 test('considera vazia uma conta sem dados modernos nem legados', () => {
   assert.equal(isDemoAccountEmpty({}), true);
@@ -73,6 +79,35 @@ test('aceita o workspace v2 baseline real e recusa cada alteração de settings'
   const workspaceWithoutSettings = { ...workspace };
   delete workspaceWithoutSettings.settings;
   assert.equal(isDemoAccountEmpty({ workspace: workspaceWithoutSettings }), false);
+});
+
+test('aceita workspace migrado somente junto das três estruturas legadas iniciais completas', () => {
+  const workspace = migrateLegacyData('owner-1', initialLegacyData, now);
+
+  assert.equal(isDemoAccountEmpty({ workspace, ...structuredClone(initialLegacyData) }), true);
+});
+
+test('mantém a proteção geral para variações da conta migrada inicial', () => {
+  const workspace = migrateLegacyData('owner-1', initialLegacyData, now);
+  const account = { workspace, ...structuredClone(initialLegacyData) };
+  const withoutSettings = structuredClone(account);
+  delete withoutSettings.configuracoes;
+  const cases = [
+    withoutSettings,
+    { ...account, configuracoes: { ...account.configuracoes, nomeNegocio: 'Negócio do usuário' } },
+    { ...account, configuracoes: { ...account.configuracoes, observacao: '' } },
+    { ...account, workspace: { ...workspace, settings: { ...workspace.settings, defaultMarginBps: workspace.settings.defaultMarginBps + 1 } } },
+    { ...account, workspace: { ...workspace, settings: { ...workspace.settings, observacao: '' } } },
+    { ...account, workspace: { ...workspace, settings: { ...workspace.settings, laborHourCents: 1 } } },
+    { ...account, workspace: { ...workspace, fixedCosts: { ...workspace.fixedCosts, aluguel: 1 } } },
+    { ...account, workspace: { ...workspace, ingredients: [{ id: 'ingredient-1' }] } },
+    { ...account, workspace: { ...workspace, offers: [{ id: 'offer-1' }] } },
+    { ...account, workspace: { ...workspace, salesChannels: [...workspace.salesChannels, { id: 'channel-other' }] } },
+    { ...account, produtos: [{ id: 'product-1' }] },
+    { ...account, custosFixos: { ...account.custosFixos, aluguel: 1 } },
+  ];
+
+  for (const candidate of cases) assert.equal(isDemoAccountEmpty(candidate), false);
 });
 
 test('mantém embalagem coerente e unidades compatíveis', () => {
