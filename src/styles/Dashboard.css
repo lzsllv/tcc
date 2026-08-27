@@ -1,9 +1,12 @@
 .dashboard-container { width: min(100%, var(--content)); margin-inline: auto; padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 2rem); }
+.dashboard-welcome-acoes { display: flex; align-items: center; justify-content: flex-end; gap: .65rem; flex-wrap: wrap; }
 .dashboard-welcome { margin-bottom: 2rem; display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; }
 .dashboard-contexto { margin-bottom: .3rem; color: var(--accent-hover) !important; font-size: .72rem !important; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
 .dashboard-welcome h1 { color: var(--texto); font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 820; letter-spacing: -.055em; line-height: 1; }
 .dashboard-welcome p { margin-top: .65rem; color: var(--texto-muted); font-size: .9rem; }
 .dashboard-novo-produto { min-height: 44px; display: inline-flex; align-items: center; gap: .45rem; padding: .7rem 1rem; color: #f7fbf8; background: var(--accent-hover); border-radius: var(--radius); font-size: .84rem; font-weight: 750; box-shadow: var(--sombra-verde); white-space: nowrap; }
+.dashboard-demo-btn { width: auto; min-width: 0; }
+.dashboard-demo-feedback { margin: -1rem 0 1.25rem; }
 .dashboard-kpis { display: grid; grid-template-columns: 1.15fr 1fr 1fr .85fr; gap: 1rem; margin-bottom: 1rem; }
 .kpi-card { min-height: 148px; padding: 1.25rem; display: grid; grid-template-columns: 42px 1fr; grid-template-rows: auto 1fr; gap: .65rem .85rem; border: 1px solid var(--borda); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--sombra-xs); transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
 .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--sombra-md); }
@@ -29,6 +32,8 @@
   .acoes-rapidas { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 560px) {
+  .dashboard-welcome-acoes { width: 100%; align-items: stretch; flex-direction: column; }
+  .dashboard-welcome-acoes > * { width: 100%; }
   .dashboard-welcome { align-items: flex-start; flex-direction: column; }
   .dashboard-kpis { grid-template-columns: 1fr; }
   .kpi-card { min-height: 120px; }

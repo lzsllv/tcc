@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { ChartBar, ChartLineUp, Coins, Package, Tag } from '@phosphor-icons/react';
+import { useState } from 'react';
+import { ChartBar, ChartLineUp, Coins, MagicWand, Package, Tag } from '@phosphor-icons/react';
 import Navbar from '../components/Navbar';
 import { useApp } from '../context/AppContext';
 import '../styles/Dashboard.css';
@@ -8,8 +9,10 @@ export default function Dashboard() {
   const {
     usuarioLogado, produtos,
     totalCustosFixos, calcularCustoTotal, calcularPrecoSugerido,
-    configuracoes,
+    configuracoes, podeCarregarDemo, carregarDemo,
   } = useApp();
+  const [demoLoading, setDemoLoading] = useState(false);
+  const [demoFeedback, setDemoFeedback] = useState(null);
 
   const totalCustos = totalCustosFixos();
   const precoMedio = produtos.length > 0
@@ -34,6 +37,22 @@ export default function Dashboard() {
     { to: '/relatorio', Icon: ChartBar, titulo: 'Relatório', desc: 'Ver a projeção do mês' },
   ];
 
+  async function handleCarregarDemo() {
+    if (demoLoading) return;
+    setDemoLoading(true);
+    setDemoFeedback(null);
+    try {
+      await carregarDemo();
+      setDemoFeedback({ type: 'sucesso', message: 'Conta demonstrativa carregada com sucesso.' });
+    } catch {
+      setDemoFeedback({ type: 'erro', message: 'Não foi possível carregar a conta demonstrativa. Tente novamente.' });
+    } finally {
+      setDemoLoading(false);
+    }
+  }
+
+  const exibirAcaoDemo = (podeCarregarDemo || demoLoading) && demoFeedback?.type !== 'sucesso';
+
   return (
     <div>
       <Navbar />
@@ -44,8 +63,22 @@ export default function Dashboard() {
             <h1>Olá, {nome}</h1>
             <p>Acompanhe os principais números do seu negócio.</p>
           </div>
-          <Link to="/produtos" className="dashboard-novo-produto"><Package size={18} /> Novo produto</Link>
+          <div className="dashboard-welcome-acoes">
+            <Link to="/produtos" className="dashboard-novo-produto"><Package size={18} /> Novo produto</Link>
+            {exibirAcaoDemo && (
+              <button type="button" className="btn-secondary dashboard-demo-btn" onClick={handleCarregarDemo} disabled={demoLoading} aria-busy={demoLoading}>
+                <MagicWand size={18} weight="duotone" />
+                {demoLoading ? 'Carregando demonstração...' : 'Carregar conta demonstrativa'}
+              </button>
+            )}
+          </div>
         </div>
+
+        {demoFeedback && (
+          <p className={`dashboard-demo-feedback alerta-${demoFeedback.type}`} role={demoFeedback.type === 'erro' ? 'alert' : 'status'} aria-live={demoFeedback.type === 'erro' ? 'assertive' : 'polite'}>
+            {demoFeedback.message}
+          </p>
+        )}
 
         <section className="dashboard-kpis" aria-label="Indicadores do negócio">
           {kpis.map(({ Icon, label, valor, destaque }) => (
