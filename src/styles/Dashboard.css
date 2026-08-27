@@ -7,6 +7,7 @@
 .dashboard-novo-produto { min-height: 44px; display: inline-flex; align-items: center; gap: .45rem; padding: .7rem 1rem; color: #f7fbf8; background: var(--accent-hover); border-radius: var(--radius); font-size: .84rem; font-weight: 750; box-shadow: var(--sombra-verde); white-space: nowrap; }
 .dashboard-demo-btn { width: auto; min-width: 0; }
 .dashboard-demo-feedback { margin: -1rem 0 1.25rem; }
+.dashboard-demo-feedback.alerta-sucesso, .dashboard-demo-feedback.alerta-erro { color: var(--texto); }
 .dashboard-kpis { display: grid; grid-template-columns: 1.15fr 1fr 1fr .85fr; gap: 1rem; margin-bottom: 1rem; }
 .kpi-card { min-height: 148px; padding: 1.25rem; display: grid; grid-template-columns: 42px 1fr; grid-template-rows: auto 1fr; gap: .65rem .85rem; border: 1px solid var(--borda); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--sombra-xs); transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
 .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--sombra-md); }

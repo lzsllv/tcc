@@ -75,7 +75,7 @@ export default function Dashboard() {
         </div>
 
         {demoFeedback && (
-          <p className={`dashboard-demo-feedback alerta-${demoFeedback.type}`} role={demoFeedback.type === 'erro' ? 'alert' : 'status'} aria-live={demoFeedback.type === 'erro' ? 'assertive' : 'polite'}>
+          <p className={`dashboard-demo-feedback alerta-${demoFeedback.type}`} role={demoFeedback.type === 'erro' ? 'alert' : 'status'}>
             {demoFeedback.message}
           </p>
         )}
