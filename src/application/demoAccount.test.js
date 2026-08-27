@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createDemoAccount, isDemoAccountEmpty } from './demoAccount.js';
+import { createEmptyWorkspace } from '../persistence/workspace.js';
 
 const now = '2026-08-25T12:00:00.000Z';
 
@@ -51,11 +52,18 @@ test('não muta entrada e protege conta não vazia', () => {
 
 
 
-test('aceita apenas o canal direto baseline e a configuração inicial legada', () => {
-  assert.equal(isDemoAccountEmpty({ ownerId: 'owner-1', salesChannels: [{ id: 'channel-direct', ownerId: 'owner-1', name: 'Venda direta', active: true, isDefault: true, fees: [], createdAt: 'a', updatedAt: 'b' }], settings: { margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' } }), true);
-  for (const change of [{ name: 'Outra' }, { active: false }, { isDefault: false }, { fees: [{ value: 1 }] }]) {
-    const channel = { id: 'channel-direct', ownerId: 'owner-1', name: 'Venda direta', active: true, isDefault: true, fees: [], ...change };
-    assert.equal(isDemoAccountEmpty({ ownerId: 'owner-1', salesChannels: [channel] }), false);
+test('aceita o workspace v2 baseline real e recusa cada alteração de settings', () => {
+  const workspace = createEmptyWorkspace('owner-1', now);
+  assert.equal(isDemoAccountEmpty({ workspace }), true);
+  for (const change of [
+    { businessName: 'Nome' },
+    { logo: 'data:image/svg+xml,x' },
+    { region: 'Tupã - SP' },
+    { laborHourCents: 1 },
+    { defaultMarginBps: 1 },
+    { selectedSalesChannelId: 'channel-other' },
+  ]) {
+    assert.equal(isDemoAccountEmpty({ workspace: { ...workspace, settings: { ...workspace.settings, ...change } } }), false);
   }
 });
 
@@ -105,4 +113,63 @@ test('deriva o pacote legado coerente do workspace demonstrativo', () => {
     logoNegocio: workspace.settings.logo,
   });
   assert.match(configuracoes.logoNegocio, /^data:image\/svg\+xml,/);
+});
+
+function deferred() {
+  let resolve;
+  let reject;
+  const promise = new Promise((success, failure) => { resolve = success; reject = failure; });
+  return { promise, resolve, reject };
+}
+
+function emptyDemoInput(status = 'ready') {
+  return {
+    workspaceStatus: status,
+    workspace: createEmptyWorkspace('owner-1', now),
+    produtos: [],
+    custosFixos: { aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] },
+    configuracoes: { margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' },
+  };
+}
+
+test('recusa carregar demonstração quando o workspace não está pronto', async () => {
+  const { persistDemoAccount } = await import('./demoAccount.js');
+  assert.equal(typeof persistDemoAccount, 'function');
+  let persisted = false;
+  await assert.rejects(
+    () => persistDemoAccount(emptyDemoInput('saving'), async () => { persisted = true; }),
+    /pronto/i,
+  );
+  assert.equal(persisted, false);
+});
+
+test('só devolve o pacote legado depois da persistência do workspace', async () => {
+  const { persistDemoAccount } = await import('./demoAccount.js');
+  assert.equal(typeof persistDemoAccount, 'function');
+  const gate = deferred();
+  const events = [];
+  const result = persistDemoAccount(emptyDemoInput(), workspace => {
+    events.push(['persist', workspace]);
+    return gate.promise;
+  }, now);
+  let returned = false;
+  result.then(() => { returned = true; });
+  await Promise.resolve();
+  assert.equal(events.length, 1);
+  assert.equal(returned, false);
+  gate.resolve();
+  const demo = await result;
+  assert.equal(events[0][1], demo.workspace);
+  assert.ok(demo.produtos.length > 0);
+});
+
+test('propaga falha de persistência sem devolver pacote legado', async () => {
+  const { persistDemoAccount } = await import('./demoAccount.js');
+  assert.equal(typeof persistDemoAccount, 'function');
+  const failure = new Error('falha de gravação');
+  let returned = false;
+  const result = persistDemoAccount(emptyDemoInput(), async () => { throw failure; }, now);
+  result.then(() => { returned = true; }, () => {});
+  await assert.rejects(() => result, failure);
+  assert.equal(returned, false);
 });

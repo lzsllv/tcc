@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useEffect, useReducer } from 'reac
 import { WorkspaceService } from '../application/WorkspaceService.js';
 import { initialWorkspaceState, workspaceReducer } from '../application/workspaceState.js';
 import { LocalWorkspaceRepository } from '../persistence/index.js';
-import { createDemoAccount, isDemoAccountEmpty } from '../application/demoAccount.js';
+import { isDemoAccountEmpty, persistDemoAccount } from '../application/demoAccount.js';
 
 const AppContext = createContext();
 export function useApp() { return useContext(AppContext); }
@@ -136,13 +136,13 @@ export function AppProvider({ children }) {
   });
 
   async function carregarDemo() {
-    const demo = createDemoAccount({
+    const demo = await persistDemoAccount({
+      workspaceStatus: workspaceState.status,
       workspace: workspaceState.data,
       produtos,
       custosFixos,
       configuracoes,
-    });
-    await atualizarWorkspace(() => demo.workspace);
+    }, workspace => atualizarWorkspace(() => workspace));
     setProdutos(demo.produtos);
     setCustosFixos(demo.custosFixos);
     setConfiguracoes(demo.configuracoes);
