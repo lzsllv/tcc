@@ -62,9 +62,14 @@ test('aceita o workspace v2 baseline real e recusa cada alteração de settings'
     { laborHourCents: 1 },
     { defaultMarginBps: 1 },
     { selectedSalesChannelId: 'channel-other' },
+    { selectedSalesChannelId: '' },
+    { observacao: '' },
   ]) {
     assert.equal(isDemoAccountEmpty({ workspace: { ...workspace, settings: { ...workspace.settings, ...change } } }), false);
   }
+  const settingsWithoutChannel = { ...workspace.settings };
+  delete settingsWithoutChannel.selectedSalesChannelId;
+  assert.equal(isDemoAccountEmpty({ workspace: { ...workspace, settings: settingsWithoutChannel } }), false);
 });
 
 test('mantém embalagem coerente e unidades compatíveis', () => {
