@@ -180,7 +180,7 @@ test('deriva o pacote legado coerente do workspace demonstrativo', () => {
     assert.ok(produto, 'produto legado para ' + offer.name);
     assert.equal(produto.nome, offer.name);
     assert.equal(produto.categoria, offer.category);
-    assert.equal(produto.tempoProducao, offer.batchTimeMinutes / 60);
+    assert.equal(produto.tempoProducao, offer.batchTimeMinutes / offer.batchYield / 60);
     assert.equal(produto.quantidadeMes, offer.expectedMonthlySales);
     assert.ok(produto.custo > 0);
   }
@@ -188,16 +188,30 @@ test('deriva o pacote legado coerente do workspace demonstrativo', () => {
     assert.equal(custosFixos[key], workspace.fixedCosts[key] / 100);
   }
   assert.deepEqual(custosFixos.extras, workspace.fixedCosts.extras.map(extra => ({
-    id: extra.id, nome: extra.name, valor: extra.valueCents / 100,
+    id: extra.id, descricao: extra.name, valor: extra.valueCents / 100,
   })));
+  assert.ok(custosFixos.extras.every(extra => extra.descricao.trim()));
   assert.deepEqual(configuracoes, {
-    margemLucro: 35,
+    margemLucro: 3500 / (10000 - 3500) * 100,
     custoHora: 20,
     regiaoAtuacao: 'Tupã - SP',
     nomeNegocio: 'Doces da Maria — DEMO',
     logoNegocio: workspace.settings.logo,
   });
   assert.match(configuracoes.logoNegocio, /^data:image\/svg\+xml,/);
+});
+
+test('mantém custo de mão de obra e margem equivalentes entre workspace e legado', () => {
+  const { workspace, produtos, configuracoes } = createDemoAccount({ ownerId: 'owner-1' }, now);
+  const offer = workspace.offers.find(item => item.id === 'demo-offer-bolo');
+  const produto = produtos.find(item => item.id === offer.id);
+  const modernLaborCents = workspace.settings.laborHourCents * offer.batchTimeMinutes / 60 / offer.batchYield;
+  const legacyLaborCents = configuracoes.custoHora * produto.tempoProducao * 100;
+  const modernMarginMultiplier = 1 / (1 - workspace.settings.defaultMarginBps / 10000);
+  const legacyMarkupMultiplier = 1 + configuracoes.margemLucro / 100;
+
+  assert.equal(legacyLaborCents, modernLaborCents);
+  assert.equal(legacyMarkupMultiplier, modernMarginMultiplier);
 });
 
 function deferred() {

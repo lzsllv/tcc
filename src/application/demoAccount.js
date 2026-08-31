@@ -76,7 +76,7 @@ function createLegacyProducts(workspace) {
       nome: item.name,
       categoria: item.category,
       custo: Math.max(1, Math.round(totalCents / item.batchYield)) / 100,
-      tempoProducao: item.batchTimeMinutes / 60,
+      tempoProducao: item.batchTimeMinutes / item.batchYield / 60,
       quantidadeMes: item.expectedMonthlySales,
     };
   });
@@ -84,13 +84,13 @@ function createLegacyProducts(workspace) {
 
 function createLegacyFixedCosts(fixedCosts) {
   const result = Object.fromEntries(['aluguel', 'energia', 'internet', 'salarios', 'outros'].map(key => [key, fixedCosts[key] / 100]));
-  result.extras = fixedCosts.extras.map(extra => ({ id: extra.id, nome: extra.name, valor: extra.valueCents / 100 }));
+  result.extras = fixedCosts.extras.map(extra => ({ id: extra.id, descricao: extra.name, valor: extra.valueCents / 100 }));
   return result;
 }
 
 function createLegacySettings(settings) {
   return {
-    margemLucro: settings.defaultMarginBps / 100,
+    margemLucro: settings.defaultMarginBps / (10000 - settings.defaultMarginBps) * 100,
     custoHora: settings.laborHourCents / 100,
     regiaoAtuacao: settings.region,
     nomeNegocio: settings.businessName,
