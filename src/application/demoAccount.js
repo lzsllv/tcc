@@ -24,21 +24,21 @@ function isInitialWorkspaceFixedCosts(value) {
     && isEmptyWorkspaceCollection(value.extras);
 }
 
-function isInitialWorkspaceSalesChannels(value, ownerId, updatedAt) {
+function isInitialWorkspaceSalesChannels(value, ownerId) {
   const expectedKeys = ['id', 'ownerId', 'name', 'active', 'isDefault', 'fees', 'createdAt', 'updatedAt'];
   if (!Array.isArray(value) || value.length !== 1) return false;
   const channel = value[0];
   return hasExactlyKeys(channel, expectedKeys)
     && isBaselineDirectChannel(channel, ownerId)
-    && channel.createdAt === updatedAt
-    && channel.updatedAt === updatedAt;
+    && typeof channel.createdAt === 'string'
+    && typeof channel.updatedAt === 'string';
 }
 
 function isInitialWorkspaceV2(workspace, ownerId, legacySettings) {
   return isEmptyWorkspaceCollection(workspace.ingredients)
     && isEmptyWorkspaceCollection(workspace.offers)
     && isInitialWorkspaceFixedCosts(workspace.fixedCosts)
-    && isInitialWorkspaceSalesChannels(workspace.salesChannels, ownerId, workspace.updatedAt)
+    && isInitialWorkspaceSalesChannels(workspace.salesChannels, ownerId)
     && isInitialWorkspaceSettings(workspace.settings, legacySettings);
 }
 

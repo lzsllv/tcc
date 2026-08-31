@@ -81,6 +81,13 @@ test('aceita o workspace v2 baseline real e recusa cada alteração de settings'
   assert.equal(isDemoAccountEmpty({ workspace: workspaceWithoutSettings }), false);
 });
 
+test('aceita workspace vazio após o repositório atualizar apenas o timestamp raiz', () => {
+  const workspace = createEmptyWorkspace('owner-1', now);
+  workspace.updatedAt = '2026-08-25T12:00:00.100Z';
+
+  assert.equal(isDemoAccountEmpty({ workspace }), true);
+});
+
 test('recusa qualquer divergência estrutural do workspace v2 baseline', async t => {
   const workspace = createEmptyWorkspace('owner-1', now);
   const without = (property, source = workspace) => {
