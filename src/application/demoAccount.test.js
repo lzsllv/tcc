@@ -81,6 +81,41 @@ test('aceita o workspace v2 baseline real e recusa cada alteração de settings'
   assert.equal(isDemoAccountEmpty({ workspace: workspaceWithoutSettings }), false);
 });
 
+test('recusa qualquer divergência estrutural do workspace v2 baseline', async t => {
+  const workspace = createEmptyWorkspace('owner-1', now);
+  const without = (property, source = workspace) => {
+    const candidate = structuredClone(source);
+    delete candidate[property];
+    return candidate;
+  };
+  const channel = workspace.salesChannels[0];
+  const cases = [
+    ['ingredients ausente', without('ingredients')],
+    ['ingredients com forma errada', { ...workspace, ingredients: {} }],
+    ['offers ausente', without('offers')],
+    ['offers com forma errada', { ...workspace, offers: {} }],
+    ['fixedCosts ausente', without('fixedCosts')],
+    ['fixedCosts vazio', { ...workspace, fixedCosts: {} }],
+    ['fixedCosts sem aluguel', { ...workspace, fixedCosts: without('aluguel', workspace.fixedCosts) }],
+    ['fixedCosts sem extras', { ...workspace, fixedCosts: without('extras', workspace.fixedCosts) }],
+    ['fixedCosts com extras na forma errada', { ...workspace, fixedCosts: { ...workspace.fixedCosts, extras: {} } }],
+    ['fixedCosts com campo extra vazio', { ...workspace, fixedCosts: { ...workspace.fixedCosts, observacao: '' } }],
+    ['salesChannels ausente', without('salesChannels')],
+    ['salesChannels vazio', { ...workspace, salesChannels: [] }],
+    ['salesChannels com canal adicional', { ...workspace, salesChannels: [...workspace.salesChannels, structuredClone(channel)] }],
+    ['canal sem nome', { ...workspace, salesChannels: [without('name', channel)] }],
+    ['canal sem fees', { ...workspace, salesChannels: [without('fees', channel)] }],
+    ['canal com fees na forma errada', { ...workspace, salesChannels: [{ ...channel, fees: {} }] }],
+    ['canal com campo extra vazio', { ...workspace, salesChannels: [{ ...channel, observacao: '' }] }],
+  ];
+
+  for (const [description, candidate] of cases) {
+    await t.test(description, () => {
+      assert.equal(isDemoAccountEmpty({ workspace: candidate }), false);
+    });
+  }
+});
+
 test('aceita workspace migrado somente junto das três estruturas legadas iniciais completas', () => {
   const workspace = migrateLegacyData('owner-1', initialLegacyData, now);
 

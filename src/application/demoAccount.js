@@ -7,13 +7,57 @@ const initialLegacyMarginBps = markupBpsToMarginBps(percentToBps(20));
 const isInitialWorkspaceSettings = (value, legacySettings) => value && value.businessName === '' && value.logo === '' && value.region === '' && value.laborHourCents === 0 && (value.defaultMarginBps === 0 || (isInitialLegacySettings(legacySettings) && value.defaultMarginBps === initialLegacyMarginBps)) && value.selectedSalesChannelId === 'channel-direct' && Object.keys(value).every(key => ['businessName', 'logo', 'region', 'laborHourCents', 'defaultMarginBps', 'selectedSalesChannelId'].includes(key));
 const isBaselineDirectChannel = (channel, ownerId) => channel && channel.id === 'channel-direct' && channel.ownerId === ownerId && channel.name === 'Venda direta' && channel.active === true && channel.isDefault === true && Array.isArray(channel.fees) && channel.fees.length === 0;
 
+function hasExactlyKeys(value, expectedKeys) {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    && Object.keys(value).length === expectedKeys.length
+    && Object.keys(value).every(key => expectedKeys.includes(key));
+}
+
+function isEmptyWorkspaceCollection(value) {
+  return Array.isArray(value) && value.length === 0;
+}
+
+function isInitialWorkspaceFixedCosts(value) {
+  const expectedKeys = ['aluguel', 'energia', 'internet', 'salarios', 'outros', 'extras'];
+  return hasExactlyKeys(value, expectedKeys)
+    && expectedKeys.slice(0, -1).every(key => value[key] === 0)
+    && isEmptyWorkspaceCollection(value.extras);
+}
+
+function isInitialWorkspaceSalesChannels(value, ownerId, updatedAt) {
+  const expectedKeys = ['id', 'ownerId', 'name', 'active', 'isDefault', 'fees', 'createdAt', 'updatedAt'];
+  if (!Array.isArray(value) || value.length !== 1) return false;
+  const channel = value[0];
+  return hasExactlyKeys(channel, expectedKeys)
+    && isBaselineDirectChannel(channel, ownerId)
+    && channel.createdAt === updatedAt
+    && channel.updatedAt === updatedAt;
+}
+
+function isInitialWorkspaceV2(workspace, ownerId, legacySettings) {
+  return isEmptyWorkspaceCollection(workspace.ingredients)
+    && isEmptyWorkspaceCollection(workspace.offers)
+    && isInitialWorkspaceFixedCosts(workspace.fixedCosts)
+    && isInitialWorkspaceSalesChannels(workspace.salesChannels, ownerId, workspace.updatedAt)
+    && isInitialWorkspaceSettings(workspace.settings, legacySettings);
+}
+
+function hasNonBaselineSimplifiedWorkspace(workspace, ownerId, legacySettings) {
+  const modern = [workspace.ingredients, workspace.offers, workspace.fixedCosts];
+  const hasWorkspaceSettings = Object.hasOwn(workspace, 'settings');
+  const salesChannels = workspace.salesChannels ?? [];
+  return modern.some(hasUserEntries)
+    || (hasWorkspaceSettings && !isInitialWorkspaceSettings(workspace.settings, legacySettings))
+    || !Array.isArray(salesChannels)
+    || salesChannels.some(channel => !isBaselineDirectChannel(channel, ownerId));
+}
+
 export function isDemoAccountEmpty(account = {}) {
   const workspace = account.workspace ?? account;
   const ownerId = account.ownerId ?? workspace.ownerId;
-  const modern = [workspace.ingredients, workspace.offers, workspace.fixedCosts];
-  const hasWorkspaceSettings = Object.hasOwn(workspace, 'settings');
-  const isWorkspaceV2 = workspace.schemaVersion === 2;
-  if (modern.some(hasUserEntries) || ((isWorkspaceV2 || hasWorkspaceSettings) && !isInitialWorkspaceSettings(workspace.settings, account.configuracoes)) || (workspace.salesChannels ?? []).some(channel => !isBaselineDirectChannel(channel, ownerId))) return false;
+  if (workspace.schemaVersion === 2) {
+    if (!isInitialWorkspaceV2(workspace, ownerId, account.configuracoes)) return false;
+  } else if (hasNonBaselineSimplifiedWorkspace(workspace, ownerId, account.configuracoes)) return false;
   return !(hasUserEntries(account.produtos) || hasUserEntries(account.custosFixos) || (hasUserEntries(account.configuracoes) && !isInitialLegacySettings(account.configuracoes)));
 }
 
