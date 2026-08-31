@@ -89,8 +89,9 @@ function createLegacyFixedCosts(fixedCosts) {
 }
 
 function createLegacySettings(settings) {
+  const markupPercent = settings.defaultMarginBps / (10000 - settings.defaultMarginBps) * 100;
   return {
-    margemLucro: settings.defaultMarginBps / (10000 - settings.defaultMarginBps) * 100,
+    margemLucro: Math.round(markupPercent * 2) / 2,
     custoHora: settings.laborHourCents / 100,
     regiaoAtuacao: settings.region,
     nomeNegocio: settings.businessName,

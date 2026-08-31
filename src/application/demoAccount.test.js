@@ -192,7 +192,7 @@ test('deriva o pacote legado coerente do workspace demonstrativo', () => {
   })));
   assert.ok(custosFixos.extras.every(extra => extra.descricao.trim()));
   assert.deepEqual(configuracoes, {
-    margemLucro: 3500 / (10000 - 3500) * 100,
+    margemLucro: 54,
     custoHora: 20,
     regiaoAtuacao: 'Tupã - SP',
     nomeNegocio: 'Doces da Maria — DEMO',
@@ -211,7 +211,8 @@ test('mantém custo de mão de obra e margem equivalentes entre workspace e lega
   const legacyMarkupMultiplier = 1 + configuracoes.margemLucro / 100;
 
   assert.equal(legacyLaborCents, modernLaborCents);
-  assert.equal(legacyMarkupMultiplier, modernMarginMultiplier);
+  assert.equal((configuracoes.margemLucro * 2) % 1, 0);
+  assert.ok(Math.abs(legacyMarkupMultiplier - modernMarginMultiplier) < 0.002);
 });
 
 function deferred() {
