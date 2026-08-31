@@ -1,0 +1,35 @@
+.canais-contador { padding: .35rem .7rem; color: var(--accent-dark); border: 1px solid var(--accent-line); border-radius: 999px; background: var(--accent-soft); font-size: .72rem; font-weight: 780; white-space: nowrap; }
+.canais-grid { grid-template-columns: minmax(360px, .95fr) minmax(0, 1.05fr); }
+.canais-taxas-cabecalho, .canais-lista-topo { margin: 1.25rem 0 .75rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.canais-taxas-cabecalho h3 { color: var(--texto); font-size: .84rem; }
+.canais-taxas-cabecalho p, .canais-lista-topo p { margin-top: .2rem; color: var(--texto-muted); font-size: .72rem; }
+.canais-lista-topo { margin-top: 0; align-items: flex-start; }
+.canais-lista-topo .secao-titulo { margin-bottom: 0; }
+.canais-adicionar { min-height: 34px; padding: .4rem .65rem; display: inline-flex; align-items: center; gap: .35rem; color: var(--accent-dark); border: 1px solid var(--accent-line); border-radius: var(--radius-sm); background: var(--accent-soft); font-size: .72rem; font-weight: 760; }
+.canais-taxas-vazio { padding: 1rem; color: var(--texto-muted); border: 1px dashed var(--borda-forte); border-radius: var(--radius); background: var(--surface-2); font-size: .76rem; text-align: center; }
+.canais-taxas { display: grid; gap: .75rem; }
+.canal-taxa { position: relative; padding: .8rem; display: grid; grid-template-columns: minmax(120px, 1.2fr) 1fr 1fr minmax(95px, .7fr); gap: .65rem; border: 1px solid var(--borda); border-radius: var(--radius); background: var(--surface-2); }
+.canal-taxa .campo-grupo { margin-bottom: 0; }
+.canal-taxa-remover { position: absolute; top: -.55rem; right: -.45rem; width: 28px; min-height: 28px; padding: 0; border-radius: 999px; }
+.canais-form-acoes { margin-top: 1.25rem; }
+.canais-lista { display: grid; gap: .8rem; }
+.canal-card { padding: 1rem; box-shadow: var(--sombra-xs); }
+.canal-card-arquivado { opacity: .68; background: var(--surface-2); }
+.canal-card-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.canal-identidade { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; }
+.canal-identidade h3 { color: var(--texto); font-size: .98rem; font-weight: 800; }
+.canal-card-topo p { margin-top: .3rem; color: var(--texto-muted); font-size: .72rem; }
+.canal-padrao, .canal-status { padding: .18rem .45rem; display: inline-flex; align-items: center; gap: .22rem; border-radius: 999px; font-size: .61rem; font-weight: 780; text-transform: uppercase; }
+.canal-padrao { color: var(--accent-dark); border: 1px solid var(--accent-line); background: var(--accent-soft); }
+.canal-status { color: var(--texto-muted); border: 1px solid var(--borda-forte); background: var(--surface-2); }
+.canal-acao, .canal-arquivar { min-width: 36px; min-height: 36px; display: inline-grid; place-items: center; border-radius: var(--radius-sm); }
+.canal-acao { color: var(--texto-sec); border: 1px solid var(--borda); background: var(--surface); }
+.canal-arquivar { color: var(--alerta); border: 1px solid var(--alerta-borda); background: var(--alerta-fundo); }
+.canal-resumo { margin-top: .9rem; display: grid; grid-template-columns: 1fr 1fr; border-block: 1px solid var(--borda); }
+.canal-resumo > div { padding: .75rem; display: grid; gap: .12rem; }
+.canal-resumo > div + div { border-left: 1px solid var(--borda); }
+.canal-resumo span, .canal-resumo small { color: var(--texto-muted); font-size: .65rem; }
+.canal-resumo strong { color: var(--texto); font-size: 1rem; }
+@media (max-width: 980px) { .canais-grid { grid-template-columns: 1fr; } .canal-taxa { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 620px) { .canal-card-topo { flex-direction: column; } .canal-card-topo .acoes { width: 100%; flex-wrap: wrap; } .canal-card-topo .btn-editar { flex: 1; } }
+@media (max-width: 480px) { .canal-taxa { grid-template-columns: 1fr; } .canais-form-acoes { flex-direction: column; } }

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { X } from '@phosphor-icons/react';
 import Navbar from '../components/Navbar';
 import { useApp } from '../context/AppContext';
 import '../styles/Pagina.css';
@@ -55,11 +56,11 @@ export default function CustosFixos() {
   }
 
   const camposFixos = [
-    { key: 'aluguel',  label: 'Aluguel',  icone: '🏠' },
-    { key: 'energia',  label: 'Energia',  icone: '⚡' },
-    { key: 'internet', label: 'Internet', icone: '🌐' },
-    { key: 'salarios', label: 'Salários', icone: '👷' },
-    { key: 'outros',   label: 'Outros',   icone: '📋' },
+    { key: 'aluguel', label: 'Aluguel' },
+    { key: 'energia', label: 'Energia' },
+    { key: 'internet', label: 'Internet' },
+    { key: 'salarios', label: 'Salários' },
+    { key: 'outros', label: 'Outros' },
   ];
 
   const extras       = custosFixos.extras || [];
@@ -73,7 +74,7 @@ export default function CustosFixos() {
       <main className="pagina-container">
         <div className="pagina-cabecalho">
           <div>
-            <h1 className="pagina-titulo">💸 Custos Fixos</h1>
+            <h1 className="pagina-titulo">Custos Fixos</h1>
             <p className="pagina-subtitulo">Registre os gastos mensais fixos do seu negócio</p>
           </div>
         </div>
@@ -87,7 +88,7 @@ export default function CustosFixos() {
 
               {camposFixos.map(c => (
                 <div className="campo-grupo" key={c.key}>
-                  <label className="input-label">{c.icone} {c.label} (R$)</label>
+                  <label className="input-label">{c.label} (R$)</label>
                   <input
                     className="input-field"
                     type="number" min="0" step="0.01"
@@ -105,10 +106,10 @@ export default function CustosFixos() {
                   className="extras-toggle"
                   onClick={() => setExtrasAberto(a => !a)}
                 >
-                  <span>➕ Outros gastos personalizados</span>
+                  <span>Outros gastos personalizados</span>
                   <span className="extras-toggle-info">
-                    {extras.length > 0 ? `${extras.length} item(s) · ${fmt(totalExtras)}` : ''}
-                    {extrasAberto ? ' ▲' : ' ▼'}
+                    {extras.length > 0 ? `${extras.length} item(s) - ${fmt(totalExtras)}` : ''}
+                    {extrasAberto ? 'Ocultar' : 'Ver itens'}
                   </span>
                 </button>
 
@@ -145,7 +146,7 @@ export default function CustosFixos() {
                           onClick={() => removerExtra(extra.id)}
                           title="Remover"
                           aria-label="Remover gasto extra"
-                        >✕</button>
+                        ><X size={16} /></button>
                       </div>
                     ))}
 
@@ -169,14 +170,14 @@ export default function CustosFixos() {
           {/* Resumo */}
           <div>
             <div className="card">
-              <h2 className="secao-titulo">📊 Resumo</h2>
+              <h2 className="secao-titulo">Resumo</h2>
               <div className="resumo-linha">
                 <span>Total mensal:</span>
                 <strong className="valor-verde">{fmt(totalMensal)}</strong>
               </div>
               {extras.length > 0 && (
                 <div className="resumo-linha">
-                  <span>↳ gastos extras:</span>
+                  <span>Gastos extras:</span>
                   <strong>{fmt(totalExtras)}</strong>
                 </div>
               )}
@@ -192,7 +193,7 @@ export default function CustosFixos() {
                 O rateio real por unidade depende da quantidade mensal de cada produto.
               </small>
               {produtos.length === 0 && (
-                <p className="texto-aviso">⚠️ Cadastre produtos para ver a distribuição de custos.</p>
+                <p className="texto-aviso">Cadastre produtos para ver a distribuição de custos.</p>
               )}
             </div>
           </div>

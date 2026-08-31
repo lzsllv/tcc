@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Coins, Package } from '@phosphor-icons/react';
 import Navbar from '../components/Navbar';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
@@ -53,7 +54,7 @@ export default function Relatorio() {
 
         <div className="pagina-cabecalho">
           <div>
-            <h1 className="pagina-titulo">📊 Relatório</h1>
+            <h1 className="pagina-titulo">Relatório</h1>
             <p className="pagina-subtitulo">Visão completa dos seus custos, preços e margens</p>
           </div>
           <button className="btn-primary btn-imprimir" onClick={() => window.print()}>
@@ -65,7 +66,7 @@ export default function Relatorio() {
         <div className="card relatorio-filtro">
           <h2 className="secao-titulo">📅 Período de referência</h2>
           <p className="relatorio-filtro-aviso">
-            ℹ️ Este relatório exibe uma <strong>projeção mensal</strong> com base nos dados atuais.
+            Este relatório exibe uma <strong>projeção mensal</strong> com base nos dados atuais.
             O mês e ano selecionados aparecem apenas no cabeçalho impresso.
           </p>
           <div className="relatorio-filtro-campos">
@@ -96,10 +97,10 @@ export default function Relatorio() {
             <div>
               {nomeNegocio && <h2 className="relatorio-nome-negocio">{nomeNegocio}</h2>}
               <p className="relatorio-periodo-desc">
-                Projeção mensal — <strong>{MESES[mesSel]} {anoSel}</strong>
+                Projeção mensal - <strong>{MESES[mesSel]} {anoSel}</strong>
               </p>
               {configuracoes.regiaoAtuacao && (
-                <p className="relatorio-regiao">📍 {configuracoes.regiaoAtuacao}</p>
+                <p className="relatorio-regiao">{configuracoes.regiaoAtuacao}</p>
               )}
             </div>
           </div>
@@ -115,20 +116,20 @@ export default function Relatorio() {
         {/* Alertas */}
         {custosZerados && (
           <div className="alerta-aviso relatorio-alerta">
-            ⚠️ Seus custos fixos estão zerados.{' '}
+            Seus custos fixos estão zerados.{' '}
             <Link to="/custos-fixos">Preencher custos fixos</Link>
           </div>
         )}
         {produtos.some(p => !p.quantidadeMes || Number(p.quantidadeMes) === 0) && (
           <div className="alerta-aviso relatorio-alerta">
-            ⚠️ Alguns produtos não têm quantidade mensal informada.{' '}
+            Alguns produtos não têm quantidade mensal informada.{' '}
             <Link to="/produtos">Corrigir produtos</Link>
           </div>
         )}
 
         {/* Resumo geral */}
         <div className="card relatorio-secao">
-          <h2 className="secao-titulo">Resumo da projeção — {MESES[mesSel]} {anoSel}</h2>
+          <h2 className="secao-titulo">Resumo da projeção - {MESES[mesSel]} {anoSel}</h2>
           <div className="relatorio-grid-info">
             <div className="info-item">
               <span className="info-label">Receita bruta projetada</span>
@@ -162,7 +163,7 @@ export default function Relatorio() {
           <h2 className="secao-titulo">Custos fixos detalhados</h2>
           {custosZerados ? (
             <div className="estado-vazio">
-              <span>💸</span>
+              <span><Coins size={30} /></span>
               <p>Nenhum custo fixo registrado.</p>
               <Link to="/custos-fixos" className="btn-primary btn-estado-vazio">Cadastrar custos fixos</Link>
             </div>
@@ -177,7 +178,7 @@ export default function Relatorio() {
                       <tr key={k}><td>{NOMES_CUSTOS[k] || k}</td><td>{fmt(v)}</td></tr>
                     ))}
                   {(custosFixos.extras || []).filter(e => Number(e.valor) > 0).map(e => (
-                    <tr key={e.id}><td>{e.descricao || 'Extra'}</td><td>{fmt(e.valor)}</td></tr>
+                    <tr key={e.id}><td>{e.nome || e.descricao || 'Extra'}</td><td>{fmt(e.valor)}</td></tr>
                   ))}
                   <tr className="tabela-total">
                     <td>Total</td>
@@ -191,18 +192,18 @@ export default function Relatorio() {
 
         {/* Tabela de produtos */}
         <div className="card relatorio-secao">
-          <h2 className="secao-titulo">Produção e projeção — {MESES[mesSel]} {anoSel}</h2>
+          <h2 className="secao-titulo">Produção e projeção - {MESES[mesSel]} {anoSel}</h2>
 
           {produtos.length > 0 && !custosZerados && (
             <div className="alerta-info relatorio-rateio-info">
-              ℹ️ <strong>Rateio do custo fixo:</strong> {fmt(totalCustos)} ÷ {totalUnidades} un totais
+              <strong>Rateio do custo fixo:</strong> {fmt(totalCustos)} ÷ {totalUnidades} un totais
               {' '}= <strong>{fmt(fixoPorUnidade)}/un</strong> para qualquer produto.
             </div>
           )}
 
           {produtos.length === 0 ? (
             <div className="estado-vazio">
-              <span>📦</span>
+              <span><Package size={30} /></span>
               <p>Nenhum produto cadastrado.</p>
               <Link to="/produtos" className="btn-primary btn-estado-vazio">Cadastrar produto</Link>
             </div>

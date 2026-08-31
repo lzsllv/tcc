@@ -2,6 +2,8 @@
 
 > Sistema de precificação para pequenos empreendedores — calcule custos, defina preços e projete seu lucro mensal.
 
+🌐 **[precifique-app.vercel.app](https://precifique-app.vercel.app)**
+
 ---
 
 ## 📌 Sobre o projeto
@@ -99,7 +101,8 @@ src/
 │   ├── CustosFixos.jsx
 │   ├── Configuracoes.jsx
 │   ├── Simulacao.jsx
-│   └── Relatorio.jsx
+│   ├── Relatorio.jsx
+│   └── NotFound.jsx
 └── styles/           # Arquivos CSS por página/componente
 ```
 
@@ -107,7 +110,7 @@ src/
 
 ## 👨‍💻 Autor
 
-Desenvolvido por **Luiz Fernando,stefany Marques, Maria Ramiro e Maria Eduarda Gianzanti
+Desenvolvido por **Luiz Fernando, Stefany Marques, Maria Ramiro e Maria Eduarda Gianzanti**
 
 ---
 

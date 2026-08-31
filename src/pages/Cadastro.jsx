@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Coins, Package, ShieldCheck } from '@phosphor-icons/react';
 import { useApp } from '../context/AppContext';
 import '../styles/Auth.css';
 
 export default function Cadastro() {
-  const [nome,           setNome]           = useState('');
-  const [email,          setEmail]          = useState('');
-  const [senha,          setSenha]          = useState('');
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
-  const [erro,           setErro]           = useState('');
-  const [sucesso,        setSucesso]        = useState('');
-
+  const [erro, setErro] = useState('');
+  const [sucesso, setSucesso] = useState('');
   const { cadastrar } = useApp();
   const navegar = useNavigate();
 
@@ -18,67 +18,59 @@ export default function Cadastro() {
     e.preventDefault();
     setErro(''); setSucesso('');
     if (!nome || !email || !senha || !confirmarSenha) { setErro('Preencha todos os campos.'); return; }
-    if (senha.length < 6)         { setErro('A senha deve ter no mínimo 6 caracteres.'); return; }
+    if (senha.length < 6) { setErro('A senha deve ter no mínimo 6 caracteres.'); return; }
     if (senha !== confirmarSenha) { setErro('As senhas não coincidem.'); return; }
     const ok = cadastrar(nome, email, senha);
     if (ok) {
       setSucesso('Conta criada com sucesso! Redirecionando...');
       setTimeout(() => navegar('/login'), 1500);
-    } else {
-      setErro('Este e-mail já está cadastrado.');
-    }
+    } else setErro('Este e-mail já está cadastrado.');
   }
 
   return (
     <div className="auth-page">
+      <aside className="auth-visual">
+        <Link to="/" className="auth-brand"><span><Coins size={21} weight="fill" /></span>Precifique</Link>
+        <div className="auth-visual-copy">
+          <span className="auth-visual-icon"><Package size={32} /></span>
+          <h2>Conheça o custo real do que você vende.</h2>
+          <p>Produtos, despesas, margem e projeções em um só lugar.</p>
+        </div>
+        <p className="auth-visual-note"><ShieldCheck size={18} /> Gratuito e sem cartão de crédito.</p>
+      </aside>
+
       <main className="auth-main">
         <div className="auth-card">
-          <div className="auth-logo">
-            <span className="auth-logo-icon">💰</span>
+          <Link to="/" className="auth-logo">
+            <span className="auth-logo-icon"><Coins size={21} weight="fill" /></span>
             <span className="auth-logo-nome">Precifique</span>
-          </div>
-
-          <h1 className="auth-titulo">Criar conta grátis</h1>
-          <p className="auth-subtitulo">Precifique seus produtos com inteligência</p>
+          </Link>
+          <p className="auth-contexto">Comece gratuitamente</p>
+          <h1 className="auth-titulo">Crie sua conta</h1>
+          <p className="auth-subtitulo">Leva menos de um minuto.</p>
 
           <form onSubmit={handleSubmit} className="auth-form">
-            {erro    && <div className="alerta-erro">{erro}</div>}
+            {erro && <div className="alerta-erro">{erro}</div>}
             {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
-
             <div className="campo-grupo">
               <label className="input-label" htmlFor="nome">Nome completo</label>
-              <input id="nome" type="text" className="input-field"
-                placeholder="Seu nome" value={nome}
-                onChange={e => setNome(e.target.value)} autoFocus />
+              <input id="nome" type="text" className="input-field" placeholder="Seu nome" value={nome} onChange={e => setNome(e.target.value)} autoFocus />
             </div>
-
             <div className="campo-grupo">
               <label className="input-label" htmlFor="email">E-mail</label>
-              <input id="email" type="email" className="input-field"
-                placeholder="seu@email.com" value={email}
-                onChange={e => setEmail(e.target.value)} />
+              <input id="email" type="email" className="input-field" placeholder="seu@email.com" value={email} onChange={e => setEmail(e.target.value)} />
             </div>
-
             <div className="campo-grupo">
               <label className="input-label" htmlFor="senha">Senha</label>
-              <input id="senha" type="password" className="input-field"
-                placeholder="Mínimo 6 caracteres" value={senha}
-                onChange={e => setSenha(e.target.value)} />
+              <input id="senha" type="password" className="input-field" placeholder="Mínimo 6 caracteres" value={senha} onChange={e => setSenha(e.target.value)} />
             </div>
-
             <div className="campo-grupo">
               <label className="input-label" htmlFor="confirmarSenha">Confirmar senha</label>
-              <input id="confirmarSenha" type="password" className="input-field"
-                placeholder="Repita sua senha" value={confirmarSenha}
-                onChange={e => setConfirmarSenha(e.target.value)} />
+              <input id="confirmarSenha" type="password" className="input-field" placeholder="Repita sua senha" value={confirmarSenha} onChange={e => setConfirmarSenha(e.target.value)} />
             </div>
-
             <button type="submit" className="btn-primary">Criar conta</button>
           </form>
-
-          <p className="auth-rodape">
-            Já tem conta? <Link to="/login">Entrar</Link>
-          </p>
+          <p className="auth-rodape">Já tem conta? <Link to="/login">Entrar</Link></p>
         </div>
       </main>
     </div>

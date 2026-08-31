@@ -1,219 +1,128 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { Archive, MagnifyingGlass, Package, PencilSimple, Plus, Trash } from '@phosphor-icons/react';
+import { Link, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useApp } from '../context/AppContext';
+import { archiveOffer, deleteOffer } from '../application/offers.js';
+import { priceOfferForChannel } from '../application/offerPricing.js';
+import { selectSalesChannel } from '../application/salesChannels.js';
+import { calculateOfferVariableCost } from '../domain/pricing/offers.js';
+import { formatCents } from '../domain/pricing/money.js';
 import '../styles/Pagina.css';
 import '../styles/Produtos.css';
 
-const CATEGORIAS = ['Alimento','Bebida','Artesanato','Moda','Higiene','Presente','Serviço','Outro'];
-
 export default function Produtos() {
-  const {
-    produtos, adicionarProduto, editarProduto, excluirProduto,
-    calcularCustoTotal, calcularPrecoSugerido,
-    totalCustosFixos, totalUnidadesMes, custoFixoPorUnidade,
-  } = useApp();
+  const { workspace, workspaceStatus, workspaceError, atualizarWorkspace } = useApp();
+  const location = useLocation();
+  const [search, setSearch] = useState('');
+  const [kind, setKind] = useState('all');
+  const [category, setCategory] = useState('all');
+  const [message, setMessage] = useState(location.state?.saved ? { type: 'success', text: 'Ficha técnica salva com sucesso.' } : null);
 
-  const [form, setForm] = useState({
-    nome: '', categoria: 'Outro', custo: '', tempoProducao: '', quantidadeMes: '',
-  });
-  const [editandoId, setEditandoId] = useState(null);
-  const [erro,    setErro]    = useState('');
-  const [sucesso, setSucesso] = useState('');
+  const ingredientsById = useMemo(() => Object.fromEntries((workspace?.ingredients ?? []).map(item => [item.id, item])), [workspace]);
+  const activeChannels = useMemo(() => (workspace?.salesChannels ?? []).filter(channel => channel.active), [workspace]);
+  const selectedChannelId = activeChannels.some(channel => channel.id === workspace?.settings?.selectedSalesChannelId)
+    ? workspace.settings.selectedSalesChannelId
+    : activeChannels.find(channel => channel.isDefault)?.id ?? activeChannels[0]?.id;
+  const categories = useMemo(() => [...new Set((workspace?.offers ?? []).map(offer => offer.category))].sort((a, b) => a.localeCompare(b, 'pt-BR')), [workspace]);
+  const offers = useMemo(() => {
+    const term = search.trim().toLocaleLowerCase('pt-BR');
+    return (workspace?.offers ?? [])
+      .filter(offer => kind === 'all' || offer.kind === kind)
+      .filter(offer => category === 'all' || offer.category === category)
+      .filter(offer => !term || offer.name.toLocaleLowerCase('pt-BR').includes(term) || offer.category.toLocaleLowerCase('pt-BR').includes(term))
+      .sort((a, b) => Number(b.active) - Number(a.active) || a.name.localeCompare(b.name, 'pt-BR'));
+  }, [workspace, kind, category, search]);
 
-  function handleChange(campo, valor) {
-    setForm(prev => ({ ...prev, [campo]: valor }));
+  function costs(offer) {
+    try { return calculateOfferVariableCost(offer, ingredientsById, workspace.settings.laborHourCents); }
+    catch { return null; }
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    setErro(''); setSucesso('');
-    if (!form.nome.trim())               { setErro('Informe o nome do produto.'); return; }
-    if (Number(form.custo) < 0)          { setErro('O custo direto não pode ser negativo.'); return; }
-    if (Number(form.tempoProducao) < 0)  { setErro('O tempo de produção não pode ser negativo.'); return; }
-    if (Number(form.quantidadeMes) < 0)  { setErro('A quantidade mensal não pode ser negativa.'); return; }
-
-    if (editandoId !== null) {
-      editarProduto(editandoId, form);
-      setSucesso('Produto atualizado com sucesso!');
-      setEditandoId(null);
-    } else {
-      adicionarProduto(form);
-      setSucesso('Produto cadastrado com sucesso!');
-    }
-    setForm({ nome: '', categoria: 'Outro', custo: '', tempoProducao: '', quantidadeMes: '' });
-    setTimeout(() => setSucesso(''), 3000);
+  function pricing(offer) {
+    if (!offer.active || !selectedChannelId) return null;
+    try { return { value: priceOfferForChannel(workspace, offer.id, selectedChannelId), error: null }; }
+    catch (error) { return { value: null, error: error.message }; }
   }
 
-  function handleEditar(p) {
-    setForm({ nome: p.nome, categoria: p.categoria, custo: p.custo,
-              tempoProducao: p.tempoProducao, quantidadeMes: p.quantidadeMes });
-    setEditandoId(p.id);
-    setErro(''); setSucesso('');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  async function changeChannel(event) {
+    setMessage(null);
+    try { await atualizarWorkspace(current => selectSalesChannel(current, event.target.value)); }
+    catch (error) { setMessage({ type: 'error', text: error.message }); }
   }
 
-  function handleCancelar() {
-    setForm({ nome: '', categoria: 'Outro', custo: '', tempoProducao: '', quantidadeMes: '' });
-    setEditandoId(null);
-    setErro('');
+  async function archive(item) {
+    if (!window.confirm(`Arquivar “${item.name}”?`)) return;
+    try {
+      await atualizarWorkspace(current => archiveOffer(current, item.id));
+      setMessage({ type: 'success', text: 'Oferta arquivada. A ficha técnica foi preservada.' });
+    } catch (error) { setMessage({ type: 'error', text: error.message }); }
   }
 
-  function confirmarExclusao(p) {
-    if (window.confirm(`Excluir "${p.nome}"? Esta ação não pode ser desfeita.`)) {
-      excluirProduto(p.id);
-    }
+  async function remove(item) {
+    if (!window.confirm(`Excluir “${item.name}” definitivamente?`)) return;
+    try {
+      await atualizarWorkspace(current => deleteOffer(current, item.id));
+      setMessage({ type: 'success', text: 'Oferta excluída.' });
+    } catch (error) { setMessage({ type: 'error', text: error.message }); }
   }
 
-  function fmt(v) {
-    return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  }
-
-  const totalCF = totalCustosFixos();
-  const totalUn = totalUnidadesMes();
-  const fixo    = custoFixoPorUnidade();
-
+  const loading = workspaceStatus === 'loading' || workspaceStatus === 'idle';
+  const saving = workspaceStatus === 'saving';
   return (
     <div>
       <Navbar />
       <main className="pagina-container">
         <div className="pagina-cabecalho">
-          <div>
-            <h1 className="pagina-titulo">📦 Produtos</h1>
-            <p className="pagina-subtitulo">Gerencie os produtos do seu negócio</p>
-          </div>
+          <div><h1 className="pagina-titulo">Produtos e serviços</h1><p className="pagina-subtitulo">Monte fichas técnicas e acompanhe o custo real de cada oferta.</p></div>
+          <Link className="btn-primary produtos-novo" to="/produtos/novo"><Plus size={17} /> Nova ficha técnica</Link>
         </div>
 
-        <div className="pagina-grid">
-          {/* Formulário */}
-          <div className="card">
-            <h2 className="secao-titulo">{editandoId !== null ? '✏️ Editar produto' : '➕ Novo produto'}</h2>
-            <form onSubmit={handleSubmit} className="auth-form">
-              {erro    && <div className="alerta-erro">{erro}</div>}
-              {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
+        {workspaceError && <div className="alerta-erro">Não foi possível acessar seus dados: {workspaceError}</div>}
+        {message && <div role="status" className={message.type === 'error' ? 'alerta-erro' : 'alerta-sucesso'}>{message.text}</div>}
 
-              <div className="campo-grupo">
-                <label className="input-label">Nome do produto</label>
-                <input className="input-field" type="text" value={form.nome}
-                  onChange={e => handleChange('nome', e.target.value)}
-                  placeholder="Ex: Vela aromática" required />
-              </div>
-
-              <div className="campo-grupo">
-                <label className="input-label">Categoria</label>
-                <select className="input-field" value={form.categoria}
-                  onChange={e => handleChange('categoria', e.target.value)}>
-                  {CATEGORIAS.map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
-              </div>
-
-              <div className="campo-grupo">
-                <label className="input-label">💰 Custo direto (R$)</label>
-                <input className="input-field" type="number" min="0" step="0.01"
-                  value={form.custo}
-                  onChange={e => handleChange('custo', e.target.value)}
-                  placeholder="Soma de materiais, embalagem..." required />
-                <small className="input-hint">Soma de todos os materiais e insumos para produzir 1 unidade.</small>
-              </div>
-
-              <div className="campo-grupo">
-                <label className="input-label">⏱️ Tempo de produção (horas)</label>
-                <input className="input-field" type="number" min="0" step="0.25"
-                  value={form.tempoProducao}
-                  onChange={e => handleChange('tempoProducao', e.target.value)}
-                  placeholder="Ex: 1.5" />
-                <small className="input-hint">Horas gastas para produzir 1 unidade. Multiplicado pelo seu custo/hora.</small>
-              </div>
-
-              <div className="campo-grupo">
-                <label className="input-label">📦 Quantidade produzida por mês</label>
-                <input className="input-field" type="number" min="1"
-                  value={form.quantidadeMes}
-                  onChange={e => handleChange('quantidadeMes', e.target.value)}
-                  placeholder="Ex: 50" />
-                <small className="input-hint">Usado para rateio dos custos fixos entre todos os produtos.</small>
-              </div>
-
-              <div className="produtos-form-acoes">
-                <button type="submit" className="btn-primary produtos-btn-flex">
-                  {editandoId !== null ? 'Salvar alterações' : 'Cadastrar produto'}
-                </button>
-                {editandoId !== null && (
-                  <button type="button" onClick={handleCancelar}
-                    className="btn-secondary produtos-btn-flex">Cancelar</button>
-                )}
-              </div>
-            </form>
+        <div className="card produtos-toolbar">
+          <label className="produtos-busca"><MagnifyingGlass size={18} /><span className="sr-only">Buscar produto ou serviço</span><input value={search} onChange={event => setSearch(event.target.value)} placeholder="Buscar por nome ou categoria" /></label>
+          <div className="produtos-tipos" role="group" aria-label="Filtrar por tipo">
+            {[['all', 'Todos'], ['product', 'Produtos'], ['service', 'Serviços']].map(([value, label]) => <button key={value} type="button" className={kind === value ? 'ativo' : ''} onClick={() => setKind(value)}>{label}</button>)}
           </div>
-
-          {/* Lista */}
-          <div>
-            {produtos.length > 0 && totalCF > 0 && (
-              <div className="alerta-info produtos-rateio-info">
-                ℹ️ <strong>Custo fixo rateado:</strong>{' '}
-                {fmt(totalCF)} ÷ {totalUn} un = <strong>{fmt(fixo)}/unidade</strong>
-              </div>
-            )}
-
-            {produtos.length === 0 ? (
-              <div className="card">
-                <div className="estado-vazio">
-                  <span>📦</span>
-                  <p>Nenhum produto cadastrado ainda.<br />Use o formulário ao lado para começar.</p>
-                </div>
-              </div>
-            ) : (
-              produtos.map(p => {
-                const custo = calcularCustoTotal(p);
-                const preco = calcularPrecoSugerido(p);
-                const semQtd = !p.quantidadeMes || Number(p.quantidadeMes) === 0;
-                return (
-                  <div key={p.id} className="card produto-card">
-                    <div className="produto-card-header">
-                      <div>
-                        <h3 className="produto-nome">{p.nome}</h3>
-                        <span className="badge">{p.categoria}</span>
-                      </div>
-                      <div className="acoes">
-                        <button className="btn-editar" onClick={() => handleEditar(p)}>✏️ Editar</button>
-                        <button className="btn-excluir" onClick={() => confirmarExclusao(p)}>🗑️</button>
-                      </div>
-                    </div>
-
-                    <div className="produto-detalhes">
-                      <div className="resumo-linha produto-detalhe-linha">
-                        <span>Custo direto:</span>
-                        <strong>{fmt(p.custo || 0)}</strong>
-                      </div>
-                      <div className="resumo-linha produto-detalhe-linha">
-                        <span>Fixo/unidade:</span>
-                        <strong>{fmt(fixo)}</strong>
-                      </div>
-                      <div className="resumo-linha produto-detalhe-linha">
-                        <span>Tempo produção:</span>
-                        <strong>{p.tempoProducao || 0}h</strong>
-                      </div>
-                      <div className="resumo-linha produto-detalhe-linha">
-                        <span>Qtd/mês:</span>
-                        {semQtd
-                          ? <span className="texto-aviso">⚠️ Não informado</span>
-                          : <strong>{p.quantidadeMes} un.</strong>
-                        }
-                      </div>
-                      <div className="resumo-linha produto-total produto-detalhe-linha">
-                        <span>Custo total unitário:</span>
-                        <strong>{fmt(custo)}</strong>
-                      </div>
-                      <div className="resumo-linha produto-preco produto-detalhe-linha">
-                        <span>💚 Preço sugerido:</span>
-                        <strong className="valor-verde produto-preco-valor">{fmt(preco)}</strong>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
+          <select className="input-field produtos-categoria" aria-label="Filtrar por categoria" value={category} onChange={event => setCategory(event.target.value)}><option value="all">Todas as categorias</option>{categories.map(item => <option key={item} value={item}>{item}</option>)}</select>
+          <span className="produtos-total">{offers.length} {offers.length === 1 ? 'oferta' : 'ofertas'}</span>
         </div>
+
+        <div className="card produtos-canal">
+          <div><label htmlFor="sales-channel">Canal usado na precificação</label><p>A troca recalcula os preços sem alterar as fichas técnicas.</p></div>
+          <select id="sales-channel" className="input-field" value={selectedChannelId ?? ''} onChange={changeChannel} disabled={saving || activeChannels.length === 0}>
+            {activeChannels.length === 0 ? <option value="">Nenhum canal ativo</option> : activeChannels.map(channel => <option key={channel.id} value={channel.id}>{channel.name}{channel.isDefault ? ' — padrão' : ''}</option>)}
+          </select>
+          <Link to="/canais-venda" className="btn-secondary">Configurar canais</Link>
+        </div>
+
+        {loading ? (
+          <div className="card estado-vazio"><span><Package size={30} /></span><p>Carregando produtos e serviços...</p></div>
+        ) : offers.length === 0 ? (
+          <div className="card estado-vazio"><span><Package size={30} /></span><p>{workspace?.offers?.length ? 'Nenhuma oferta corresponde aos filtros.' : 'Nenhuma ficha técnica cadastrada ainda.'}</p>{!workspace?.offers?.length && <Link className="btn-primary btn-estado-vazio" to="/produtos/novo">Criar primeira ficha</Link>}</div>
+        ) : (
+          <div className="produtos-lista">{offers.map(offer => {
+            const value = costs(offer);
+            const channelPricing = pricing(offer);
+            return <article key={offer.id} className={`card produto-card ${offer.active ? '' : 'produto-card-arquivado'}`}>
+              <div className="produto-card-header">
+                <div><div className="produto-identidade"><h2>{offer.name}</h2>{!offer.active && <span className="produto-status">Arquivado</span>}</div><div className="produto-badges"><span className="badge">{offer.kind === 'product' ? 'Produto' : 'Serviço'}</span><span>{offer.category}</span></div></div>
+                {offer.active && <div className="acoes"><Link className="btn-editar" to={`/produtos/${offer.id}/editar`} aria-disabled={saving} onClick={event => saving && event.preventDefault()}><PencilSimple size={15} /> Editar</Link><button className="produto-arquivar" onClick={() => archive(offer)} title="Arquivar" disabled={saving}><Archive size={16} /></button><button className="btn-excluir" onClick={() => remove(offer)} title="Excluir" disabled={saving}><Trash size={15} /></button></div>}
+              </div>
+              <div className="produto-metricas"><div><span>Materiais do lote</span><strong>{value ? formatCents(value.materialCostCents) : 'Indisponível'}</strong></div><div><span>Mão de obra do lote</span><strong>{value ? formatCents(value.laborCostCents) : 'Indisponível'}</strong></div><div className="produto-custo-chave"><span>Custo por unidade</span><strong>{value ? formatCents(value.unitCostCents) : 'Indisponível'}</strong></div><div><span>Planejamento mensal</span><strong>{offer.expectedMonthlySales || 0} vendas</strong></div></div>
+              {offer.active && channelPricing?.error && <div className="produto-precos-erro">Não foi possível calcular os preços: {channelPricing.error}</div>}
+              {offer.active && channelPricing?.value?.pricingError && <div className="produto-precos-erro">Preço recomendado indisponível: {channelPricing.value.pricingError}</div>}
+              {offer.active && channelPricing?.value && <div className="produto-precos">
+                <div><span>Preço mínimo</span><strong>{formatCents(channelPricing.value.prices.minimumPriceCents)}</strong><small>Cobre o custo variável e as taxas da venda.</small></div>
+                <div><span>Preço sustentável</span><strong>{channelPricing.value.prices.sustainablePriceCents === null ? 'Planejamento mensal necessário' : formatCents(channelPricing.value.prices.sustainablePriceCents)}</strong><small>Também cobre o rateio dos custos fixos.</small></div>
+                <div className="produto-preco-recomendado"><span>Preço recomendado</span><strong>{channelPricing.value.prices.recommendedPriceCents === null ? 'Planejamento mensal necessário' : formatCents(channelPricing.value.prices.recommendedPriceCents)}</strong><small>Adiciona a margem líquida desejada.</small></div>
+              </div>}
+              <div className="produto-card-rodape"><span>{offer.components.length} {offer.components.length === 1 ? 'insumo' : 'insumos'}</span><span>{offer.batchTimeMinutes || 0} min por lote</span><span>Rendimento: {offer.batchYield}</span></div>
+            </article>;
+          })}</div>
+        )}
       </main>
     </div>
   );
