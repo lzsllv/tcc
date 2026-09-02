@@ -75,3 +75,18 @@ test('deduplica inicializações simultâneas do mesmo usuário', async () => {
   assert.deepEqual(second, first);
   assert.equal(storage.backupWrites, 1);
 });
+
+test('delega upload e remoção do logo ao repositório remoto', async () => {
+  const workspace = { schemaVersion: 2, ownerId: 'user-1', settings: { logo: '' } };
+  const repository = {
+    async loadWorkspace() { return workspace; },
+    async saveWorkspace() { return workspace; },
+    async migrateWorkspace() { return workspace; },
+    async saveLogo(_ownerId, dataUrl) { return { ...workspace, settings: { logo: dataUrl } }; },
+    async deleteLogo() { return workspace; },
+  };
+  const service = new WorkspaceService(repository, new MemoryStorage());
+
+  assert.equal((await service.saveLogo('user-1', 'data:image/webp;base64,AA==')).settings.logo, 'data:image/webp;base64,AA==');
+  assert.equal((await service.deleteLogo('user-1')).settings.logo, '');
+});

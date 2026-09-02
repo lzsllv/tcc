@@ -8,16 +8,23 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
+  const [carregando, setCarregando] = useState(false);
   const { login } = useApp();
   const navegar = useNavigate();
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setErro('');
     if (!email || !senha) { setErro('Preencha todos os campos.'); return; }
-    const sucesso = login(email, senha);
-    if (sucesso) navegar('/dashboard');
-    else setErro('E-mail ou senha incorretos.');
+    setCarregando(true);
+    try {
+      await login(email, senha);
+      navegar('/dashboard');
+    } catch (error) {
+      setErro(error.message || 'Não foi possível entrar.');
+    } finally {
+      setCarregando(false);
+    }
   }
 
   return (
@@ -29,7 +36,7 @@ export default function Login() {
           <h2>Preço claro. Negócio mais saudável.</h2>
           <p>Organize seus custos e tome decisões com confiança.</p>
         </div>
-        <p className="auth-visual-note"><ShieldCheck size={18} /> Seus dados ficam neste navegador.</p>
+        <p className="auth-visual-note"><ShieldCheck size={18} /> Seus dados ficam protegidos na sua conta.</p>
       </aside>
 
       <main className="auth-main">
@@ -52,7 +59,7 @@ export default function Login() {
               <label className="input-label" htmlFor="senha">Senha</label>
               <input id="senha" type="password" className="input-field" placeholder="Sua senha" value={senha} onChange={e => setSenha(e.target.value)} />
             </div>
-            <button type="submit" className="btn-primary">Entrar</button>
+            <button type="submit" className="btn-primary" disabled={carregando}>{carregando ? 'Entrando...' : 'Entrar'}</button>
           </form>
           <p className="auth-rodape">Não tem conta? <Link to="/cadastro">Criar conta grátis</Link></p>
         </div>

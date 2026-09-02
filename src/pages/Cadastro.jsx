@@ -11,20 +11,29 @@ export default function Cadastro() {
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [erro, setErro] = useState('');
   const [sucesso, setSucesso] = useState('');
+  const [carregando, setCarregando] = useState(false);
   const { cadastrar } = useApp();
   const navegar = useNavigate();
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setErro(''); setSucesso('');
     if (!nome || !email || !senha || !confirmarSenha) { setErro('Preencha todos os campos.'); return; }
     if (senha.length < 6) { setErro('A senha deve ter no mínimo 6 caracteres.'); return; }
     if (senha !== confirmarSenha) { setErro('As senhas não coincidem.'); return; }
-    const ok = cadastrar(nome, email, senha);
-    if (ok) {
-      setSucesso('Conta criada com sucesso! Redirecionando...');
-      setTimeout(() => navegar('/login'), 1500);
-    } else setErro('Este e-mail já está cadastrado.');
+    setCarregando(true);
+    try {
+      const result = await cadastrar(nome, email, senha);
+      if (result.requiresEmailConfirmation) {
+        setSucesso('Conta criada. Confira seu e-mail para confirmar o cadastro antes de entrar.');
+      } else {
+        navegar('/dashboard');
+      }
+    } catch (error) {
+      setErro(error.message || 'Não foi possível criar a conta.');
+    } finally {
+      setCarregando(false);
+    }
   }
 
   return (
@@ -68,7 +77,7 @@ export default function Cadastro() {
               <label className="input-label" htmlFor="confirmarSenha">Confirmar senha</label>
               <input id="confirmarSenha" type="password" className="input-field" placeholder="Repita sua senha" value={confirmarSenha} onChange={e => setConfirmarSenha(e.target.value)} />
             </div>
-            <button type="submit" className="btn-primary">Criar conta</button>
+            <button type="submit" className="btn-primary" disabled={carregando}>{carregando ? 'Criando...' : 'Criar conta'}</button>
           </form>
           <p className="auth-rodape">Já tem conta? <Link to="/login">Entrar</Link></p>
         </div>

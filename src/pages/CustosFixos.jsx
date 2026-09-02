@@ -6,7 +6,7 @@ import '../styles/Pagina.css';
 import '../styles/CustosFixos.css';
 
 export default function CustosFixos() {
-  const { custosFixos, setCustosFixos, totalCustosFixos, produtos } = useApp();
+  const { custosFixos, setCustosFixos, totalCustosFixos, produtos, salvarCustosFixos } = useApp();
   const [sucesso, setSucesso] = useState('');
   const [erro,    setErro]    = useState('');
   const [extrasAberto, setExtrasAberto] = useState(false);
@@ -38,7 +38,7 @@ export default function CustosFixos() {
     setCustosFixos(prev => ({ ...prev, extras: prev.extras.filter(e => e.id !== id) }));
   }
 
-  function handleSalvar(e) {
+  async function handleSalvar(e) {
     e.preventDefault();
     setErro(''); setSucesso('');
 
@@ -51,8 +51,13 @@ export default function CustosFixos() {
     if (temNegativo || extraNegativo)  { setErro('Nenhum custo pode ser negativo.'); return; }
     if (extraSemDescricao)             { setErro('Preencha a descrição de todos os gastos extras.'); return; }
 
-    setSucesso('Custos fixos salvos com sucesso!');
-    setTimeout(() => setSucesso(''), 3000);
+    try {
+      await salvarCustosFixos();
+      setSucesso('Custos fixos salvos com sucesso!');
+      setTimeout(() => setSucesso(''), 3000);
+    } catch (error) {
+      setErro(error.message || 'Não foi possível salvar os custos fixos.');
+    }
   }
 
   const camposFixos = [

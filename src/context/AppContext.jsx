@@ -2,59 +2,96 @@
 import { createContext, useContext, useState, useEffect, useReducer } from 'react';
 import { WorkspaceService } from '../application/WorkspaceService.js';
 import { initialWorkspaceState, workspaceReducer } from '../application/workspaceState.js';
-import { LocalWorkspaceRepository } from '../persistence/index.js';
+import { RemoteWorkspaceRepository } from '../persistence/RemoteWorkspaceRepository.js';
 import { isDemoAccountEmpty, persistDemoAccount } from '../application/demoAccount.js';
+import { SupabaseAuthService } from '../auth/SupabaseAuthService.js';
+import { createBrowserSupabaseClient } from '../auth/supabaseClient.js';
+import { sessionUser } from '../auth/session.js';
+import { calculateOfferVariableCost } from '../domain/pricing/offers.js';
 
 const AppContext = createContext();
 export function useApp() { return useContext(AppContext); }
 
-function hashSenha(senha) {
-  return btoa(unescape(encodeURIComponent(senha + ':precifique')));
+function legacyFixedCosts(fixedCosts) {
+  return {
+    ...Object.fromEntries(['aluguel', 'energia', 'internet', 'salarios', 'outros'].map(key => [key, (fixedCosts?.[key] ?? 0) / 100])),
+    extras: (fixedCosts?.extras ?? []).map(extra => ({ id: extra.id, descricao: extra.name, valor: extra.valueCents / 100 })),
+  };
+}
+
+function remoteFixedCosts(fixedCosts) {
+  const cents = value => Math.round(Number(value || 0) * 100);
+  return {
+    ...Object.fromEntries(['aluguel', 'energia', 'internet', 'salarios', 'outros'].map(key => [key, cents(fixedCosts[key])])),
+    extras: (fixedCosts.extras ?? [])
+      .filter(extra => extra.descricao.trim() || Number(extra.valor || 0) > 0)
+      .map(extra => ({ id: String(extra.id), name: extra.descricao.trim(), valueCents: cents(extra.valor) })),
+  };
+}
+
+function legacySettings(settings) {
+  return {
+    margemLucro: settings.defaultMarginBps / 100,
+    custoHora: settings.laborHourCents / 100,
+    regiaoAtuacao: settings.region,
+    nomeNegocio: settings.businessName,
+    logoNegocio: settings.logo,
+  };
+}
+
+function legacyProducts(workspace) {
+  const ingredientsById = Object.fromEntries(workspace.ingredients.map(item => [item.id, item]));
+  return workspace.offers.filter(offer => offer.active).map(offer => {
+    let unitCostCents = 0;
+    try {
+      unitCostCents = calculateOfferVariableCost(offer, ingredientsById, 0).unitCostCents;
+    } catch { /* uma ficha inconsistente permanece visível com custo zero */ }
+    return {
+      id: offer.id,
+      nome: offer.name,
+      categoria: offer.category,
+      custo: unitCostCents / 100,
+      tempoProducao: offer.batchTimeMinutes / offer.batchYield / 60,
+      quantidadeMes: offer.expectedMonthlySales,
+    };
+  });
 }
 
 export function AppProvider({ children }) {
-  const [workspaceService] = useState(() => (
-    typeof localStorage !== 'undefined'
-      ? new WorkspaceService(new LocalWorkspaceRepository(localStorage), localStorage)
-      : null
-  ));
+  const [authService] = useState(() => new SupabaseAuthService(createBrowserSupabaseClient()));
+  const [workspaceService] = useState(() => new WorkspaceService(new RemoteWorkspaceRepository({
+    baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:3333',
+    getAccessToken: () => authService.getAccessToken(),
+    storage: localStorage,
+  }), localStorage));
   const [workspaceState, dispatchWorkspace] = useReducer(workspaceReducer, initialWorkspaceState);
-  const [usuarioLogado, setUsuarioLogado] = useState(() => {
-    try { const s = localStorage.getItem('usuarioLogado'); return s ? JSON.parse(s) : null; }
-    catch { return null; }
-  });
-  const [usuarios, setUsuarios] = useState(() => {
-    try { const s = localStorage.getItem('usuarios'); return s ? JSON.parse(s) : []; }
-    catch { return []; }
-  });
-  const [produtos, setProdutos] = useState(() => {
-    try { const s = localStorage.getItem('produtos'); return s ? JSON.parse(s) : []; }
-    catch { return []; }
-  });
-  const [custosFixos, setCustosFixos] = useState(() => {
-    try {
-      const s = localStorage.getItem('custosFixos');
-      if (s) {
-        const p = JSON.parse(s);
-        if (!p.extras) p.extras = [];
-        return p;
+  const [usuarioLogado, setUsuarioLogado] = useState(null);
+  const [authStatus, setAuthStatus] = useState('loading');
+  const [produtos, setProdutos] = useState([]);
+  const [custosFixos, setCustosFixos] = useState({ aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] });
+  const [configuracoes, setConfiguracoes] = useState({ margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' });
+
+  function clearLegacyView() {
+    setProdutos([]);
+    setCustosFixos({ aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] });
+    setConfiguracoes({ margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' });
+  }
+
+  useEffect(() => {
+    let active = true;
+    authService.getSession()
+      .then(session => { if (active) { setUsuarioLogado(sessionUser(session)); if (!session) clearLegacyView(); } })
+      .catch(() => { if (active) { setUsuarioLogado(null); clearLegacyView(); } })
+      .finally(() => { if (active) setAuthStatus('ready'); });
+    const unsubscribe = authService.subscribe(session => {
+      if (active) {
+        setUsuarioLogado(sessionUser(session));
+        if (!session) clearLegacyView();
+        setAuthStatus('ready');
       }
-    } catch { /* ignora */ }
-    return { aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] };
-  });
-  const [configuracoes, setConfiguracoes] = useState(() => {
-    try {
-      const s = localStorage.getItem('configuracoes');
-      if (s) {
-        const p = JSON.parse(s);
-        if (!p.nomeNegocio) p.nomeNegocio = '';
-        if (!p.logoNegocio) p.logoNegocio = '';
-        if (!p.regiaoAtuacao) p.regiaoAtuacao = '';
-        return p;
-      }
-    } catch { /* ignora */ }
-    return { margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' };
-  });
+    });
+    return () => { active = false; unsubscribe(); };
+  }, [authService]);
 
   useEffect(() => {
     let active = true;
@@ -67,7 +104,12 @@ export function AppProvider({ children }) {
     dispatchWorkspace({ type: 'loadStarted' });
     service.initialize(String(usuarioLogado.id))
       .then(workspace => {
-        if (active) dispatchWorkspace({ type: 'loadSucceeded', workspace });
+        if (active) {
+          dispatchWorkspace({ type: 'loadSucceeded', workspace });
+          setProdutos(legacyProducts(workspace));
+          setCustosFixos(legacyFixedCosts(workspace.fixedCosts));
+          setConfiguracoes(legacySettings(workspace.settings));
+        }
       })
       .catch(error => {
         if (active) dispatchWorkspace({ type: 'failed', error });
@@ -75,25 +117,6 @@ export function AppProvider({ children }) {
 
     return () => { active = false; };
   }, [usuarioLogado, workspaceService]);
-  useEffect(() => {
-    try { localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado)); } catch { /* storage cheio */ }
-  }, [usuarioLogado, workspaceService]);
-  useEffect(() => {
-    try { localStorage.setItem('usuarios', JSON.stringify(usuarios)); } catch { /* storage cheio */ }
-  }, [usuarios]);
-  useEffect(() => {
-    try { localStorage.setItem('produtos', JSON.stringify(produtos)); } catch { /* storage cheio */ }
-  }, [produtos]);
-  useEffect(() => {
-    try { localStorage.setItem('custosFixos', JSON.stringify(custosFixos)); } catch { /* storage cheio */ }
-  }, [custosFixos]);
-  useEffect(() => {
-    const parasSalvar = { ...configuracoes };
-    if (parasSalvar.logoNegocio && parasSalvar.logoNegocio.length > 400000) {
-      parasSalvar.logoNegocio = '';
-    }
-    try { localStorage.setItem('configuracoes', JSON.stringify(parasSalvar)); } catch { /* storage cheio */ }
-  }, [configuracoes]);
 
   // ── CALCULOS ──
   function totalCustosFixos() {
@@ -120,7 +143,8 @@ export function AppProvider({ children }) {
   }
 
   function calcularPrecoSugerido(p) {
-    return calcularCustoTotal(p) * (1 + Number(configuracoes.margemLucro) / 100);
+    const margin = Number(configuracoes.margemLucro) / 100;
+    return margin >= 1 ? 0 : calcularCustoTotal(p) / (1 - margin);
   }
 
   function calcularLucroMensal(precoVenda, custoTotal, quantidade) {
@@ -148,28 +172,21 @@ export function AppProvider({ children }) {
     setConfiguracoes(demo.configuracoes);
   }
   // ── AUTH ──
-  function login(email, senha) {
-    const hash = hashSenha(senha);
-    const u = usuarios.find(u => u.email === email && (u.senha === hash || u.senha === senha));
-    if (u) {
-      if (u.senha === senha) {
-        setUsuarios(prev => prev.map(x => x.id === u.id ? { ...x, senha: hash } : x));
-      }
-      const semSenha = { ...u };
-      delete semSenha.senha;
-      setUsuarioLogado(semSenha);
-      return true;
-    }
-    return false;
-  }
-
-  function cadastrar(nome, email, senha) {
-    if (usuarios.find(u => u.email === email)) return false;
-    setUsuarios(prev => [...prev, { id: Date.now(), nome, email, senha: hashSenha(senha) }]);
+  async function login(email, senha) {
+    const { session } = await authService.signIn(email, senha);
+    setUsuarioLogado(sessionUser(session));
     return true;
   }
 
-  function logout() { setUsuarioLogado(null); }
+  async function cadastrar(nome, email, senha) {
+    return authService.signUp(nome, email, senha);
+  }
+
+  async function logout() {
+    await authService.signOut();
+    setUsuarioLogado(null);
+    clearLegacyView();
+  }
 
   // ── PRODUTOS ──
   function adicionarProduto(p)      { setProdutos(prev => [...prev, { ...p, id: crypto.randomUUID() }]); }
@@ -188,6 +205,9 @@ export function AppProvider({ children }) {
         updater,
       );
       dispatchWorkspace({ type: 'saveSucceeded', workspace });
+      setProdutos(legacyProducts(workspace));
+      setCustosFixos(legacyFixedCosts(workspace.fixedCosts));
+      setConfiguracoes(legacySettings(workspace.settings));
       return workspace;
     } catch (error) {
       dispatchWorkspace({ type: 'failed', error });
@@ -201,9 +221,35 @@ export function AppProvider({ children }) {
     }
     return workspaceService.export(String(usuarioLogado.id));
   }
+
+  async function salvarCustosFixos() {
+    return atualizarWorkspace(current => ({ ...current, fixedCosts: remoteFixedCosts(custosFixos) }));
+  }
+
+  async function salvarConfiguracoes() {
+    const logoDraft = configuracoes.logoNegocio || '';
+    let workspace = await atualizarWorkspace(current => ({
+      ...current,
+      settings: {
+        ...current.settings,
+        businessName: configuracoes.nomeNegocio.trim(),
+        region: configuracoes.regiaoAtuacao.trim(),
+        laborHourCents: Math.round(Number(configuracoes.custoHora || 0) * 100),
+        defaultMarginBps: Math.round(Number(configuracoes.margemLucro || 0) * 100),
+      },
+    }));
+    if (logoDraft.startsWith('data:image/')) {
+      workspace = await workspaceService.saveLogo(String(usuarioLogado.id), logoDraft);
+    } else if (!logoDraft && workspace.settings.logo) {
+      workspace = await workspaceService.deleteLogo(String(usuarioLogado.id));
+    }
+    dispatchWorkspace({ type: 'saveSucceeded', workspace });
+    setConfiguracoes(legacySettings(workspace.settings));
+    return workspace;
+  }
   return (
     <AppContext.Provider value={{
-      usuarioLogado, usuarios, produtos, custosFixos, configuracoes,
+      usuarioLogado, authStatus, produtos, custosFixos, configuracoes,
       workspace: workspaceState.data, workspaceStatus: workspaceState.status, workspaceError: workspaceState.error,
       setCustosFixos, setConfiguracoes,
       totalCustosFixos, totalUnidadesMes, custoFixoPorUnidade, custoFixoPorProduto,
@@ -211,6 +257,7 @@ export function AppProvider({ children }) {
       login, cadastrar, logout,
       adicionarProduto, editarProduto, excluirProduto,
       podeCarregarDemo, carregarDemo, atualizarWorkspace, exportarWorkspace,
+      salvarCustosFixos, salvarConfiguracoes,
     }}>
       {children}
     </AppContext.Provider>
