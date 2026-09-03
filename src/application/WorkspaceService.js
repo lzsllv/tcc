@@ -49,4 +49,14 @@ export class WorkspaceService {
   async export(ownerId) {
     return this.repository.exportWorkspace(ownerId);
   }
+
+  async saveLogo(ownerId, dataUrl) {
+    if (!this.repository.saveLogo) throw new Error('Repositório não oferece persistência de logo.');
+    return this.repository.saveLogo(ownerId, dataUrl);
+  }
+
+  async deleteLogo(ownerId) {
+    if (!this.repository.deleteLogo) throw new Error('Repositório não oferece remoção de logo.');
+    return this.repository.deleteLogo(ownerId);
+  }
 }

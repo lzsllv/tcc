@@ -16,7 +16,8 @@ import Relatorio     from './pages/Relatorio';
 import NotFound      from './pages/NotFound';
 
 function RotaProtegida({ children }) {
-  const { usuarioLogado } = useApp();
+  const { usuarioLogado, authStatus } = useApp();
+  if (authStatus === 'loading') return null;
   if (!usuarioLogado) {
     return <Navigate to="/login" replace />;
   }
@@ -24,7 +25,8 @@ function RotaProtegida({ children }) {
 }
 
 function RaizOuDashboard() {
-  const { usuarioLogado } = useApp();
+  const { usuarioLogado, authStatus } = useApp();
+  if (authStatus === 'loading') return null;
   return usuarioLogado ? <Navigate to="/dashboard" replace /> : <LandingPage />;
 }
 

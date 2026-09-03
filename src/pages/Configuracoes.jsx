@@ -6,7 +6,7 @@ import '../styles/Pagina.css';
 import '../styles/Configuracoes.css';
 
 export default function Configuracoes() {
-  const { configuracoes, setConfiguracoes } = useApp();
+  const { configuracoes, setConfiguracoes, salvarConfiguracoes } = useApp();
   const [sucesso, setSucesso] = useState('');
   const [erro,    setErro]    = useState('');
   const [aviso,   setAviso]   = useState('');
@@ -19,7 +19,7 @@ export default function Configuracoes() {
   function handleLogoUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 500 * 1024) { setErro('A imagem deve ter no máximo 500 KB.'); return; }
+    if (file.size > 400 * 1024) { setErro('A imagem deve ter no máximo 400 KB.'); return; }
     const reader = new FileReader();
     reader.onload = ev => handleChange('logoNegocio', ev.target.result);
     reader.readAsDataURL(file);
@@ -30,7 +30,7 @@ export default function Configuracoes() {
     if (inputLogoRef.current) inputLogoRef.current.value = '';
   }
 
-  function handleSalvar(e) {
+  async function handleSalvar(e) {
     e.preventDefault();
     setErro(''); setSucesso(''); setAviso('');
     const margem    = Number(configuracoes.margemLucro);
@@ -38,8 +38,13 @@ export default function Configuracoes() {
     if (margem < 1)    { setErro('A margem de lucro deve ser maior que 0%.'); return; }
     if (custoHora < 0) { setErro('O custo/hora não pode ser negativo.'); return; }
     if (margem < 10)   setAviso('Margem abaixo de 10% pode ser insuficiente para cobrir imprevistos.');
-    setSucesso('Configurações salvas com sucesso!');
-    setTimeout(() => setSucesso(''), 3000);
+    try {
+      await salvarConfiguracoes();
+      setSucesso('Configurações salvas com sucesso!');
+      setTimeout(() => setSucesso(''), 3000);
+    } catch (error) {
+      setErro(error.message || 'Não foi possível salvar as configurações.');
+    }
   }
 
   return (
@@ -87,10 +92,10 @@ export default function Configuracoes() {
                 <div className="config-logo-drop" onClick={() => inputLogoRef.current?.click()}>
                   <p className="config-logo-drop-icone"><ImageSquare size={30} /></p>
                   <p className="config-logo-drop-texto">Clique para enviar seu logo</p>
-                  <p className="config-logo-drop-hint">PNG, JPG ou SVG - máx. 500 KB</p>
+                  <p className="config-logo-drop-hint">PNG, JPG ou WebP - máx. 400 KB</p>
                 </div>
               )}
-              <input ref={inputLogoRef} type="file" accept="image/png,image/jpeg,image/svg+xml"
+              <input ref={inputLogoRef} type="file" accept="image/png,image/jpeg,image/webp"
                 className="input-hidden" onChange={handleLogoUpload} />
             </div>
 

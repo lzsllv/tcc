@@ -1,0 +1,214 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "ts"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["app_private"]
+}
+
+enum IngredientCategory {
+  raw_material
+  packaging
+  other
+
+  @@schema("app_private")
+}
+
+enum Unit {
+  mg
+  g
+  kg
+  ml
+  l
+  un
+  min
+  h
+
+  @@schema("app_private")
+}
+
+enum OfferKind {
+  product
+  service
+
+  @@schema("app_private")
+}
+
+enum FeeKind {
+  percentage
+  fixed
+
+  @@schema("app_private")
+}
+
+enum FeeCategory {
+  tax
+  payment
+  marketplace
+  other
+
+  @@schema("app_private")
+}
+
+model Workspace {
+  ownerId         String            @id @map("owner_id") @db.Uuid
+  schemaVersion   Int               @default(2) @map("schema_version")
+  revision        BigInt            @default(1)
+  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+  settings        BusinessSettings?
+  fixedCosts      FixedCosts?
+  fixedCostExtras FixedCostExtra[]
+  ingredients     Ingredient[]
+  offers          Offer[]
+  offerComponents OfferComponent[]
+  salesChannels   SalesChannel[]
+  channelFees     ChannelFee[]
+
+  @@map("workspaces")
+  @@schema("app_private")
+}
+
+model BusinessSettings {
+  workspaceId            String    @id @map("workspace_id") @db.Uuid
+  businessName           String    @default("") @map("business_name")
+  logoPath               String?   @map("logo_path")
+  region                 String    @default("")
+  laborHourCents         BigInt    @default(0) @map("labor_hour_cents")
+  defaultMarginBps       Int       @default(0) @map("default_margin_bps")
+  selectedSalesChannelId String    @map("selected_sales_channel_id")
+  workspace              Workspace @relation(fields: [workspaceId], references: [ownerId], onDelete: Cascade)
+  selectedSalesChannel   SalesChannel @relation("SelectedSalesChannel", fields: [workspaceId, selectedSalesChannelId], references: [workspaceId, id], onDelete: Restrict)
+
+  @@map("business_settings")
+  @@schema("app_private")
+}
+
+model FixedCosts {
+  workspaceId String    @id @map("workspace_id") @db.Uuid
+  aluguel     BigInt    @default(0)
+  energia     BigInt    @default(0)
+  internet    BigInt    @default(0)
+  salarios    BigInt    @default(0)
+  outros      BigInt    @default(0)
+  workspace   Workspace @relation(fields: [workspaceId], references: [ownerId], onDelete: Cascade)
+
+  @@map("fixed_costs")
+  @@schema("app_private")
+}
+
+model FixedCostExtra {
+  workspaceId String    @map("workspace_id") @db.Uuid
+  id          String
+  name        String
+  valueCents  BigInt    @map("value_cents")
+  position    Int
+  workspace   Workspace @relation(fields: [workspaceId], references: [ownerId], onDelete: Cascade)
+
+  @@id([workspaceId, id])
+  @@index([workspaceId])
+  @@map("fixed_cost_extras")
+  @@schema("app_private")
+}
+
+model Ingredient {
+  workspaceId          String             @map("workspace_id") @db.Uuid
+  id                   String
+  name                 String
+  category             IngredientCategory
+  purchasePriceCents   BigInt             @map("purchase_price_cents")
+  purchaseQuantity     Decimal            @map("purchase_quantity") @db.Decimal(20, 6)
+  purchaseUnit         Unit               @map("purchase_unit")
+  active               Boolean            @default(true)
+  createdAt            DateTime           @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime           @map("updated_at") @db.Timestamptz(3)
+  workspace            Workspace          @relation(fields: [workspaceId], references: [ownerId], onDelete: Cascade)
+  components           OfferComponent[]
+
+  @@id([workspaceId, id])
+  @@index([workspaceId])
+  @@map("ingredients")
+  @@schema("app_private")
+}
+
+model Offer {
+  workspaceId         String           @map("workspace_id") @db.Uuid
+  id                  String
+  kind                OfferKind
+  name                String
+  category            String
+  active              Boolean          @default(true)
+  batchYield          Decimal          @map("batch_yield") @db.Decimal(20, 6)
+  batchTimeMinutes    Decimal          @map("batch_time_minutes") @db.Decimal(20, 6)
+  expectedMonthlySales Decimal         @map("expected_monthly_sales") @db.Decimal(20, 6)
+  desiredMarginBps    Int?             @map("desired_margin_bps")
+  createdAt           DateTime         @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime         @map("updated_at") @db.Timestamptz(3)
+  workspace           Workspace        @relation(fields: [workspaceId], references: [ownerId], onDelete: Cascade)
+  components          OfferComponent[]
+
+  @@id([workspaceId, id])
+  @@index([workspaceId])
+  @@map("offers")
+  @@schema("app_private")
+}
+
+model OfferComponent {
+  workspaceId String     @map("workspace_id") @db.Uuid
+  offerId     String     @map("offer_id")
+  id          String
+  ingredientId String    @map("ingredient_id")
+  quantity    Decimal    @db.Decimal(20, 6)
+  unit        Unit
+  wasteBps    Int        @map("waste_bps")
+  position    Int
+  workspace   Workspace  @relation(fields: [workspaceId], references: [ownerId], onDelete: Cascade)
+  offer       Offer      @relation(fields: [workspaceId, offerId], references: [workspaceId, id], onDelete: Cascade)
+  ingredient  Ingredient @relation(fields: [workspaceId, ingredientId], references: [workspaceId, id], onDelete: Restrict)
+
+  @@id([workspaceId, offerId, id])
+  @@unique([workspaceId, offerId, ingredientId])
+  @@index([workspaceId, ingredientId])
+  @@map("offer_components")
+  @@schema("app_private")
+}
+
+model SalesChannel {
+  workspaceId String       @map("workspace_id") @db.Uuid
+  id          String
+  name        String
+  active      Boolean      @default(true)
+  isDefault   Boolean      @default(false) @map("is_default")
+  createdAt   DateTime     @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime     @map("updated_at") @db.Timestamptz(3)
+  workspace   Workspace    @relation(fields: [workspaceId], references: [ownerId], onDelete: Cascade)
+  fees        ChannelFee[]
+  selectedBy  BusinessSettings[] @relation("SelectedSalesChannel")
+
+  @@id([workspaceId, id])
+  @@index([workspaceId])
+  @@map("sales_channels")
+  @@schema("app_private")
+}
+
+model ChannelFee {
+  workspaceId    String       @map("workspace_id") @db.Uuid
+  salesChannelId String       @map("sales_channel_id")
+  id             String
+  name           String
+  kind           FeeKind
+  category       FeeCategory
+  value          BigInt
+  position       Int
+  workspace      Workspace    @relation(fields: [workspaceId], references: [ownerId], onDelete: Cascade)
+  salesChannel   SalesChannel @relation(fields: [workspaceId, salesChannelId], references: [workspaceId, id], onDelete: Cascade)
+
+  @@id([workspaceId, salesChannelId, id])
+  @@index([workspaceId, salesChannelId])
+  @@map("channel_fees")
+  @@schema("app_private")
+}
