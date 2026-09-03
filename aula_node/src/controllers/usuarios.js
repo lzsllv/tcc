@@ -1,13 +1,19 @@
 const db = require('../database/connection');
 
 module.exports = {
+
     async listarUsuarios(request, response) {
         try {
+            const [usuarios] = await db.query(
+                'SELECT * FROM usuario'
+            );
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de usuários.',
-                dados: null
+                dados: usuarios
             });
+
         } catch (error) {
             return response.status(500).json({
                 sucesso: false,
@@ -15,15 +21,37 @@ module.exports = {
                 dados: error.message
             });
         }
-
     },
+
     async cadastrarUsuarios(request, response) {
         try {
-            return response.status(200).json({
+            const {
+                nome_usuario,
+                email_usuario,
+                senha_usuario,
+                dt_cadastro,
+                status_usuario
+            } = request.body;
+
+            const [resultado] = await db.query(
+                `INSERT INTO usuario 
+                (nome_usuario, email_usuario, senha_usuario, dt_cadastro, status_usuario)
+                VALUES (?, ?, ?, ?, ?)`,
+                [
+                    nome_usuario,
+                    email_usuario,
+                    senha_usuario,
+                    dt_cadastro,
+                    status_usuario
+                ]
+            );
+
+            return response.status(201).json({
                 sucesso: true,
-                mensagem: 'Cadastro de usuários.',
-                dados: null
+                mensagem: 'Usuário cadastrado com sucesso.',
+                dados: resultado
             });
+
         } catch (error) {
             return response.status(500).json({
                 sucesso: false,
@@ -31,8 +59,8 @@ module.exports = {
                 dados: error.message
             });
         }
-
     },
+
     async editarUsuarios(request, response) {
         try {
             return response.status(200).json({
@@ -48,6 +76,7 @@ module.exports = {
             });
         }
     },
+
     async apagarUsuarios(request, response) {
         try {
             return response.status(200).json({
@@ -61,7 +90,7 @@ module.exports = {
                 mensagem: 'Erro na requisição.',
                 dados: error.message
             });
-
         }
-    },
-}
+    }
+
+};
