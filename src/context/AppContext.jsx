@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, useEffect, useReducer } from 'react';
+import { createContext, useContext, useState, useEffect, useReducer, useRef, useCallback } from 'react';
 import { WorkspaceService } from '../application/WorkspaceService.js';
 import { initialWorkspaceState, workspaceReducer } from '../application/workspaceState.js';
 import { RemoteWorkspaceRepository } from '../persistence/RemoteWorkspaceRepository.js';
@@ -58,12 +58,9 @@ function legacyProducts(workspace) {
 }
 
 export function AppProvider({ children }) {
+  const sessionScope = useRef({ ownerId: null });
   const [authService] = useState(() => new SupabaseAuthService(createBrowserSupabaseClient()));
-  const [workspaceService] = useState(() => new WorkspaceService(new RemoteWorkspaceRepository({
-    baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:3333',
-    getAccessToken: () => authService.getAccessToken(),
-    storage: localStorage,
-  }), localStorage));
+  const [workspaceService, setWorkspaceService] = useState(null);
   const [workspaceState, dispatchWorkspace] = useReducer(workspaceReducer, initialWorkspaceState);
   const [usuarioLogado, setUsuarioLogado] = useState(null);
   const [authStatus, setAuthStatus] = useState('loading');
@@ -71,40 +68,75 @@ export function AppProvider({ children }) {
   const [custosFixos, setCustosFixos] = useState({ aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] });
   const [configuracoes, setConfiguracoes] = useState({ margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' });
 
-  function clearLegacyView() {
+  const clearLegacyView = useCallback(() => {
     setProdutos([]);
     setCustosFixos({ aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] });
     setConfiguracoes({ margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' });
+  }, []);
+
+  const acceptSession = useCallback((session) => {
+    const user = sessionUser(session);
+    const ownerId = user?.id ?? null;
+    if (sessionScope.current.ownerId !== ownerId) {
+      // A identidade do objeto também invalida operações em logout + login da mesma conta.
+      const scope = { ownerId };
+      sessionScope.current = scope;
+      // Cache, revisões e credenciais pertencem a esta sessão, não apenas ao usuário.
+      setWorkspaceService(ownerId ? new WorkspaceService(new RemoteWorkspaceRepository({
+        baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:3333',
+        getAccessToken: async requestedOwner => {
+          const session = await authService.getSession();
+          if (scope !== sessionScope.current || session?.user?.id !== requestedOwner) {
+            throw new Error('A sessão mudou. Reabra os dados da conta atual.');
+          }
+          return session.access_token;
+        },
+        storage: localStorage,
+      }), localStorage) : null);
+      dispatchWorkspace({ type: 'reset' });
+      clearLegacyView();
+    }
+    setUsuarioLogado(previous => previous?.id === user?.id ? previous : user);
+  }, [authService, clearLegacyView]);
+
+  function assertCurrentSession(scope) {
+    if (scope !== sessionScope.current || !scope.ownerId) {
+      const error = new Error('A sessão mudou. Reabra os dados da conta atual.');
+      error.code = 'SESSION_CHANGED';
+      throw error;
+    }
   }
 
   useEffect(() => {
     let active = true;
+    let receivedAuthEvent = false;
     authService.getSession()
-      .then(session => { if (active) { setUsuarioLogado(sessionUser(session)); if (!session) clearLegacyView(); } })
-      .catch(() => { if (active) { setUsuarioLogado(null); clearLegacyView(); } })
+      .then(session => { if (active && !receivedAuthEvent) acceptSession(session); })
+      .catch(() => { if (active && !receivedAuthEvent) acceptSession(null); })
       .finally(() => { if (active) setAuthStatus('ready'); });
     const unsubscribe = authService.subscribe(session => {
       if (active) {
-        setUsuarioLogado(sessionUser(session));
-        if (!session) clearLegacyView();
+        receivedAuthEvent = true;
+        acceptSession(session);
         setAuthStatus('ready');
       }
     });
-    return () => { active = false; unsubscribe(); };
-  }, [authService]);
+    return () => { active = false; sessionScope.current = { ownerId: null }; unsubscribe(); };
+  }, [authService, acceptSession]);
 
   useEffect(() => {
     let active = true;
-    if (!usuarioLogado) {
+    if (!usuarioLogado || !workspaceService) {
       dispatchWorkspace({ type: 'reset' });
       return undefined;
     }
 
     const service = workspaceService;
+    const scope = sessionScope.current;
     dispatchWorkspace({ type: 'loadStarted' });
     service.initialize(String(usuarioLogado.id))
       .then(workspace => {
-        if (active) {
+        if (active && scope === sessionScope.current) {
           dispatchWorkspace({ type: 'loadSucceeded', workspace });
           setProdutos(legacyProducts(workspace));
           setCustosFixos(legacyFixedCosts(workspace.fixedCosts));
@@ -112,7 +144,7 @@ export function AppProvider({ children }) {
         }
       })
       .catch(error => {
-        if (active) dispatchWorkspace({ type: 'failed', error });
+        if (active && scope === sessionScope.current) dispatchWorkspace({ type: 'failed', error });
       });
 
     return () => { active = false; };
@@ -160,6 +192,7 @@ export function AppProvider({ children }) {
   });
 
   async function carregarDemo() {
+    const scope = sessionScope.current;
     const demo = await persistDemoAccount({
       workspaceStatus: workspaceState.status,
       workspace: workspaceState.data,
@@ -167,14 +200,14 @@ export function AppProvider({ children }) {
       custosFixos,
       configuracoes,
     }, workspace => atualizarWorkspace(() => workspace));
+    assertCurrentSession(scope);
     setProdutos(demo.produtos);
     setCustosFixos(demo.custosFixos);
     setConfiguracoes(demo.configuracoes);
   }
   // ── AUTH ──
   async function login(email, senha) {
-    const { session } = await authService.signIn(email, senha);
-    setUsuarioLogado(sessionUser(session));
+    await authService.signIn(email, senha);
     return true;
   }
 
@@ -184,8 +217,6 @@ export function AppProvider({ children }) {
 
   async function logout() {
     await authService.signOut();
-    setUsuarioLogado(null);
-    clearLegacyView();
   }
 
   // ── PRODUTOS ──
@@ -194,7 +225,9 @@ export function AppProvider({ children }) {
   function excluirProduto(id)       { setProdutos(prev => prev.filter(p => p.id !== id)); }
 
   async function atualizarWorkspace(updater) {
-    if (!usuarioLogado || !workspaceState.data || !workspaceService) {
+    const scope = sessionScope.current;
+    assertCurrentSession(scope);
+    if (!usuarioLogado || !workspaceState.data || !workspaceService || workspaceState.data.ownerId !== scope.ownerId) {
       throw new Error('Workspace ainda não está pronto para atualização.');
     }
     dispatchWorkspace({ type: 'saveStarted' });
@@ -204,22 +237,26 @@ export function AppProvider({ children }) {
         workspaceState.data,
         updater,
       );
+      assertCurrentSession(scope);
       dispatchWorkspace({ type: 'saveSucceeded', workspace });
       setProdutos(legacyProducts(workspace));
       setCustosFixos(legacyFixedCosts(workspace.fixedCosts));
       setConfiguracoes(legacySettings(workspace.settings));
       return workspace;
     } catch (error) {
-      dispatchWorkspace({ type: 'failed', error });
+      if (scope === sessionScope.current) dispatchWorkspace({ type: 'failed', error });
       throw error;
     }
   }
 
   async function exportarWorkspace() {
+    const scope = sessionScope.current;
     if (!usuarioLogado || !workspaceService) {
       throw new Error('Entre na sua conta para exportar os dados.');
     }
-    return workspaceService.export(String(usuarioLogado.id));
+    const exported = await workspaceService.export(String(usuarioLogado.id));
+    assertCurrentSession(scope);
+    return exported;
   }
 
   async function salvarCustosFixos() {
@@ -227,6 +264,7 @@ export function AppProvider({ children }) {
   }
 
   async function salvarConfiguracoes() {
+    const scope = sessionScope.current;
     const logoDraft = configuracoes.logoNegocio || '';
     let workspace = await atualizarWorkspace(current => ({
       ...current,
@@ -238,11 +276,13 @@ export function AppProvider({ children }) {
         defaultMarginBps: Math.round(Number(configuracoes.margemLucro || 0) * 100),
       },
     }));
+    assertCurrentSession(scope);
     if (logoDraft.startsWith('data:image/')) {
       workspace = await workspaceService.saveLogo(String(usuarioLogado.id), logoDraft);
     } else if (!logoDraft && workspace.settings.logo) {
       workspace = await workspaceService.deleteLogo(String(usuarioLogado.id));
     }
+    assertCurrentSession(scope);
     dispatchWorkspace({ type: 'saveSucceeded', workspace });
     setConfiguracoes(legacySettings(workspace.settings));
     return workspace;

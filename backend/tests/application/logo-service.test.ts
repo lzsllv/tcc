@@ -37,6 +37,24 @@ class MemoryMetadata implements LogoMetadataRepository {
 const image = { buffer: Buffer.from('image'), mimeType: 'image/webp', size: 5 };
 
 describe('LogoApplicationService', () => {
+  it('recusa imagem acima de 400 KB antes de enviar ao storage', async () => {
+    const storage = new MemoryStorage();
+    const service = new LogoApplicationService(new MemoryMetadata(), storage);
+    await expect(service.upload('owner-1', { ...image, size: 409601 }, 1))
+      .rejects.toMatchObject({ status: 413, code: 'LOGO_TOO_LARGE' });
+    expect(storage.objects.size).toBe(0);
+  });
+
+  it('mantém o logo anterior se a exclusão usa revisão antiga', async () => {
+    const storage = new MemoryStorage();
+    storage.objects.add('owner-1/old.webp');
+    const metadata = new MemoryMetadata();
+    const service = new LogoApplicationService(metadata, storage);
+    await expect(service.remove('owner-1', 0)).rejects.toBeInstanceOf(WorkspaceConflictError);
+    expect(metadata.path).toBe('owner-1/old.webp');
+    expect(storage.objects.has('owner-1/old.webp')).toBe(true);
+  });
+
   it('remove o upload novo quando a revisão entra em conflito', async () => {
     const storage = new MemoryStorage();
     const service = new LogoApplicationService(new MemoryMetadata(), storage);
