@@ -3,6 +3,35 @@ import assert from 'node:assert/strict';
 import { createEmptyWorkspace } from './workspace.js';
 import { RemoteWorkspaceRepository } from './RemoteWorkspaceRepository.js';
 
+test('usa o fetch do navegador com o contexto global ao carregar e salvar', async (t) => {
+  const workspace = createEmptyWorkspace('owner-1', '2026-09-01T12:00:00.000Z');
+  let stored = workspace;
+  let revision = 1;
+  // O fetch de Window exige o receptor global; o fetch de Node não detecta esse erro.
+  t.mock.method(globalThis, 'fetch', async function (_url, init) {
+    if (this !== globalThis) throw new TypeError('Illegal invocation');
+    if (init.method === 'PUT') {
+      const body = JSON.parse(init.body);
+      assert.equal(body.expectedRevision, revision);
+      stored = body.workspace;
+      revision += 1;
+    }
+    return Response.json({ workspace: stored, revision });
+  });
+  const repository = new RemoteWorkspaceRepository({
+    baseUrl: 'http://localhost:3333',
+    getAccessToken: async () => 'test-token',
+    storage: { getItem() { return null; } },
+  });
+  const loaded = await repository.loadWorkspace('owner-1');
+  assert.deepEqual(loaded, workspace);
+  const saved = await repository.saveWorkspace('owner-1', {
+    ...loaded, settings: { ...loaded.settings, businessName: 'Ateliê teste' },
+  });
+  assert.equal(saved.settings.businessName, 'Ateliê teste');
+  assert.equal((await repository.loadWorkspace('owner-1')).settings.businessName, 'Ateliê teste');
+});
+
 test('carrega workspace autenticado e usa a revisão recebida ao salvar', async () => {
   const ownerId = '11111111-1111-4111-8111-111111111111';
   const workspace = createEmptyWorkspace(ownerId, '2026-09-01T12:00:00.000Z');

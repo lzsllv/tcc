@@ -25,7 +25,7 @@ export class RemoteWorkspaceRepository {
   constructor({
     baseUrl,
     getAccessToken,
-    fetchImpl = globalThis.fetch,
+    fetchImpl = globalThis.fetch.bind(globalThis),
     storage = globalThis.localStorage,
     now = () => new Date().toISOString(),
     dataUrlToFile = defaultDataUrlToFile,
@@ -42,8 +42,8 @@ export class RemoteWorkspaceRepository {
     this.revisions = new Map();
   }
 
-  async authorizedHeaders(extra = {}) {
-    const token = await this.getAccessToken();
+  async authorizedHeaders(ownerId, extra = {}) {
+    const token = await this.getAccessToken(ownerId);
     if (!token) throw new RemoteRepositoryError(401, 'UNAUTHORIZED', 'Sessão expirada. Entre novamente.');
     return { Authorization: `Bearer ${token}`, ...extra };
   }
@@ -58,8 +58,8 @@ export class RemoteWorkspaceRepository {
     return payload;
   }
 
-  async jsonRequest(path, options = {}) {
-    const headers = await this.authorizedHeaders(options.body === undefined ? {} : { 'Content-Type': 'application/json' });
+  async jsonRequest(ownerId, path, options = {}) {
+    const headers = await this.authorizedHeaders(ownerId, options.body === undefined ? {} : { 'Content-Type': 'application/json' });
     const response = await this.fetchImpl(`${this.baseUrl}${path}`, { ...options, headers });
     return { response, payload: await this.parseResponse(response) };
   }
@@ -68,7 +68,7 @@ export class RemoteWorkspaceRepository {
 
   async loadWorkspace(ownerId) {
     const response = await this.fetchImpl(`${this.baseUrl}/api/v1/workspace`, {
-      headers: await this.authorizedHeaders(),
+      headers: await this.authorizedHeaders(ownerId),
     });
     if (response.status === 404) return null;
     let record = await this.parseResponse(response);
@@ -88,7 +88,7 @@ export class RemoteWorkspaceRepository {
     if (!Number.isInteger(expectedRevision)) {
       throw new RemoteRepositoryError(409, 'WORKSPACE_REVISION_MISSING', 'Recarregue o workspace antes de salvar.');
     }
-    const { payload } = await this.jsonRequest('/api/v1/workspace', {
+    const { payload } = await this.jsonRequest(ownerId, '/api/v1/workspace', {
       method: 'PUT',
       body: JSON.stringify({ workspace, expectedRevision }),
     });
@@ -114,7 +114,7 @@ export class RemoteWorkspaceRepository {
     const legacyLogo = SUPPORTED_LOGO.test(workspace.settings.logo) ? workspace.settings.logo : '';
     const candidate = { ...workspace, settings: { ...workspace.settings, logo: '' } };
     if (legacyLogo) this.storage?.setItem?.(this.pendingLogoKey(ownerId), legacyLogo);
-    const { payload } = await this.jsonRequest('/api/v1/workspace/bootstrap', {
+    const { payload } = await this.jsonRequest(ownerId, '/api/v1/workspace/bootstrap', {
       method: 'POST',
       body: JSON.stringify({ workspace: candidate }),
     });
@@ -136,7 +136,7 @@ export class RemoteWorkspaceRepository {
     form.set('expectedRevision', String(expectedRevision));
     form.set('logo', await this.dataUrlToFile(dataUrl));
     const response = await this.fetchImpl(`${this.baseUrl}/api/v1/workspace/logo`, {
-      method: 'PUT', headers: await this.authorizedHeaders(), body: form,
+      method: 'PUT', headers: await this.authorizedHeaders(ownerId), body: form,
     });
     const record = await this.parseResponse(response);
     this.revisions.set(ownerId, record.revision);
@@ -156,7 +156,7 @@ export class RemoteWorkspaceRepository {
     if (!Number.isInteger(expectedRevision)) {
       throw new RemoteRepositoryError(409, 'WORKSPACE_REVISION_MISSING', 'Recarregue o workspace antes de remover o logo.');
     }
-    const { payload } = await this.jsonRequest('/api/v1/workspace/logo', {
+    const { payload } = await this.jsonRequest(ownerId, '/api/v1/workspace/logo', {
       method: 'DELETE',
       body: JSON.stringify({ expectedRevision }),
     });
@@ -167,7 +167,7 @@ export class RemoteWorkspaceRepository {
   async exportWorkspace(ownerId) {
     if (!ownerId) throw new TypeError('ownerId is required');
     const response = await this.fetchImpl(`${this.baseUrl}/api/v1/workspace/export`, {
-      headers: await this.authorizedHeaders(),
+      headers: await this.authorizedHeaders(ownerId),
     });
     if (!response.ok) await this.parseResponse(response);
     return response.text();
