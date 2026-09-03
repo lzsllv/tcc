@@ -13,10 +13,13 @@ export default function Navbar() {
   const logado = !!usuarioLogado;
   const [menuAberto, setMenuAberto] = useState(false);
 
-  function handleLogout() {
+  async function handleLogout() {
     setMenuAberto(false);
-    logout();
-    navegar('/login');
+    try {
+      await logout();
+    } finally {
+      navegar('/login');
+    }
   }
 
   function fecharMenu() { setMenuAberto(false); }
@@ -100,7 +103,7 @@ export default function Navbar() {
             </ul>
             <div className="drawer-rodape">
               <span className="drawer-usuario">{usuarioLogado?.nome}</span>
-              <button onClick={() => { fecharMenu(); handleLogout(); }} className="drawer-sair"><SignOut size={16} /> Sair</button>
+              <button onClick={() => { fecharMenu(); void handleLogout(); }} className="drawer-sair"><SignOut size={16} /> Sair</button>
             </div>
           </aside>
         </>
