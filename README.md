@@ -14,7 +14,7 @@ O Supabase fornece autenticação, PostgreSQL e o bucket privado de logos. O mot
 
 ## Pré-requisitos
 
-- Node.js 22.12 ou mais recente;
+- Node.js 22.13+ na linha 22.x, ou Node.js 24+;
 - npm;
 - projeto Supabase de desenvolvimento com Auth, Database e Storage.
 

@@ -129,6 +129,6 @@ Run em `backend/`: `npm test`, `npm run lint`, `npm run prisma:generate`, `npm r
 
 Confirmar ausência de ambientes reais, dependências e builds no índice; executar `git diff --check` e revisar `git status --short`.
 
-- [ ] **Step 5: Criar o commit**
+- [x] **Step 5: Criar o commit**
 
 Run: `git commit -m "chore: organize project files"` após adicionar somente arquivos esperados.
