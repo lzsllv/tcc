@@ -1,0 +1,1225 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as Prisma from "../internal/prismaNamespace.ts";
+/**
+ * Model FixedCosts
+ *
+ */
+export type FixedCostsModel = runtime.Types.Result.DefaultSelection<Prisma.$FixedCostsPayload>;
+export type AggregateFixedCosts = {
+    _count: FixedCostsCountAggregateOutputType | null;
+    _avg: FixedCostsAvgAggregateOutputType | null;
+    _sum: FixedCostsSumAggregateOutputType | null;
+    _min: FixedCostsMinAggregateOutputType | null;
+    _max: FixedCostsMaxAggregateOutputType | null;
+};
+export type FixedCostsAvgAggregateOutputType = {
+    aluguel: number | null;
+    energia: number | null;
+    internet: number | null;
+    salarios: number | null;
+    outros: number | null;
+};
+export type FixedCostsSumAggregateOutputType = {
+    aluguel: bigint | null;
+    energia: bigint | null;
+    internet: bigint | null;
+    salarios: bigint | null;
+    outros: bigint | null;
+};
+export type FixedCostsMinAggregateOutputType = {
+    workspaceId: string | null;
+    aluguel: bigint | null;
+    energia: bigint | null;
+    internet: bigint | null;
+    salarios: bigint | null;
+    outros: bigint | null;
+};
+export type FixedCostsMaxAggregateOutputType = {
+    workspaceId: string | null;
+    aluguel: bigint | null;
+    energia: bigint | null;
+    internet: bigint | null;
+    salarios: bigint | null;
+    outros: bigint | null;
+};
+export type FixedCostsCountAggregateOutputType = {
+    workspaceId: number;
+    aluguel: number;
+    energia: number;
+    internet: number;
+    salarios: number;
+    outros: number;
+    _all: number;
+};
+export type FixedCostsAvgAggregateInputType = {
+    aluguel?: true;
+    energia?: true;
+    internet?: true;
+    salarios?: true;
+    outros?: true;
+};
+export type FixedCostsSumAggregateInputType = {
+    aluguel?: true;
+    energia?: true;
+    internet?: true;
+    salarios?: true;
+    outros?: true;
+};
+export type FixedCostsMinAggregateInputType = {
+    workspaceId?: true;
+    aluguel?: true;
+    energia?: true;
+    internet?: true;
+    salarios?: true;
+    outros?: true;
+};
+export type FixedCostsMaxAggregateInputType = {
+    workspaceId?: true;
+    aluguel?: true;
+    energia?: true;
+    internet?: true;
+    salarios?: true;
+    outros?: true;
+};
+export type FixedCostsCountAggregateInputType = {
+    workspaceId?: true;
+    aluguel?: true;
+    energia?: true;
+    internet?: true;
+    salarios?: true;
+    outros?: true;
+    _all?: true;
+};
+export type FixedCostsAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which FixedCosts to aggregate.
+     */
+    where?: Prisma.FixedCostsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of FixedCosts to fetch.
+     */
+    orderBy?: Prisma.FixedCostsOrderByWithRelationInput | Prisma.FixedCostsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.FixedCostsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` FixedCosts from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` FixedCosts.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned FixedCosts
+    **/
+    _count?: true | FixedCostsCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: FixedCostsAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: FixedCostsSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: FixedCostsMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: FixedCostsMaxAggregateInputType;
+};
+export type GetFixedCostsAggregateType<T extends FixedCostsAggregateArgs> = {
+    [P in keyof T & keyof AggregateFixedCosts]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateFixedCosts[P]> : Prisma.GetScalarType<T[P], AggregateFixedCosts[P]>;
+};
+export type FixedCostsGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.FixedCostsWhereInput;
+    orderBy?: Prisma.FixedCostsOrderByWithAggregationInput | Prisma.FixedCostsOrderByWithAggregationInput[];
+    by: Prisma.FixedCostsScalarFieldEnum[] | Prisma.FixedCostsScalarFieldEnum;
+    having?: Prisma.FixedCostsScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: FixedCostsCountAggregateInputType | true;
+    _avg?: FixedCostsAvgAggregateInputType;
+    _sum?: FixedCostsSumAggregateInputType;
+    _min?: FixedCostsMinAggregateInputType;
+    _max?: FixedCostsMaxAggregateInputType;
+};
+export type FixedCostsGroupByOutputType = {
+    workspaceId: string;
+    aluguel: bigint;
+    energia: bigint;
+    internet: bigint;
+    salarios: bigint;
+    outros: bigint;
+    _count: FixedCostsCountAggregateOutputType | null;
+    _avg: FixedCostsAvgAggregateOutputType | null;
+    _sum: FixedCostsSumAggregateOutputType | null;
+    _min: FixedCostsMinAggregateOutputType | null;
+    _max: FixedCostsMaxAggregateOutputType | null;
+};
+export type GetFixedCostsGroupByPayload<T extends FixedCostsGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<FixedCostsGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof FixedCostsGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], FixedCostsGroupByOutputType[P]> : Prisma.GetScalarType<T[P], FixedCostsGroupByOutputType[P]>;
+}>>;
+export type FixedCostsWhereInput = {
+    AND?: Prisma.FixedCostsWhereInput | Prisma.FixedCostsWhereInput[];
+    OR?: Prisma.FixedCostsWhereInput[];
+    NOT?: Prisma.FixedCostsWhereInput | Prisma.FixedCostsWhereInput[];
+    workspaceId?: Prisma.UuidFilter<"FixedCosts"> | string;
+    aluguel?: Prisma.BigIntFilter<"FixedCosts"> | bigint | number;
+    energia?: Prisma.BigIntFilter<"FixedCosts"> | bigint | number;
+    internet?: Prisma.BigIntFilter<"FixedCosts"> | bigint | number;
+    salarios?: Prisma.BigIntFilter<"FixedCosts"> | bigint | number;
+    outros?: Prisma.BigIntFilter<"FixedCosts"> | bigint | number;
+    workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>;
+};
+export type FixedCostsOrderByWithRelationInput = {
+    workspaceId?: Prisma.SortOrder;
+    aluguel?: Prisma.SortOrder;
+    energia?: Prisma.SortOrder;
+    internet?: Prisma.SortOrder;
+    salarios?: Prisma.SortOrder;
+    outros?: Prisma.SortOrder;
+    workspace?: Prisma.WorkspaceOrderByWithRelationInput;
+};
+export type FixedCostsWhereUniqueInput = Prisma.AtLeast<{
+    workspaceId?: string;
+    AND?: Prisma.FixedCostsWhereInput | Prisma.FixedCostsWhereInput[];
+    OR?: Prisma.FixedCostsWhereInput[];
+    NOT?: Prisma.FixedCostsWhereInput | Prisma.FixedCostsWhereInput[];
+    aluguel?: Prisma.BigIntFilter<"FixedCosts"> | bigint | number;
+    energia?: Prisma.BigIntFilter<"FixedCosts"> | bigint | number;
+    internet?: Prisma.BigIntFilter<"FixedCosts"> | bigint | number;
+    salarios?: Prisma.BigIntFilter<"FixedCosts"> | bigint | number;
+    outros?: Prisma.BigIntFilter<"FixedCosts"> | bigint | number;
+    workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>;
+}, "workspaceId">;
+export type FixedCostsOrderByWithAggregationInput = {
+    workspaceId?: Prisma.SortOrder;
+    aluguel?: Prisma.SortOrder;
+    energia?: Prisma.SortOrder;
+    internet?: Prisma.SortOrder;
+    salarios?: Prisma.SortOrder;
+    outros?: Prisma.SortOrder;
+    _count?: Prisma.FixedCostsCountOrderByAggregateInput;
+    _avg?: Prisma.FixedCostsAvgOrderByAggregateInput;
+    _max?: Prisma.FixedCostsMaxOrderByAggregateInput;
+    _min?: Prisma.FixedCostsMinOrderByAggregateInput;
+    _sum?: Prisma.FixedCostsSumOrderByAggregateInput;
+};
+export type FixedCostsScalarWhereWithAggregatesInput = {
+    AND?: Prisma.FixedCostsScalarWhereWithAggregatesInput | Prisma.FixedCostsScalarWhereWithAggregatesInput[];
+    OR?: Prisma.FixedCostsScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.FixedCostsScalarWhereWithAggregatesInput | Prisma.FixedCostsScalarWhereWithAggregatesInput[];
+    workspaceId?: Prisma.UuidWithAggregatesFilter<"FixedCosts"> | string;
+    aluguel?: Prisma.BigIntWithAggregatesFilter<"FixedCosts"> | bigint | number;
+    energia?: Prisma.BigIntWithAggregatesFilter<"FixedCosts"> | bigint | number;
+    internet?: Prisma.BigIntWithAggregatesFilter<"FixedCosts"> | bigint | number;
+    salarios?: Prisma.BigIntWithAggregatesFilter<"FixedCosts"> | bigint | number;
+    outros?: Prisma.BigIntWithAggregatesFilter<"FixedCosts"> | bigint | number;
+};
+export type FixedCostsCreateInput = {
+    aluguel?: bigint | number;
+    energia?: bigint | number;
+    internet?: bigint | number;
+    salarios?: bigint | number;
+    outros?: bigint | number;
+    workspace: Prisma.WorkspaceCreateNestedOneWithoutFixedCostsInput;
+};
+export type FixedCostsUncheckedCreateInput = {
+    workspaceId: string;
+    aluguel?: bigint | number;
+    energia?: bigint | number;
+    internet?: bigint | number;
+    salarios?: bigint | number;
+    outros?: bigint | number;
+};
+export type FixedCostsUpdateInput = {
+    aluguel?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    energia?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    internet?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    salarios?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    outros?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutFixedCostsNestedInput;
+};
+export type FixedCostsUncheckedUpdateInput = {
+    workspaceId?: Prisma.StringFieldUpdateOperationsInput | string;
+    aluguel?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    energia?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    internet?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    salarios?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    outros?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+};
+export type FixedCostsCreateManyInput = {
+    workspaceId: string;
+    aluguel?: bigint | number;
+    energia?: bigint | number;
+    internet?: bigint | number;
+    salarios?: bigint | number;
+    outros?: bigint | number;
+};
+export type FixedCostsUpdateManyMutationInput = {
+    aluguel?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    energia?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    internet?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    salarios?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    outros?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+};
+export type FixedCostsUncheckedUpdateManyInput = {
+    workspaceId?: Prisma.StringFieldUpdateOperationsInput | string;
+    aluguel?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    energia?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    internet?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    salarios?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    outros?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+};
+export type FixedCostsNullableScalarRelationFilter = {
+    is?: Prisma.FixedCostsWhereInput | null;
+    isNot?: Prisma.FixedCostsWhereInput | null;
+};
+export type FixedCostsCountOrderByAggregateInput = {
+    workspaceId?: Prisma.SortOrder;
+    aluguel?: Prisma.SortOrder;
+    energia?: Prisma.SortOrder;
+    internet?: Prisma.SortOrder;
+    salarios?: Prisma.SortOrder;
+    outros?: Prisma.SortOrder;
+};
+export type FixedCostsAvgOrderByAggregateInput = {
+    aluguel?: Prisma.SortOrder;
+    energia?: Prisma.SortOrder;
+    internet?: Prisma.SortOrder;
+    salarios?: Prisma.SortOrder;
+    outros?: Prisma.SortOrder;
+};
+export type FixedCostsMaxOrderByAggregateInput = {
+    workspaceId?: Prisma.SortOrder;
+    aluguel?: Prisma.SortOrder;
+    energia?: Prisma.SortOrder;
+    internet?: Prisma.SortOrder;
+    salarios?: Prisma.SortOrder;
+    outros?: Prisma.SortOrder;
+};
+export type FixedCostsMinOrderByAggregateInput = {
+    workspaceId?: Prisma.SortOrder;
+    aluguel?: Prisma.SortOrder;
+    energia?: Prisma.SortOrder;
+    internet?: Prisma.SortOrder;
+    salarios?: Prisma.SortOrder;
+    outros?: Prisma.SortOrder;
+};
+export type FixedCostsSumOrderByAggregateInput = {
+    aluguel?: Prisma.SortOrder;
+    energia?: Prisma.SortOrder;
+    internet?: Prisma.SortOrder;
+    salarios?: Prisma.SortOrder;
+    outros?: Prisma.SortOrder;
+};
+export type FixedCostsCreateNestedOneWithoutWorkspaceInput = {
+    create?: Prisma.XOR<Prisma.FixedCostsCreateWithoutWorkspaceInput, Prisma.FixedCostsUncheckedCreateWithoutWorkspaceInput>;
+    connectOrCreate?: Prisma.FixedCostsCreateOrConnectWithoutWorkspaceInput;
+    connect?: Prisma.FixedCostsWhereUniqueInput;
+};
+export type FixedCostsUncheckedCreateNestedOneWithoutWorkspaceInput = {
+    create?: Prisma.XOR<Prisma.FixedCostsCreateWithoutWorkspaceInput, Prisma.FixedCostsUncheckedCreateWithoutWorkspaceInput>;
+    connectOrCreate?: Prisma.FixedCostsCreateOrConnectWithoutWorkspaceInput;
+    connect?: Prisma.FixedCostsWhereUniqueInput;
+};
+export type FixedCostsUpdateOneWithoutWorkspaceNestedInput = {
+    create?: Prisma.XOR<Prisma.FixedCostsCreateWithoutWorkspaceInput, Prisma.FixedCostsUncheckedCreateWithoutWorkspaceInput>;
+    connectOrCreate?: Prisma.FixedCostsCreateOrConnectWithoutWorkspaceInput;
+    upsert?: Prisma.FixedCostsUpsertWithoutWorkspaceInput;
+    disconnect?: Prisma.FixedCostsWhereInput | boolean;
+    delete?: Prisma.FixedCostsWhereInput | boolean;
+    connect?: Prisma.FixedCostsWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.FixedCostsUpdateToOneWithWhereWithoutWorkspaceInput, Prisma.FixedCostsUpdateWithoutWorkspaceInput>, Prisma.FixedCostsUncheckedUpdateWithoutWorkspaceInput>;
+};
+export type FixedCostsUncheckedUpdateOneWithoutWorkspaceNestedInput = {
+    create?: Prisma.XOR<Prisma.FixedCostsCreateWithoutWorkspaceInput, Prisma.FixedCostsUncheckedCreateWithoutWorkspaceInput>;
+    connectOrCreate?: Prisma.FixedCostsCreateOrConnectWithoutWorkspaceInput;
+    upsert?: Prisma.FixedCostsUpsertWithoutWorkspaceInput;
+    disconnect?: Prisma.FixedCostsWhereInput | boolean;
+    delete?: Prisma.FixedCostsWhereInput | boolean;
+    connect?: Prisma.FixedCostsWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.FixedCostsUpdateToOneWithWhereWithoutWorkspaceInput, Prisma.FixedCostsUpdateWithoutWorkspaceInput>, Prisma.FixedCostsUncheckedUpdateWithoutWorkspaceInput>;
+};
+export type FixedCostsCreateWithoutWorkspaceInput = {
+    aluguel?: bigint | number;
+    energia?: bigint | number;
+    internet?: bigint | number;
+    salarios?: bigint | number;
+    outros?: bigint | number;
+};
+export type FixedCostsUncheckedCreateWithoutWorkspaceInput = {
+    aluguel?: bigint | number;
+    energia?: bigint | number;
+    internet?: bigint | number;
+    salarios?: bigint | number;
+    outros?: bigint | number;
+};
+export type FixedCostsCreateOrConnectWithoutWorkspaceInput = {
+    where: Prisma.FixedCostsWhereUniqueInput;
+    create: Prisma.XOR<Prisma.FixedCostsCreateWithoutWorkspaceInput, Prisma.FixedCostsUncheckedCreateWithoutWorkspaceInput>;
+};
+export type FixedCostsUpsertWithoutWorkspaceInput = {
+    update: Prisma.XOR<Prisma.FixedCostsUpdateWithoutWorkspaceInput, Prisma.FixedCostsUncheckedUpdateWithoutWorkspaceInput>;
+    create: Prisma.XOR<Prisma.FixedCostsCreateWithoutWorkspaceInput, Prisma.FixedCostsUncheckedCreateWithoutWorkspaceInput>;
+    where?: Prisma.FixedCostsWhereInput;
+};
+export type FixedCostsUpdateToOneWithWhereWithoutWorkspaceInput = {
+    where?: Prisma.FixedCostsWhereInput;
+    data: Prisma.XOR<Prisma.FixedCostsUpdateWithoutWorkspaceInput, Prisma.FixedCostsUncheckedUpdateWithoutWorkspaceInput>;
+};
+export type FixedCostsUpdateWithoutWorkspaceInput = {
+    aluguel?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    energia?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    internet?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    salarios?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    outros?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+};
+export type FixedCostsUncheckedUpdateWithoutWorkspaceInput = {
+    aluguel?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    energia?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    internet?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    salarios?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    outros?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+};
+export type FixedCostsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    workspaceId?: boolean;
+    aluguel?: boolean;
+    energia?: boolean;
+    internet?: boolean;
+    salarios?: boolean;
+    outros?: boolean;
+    workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["fixedCosts"]>;
+export type FixedCostsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    workspaceId?: boolean;
+    aluguel?: boolean;
+    energia?: boolean;
+    internet?: boolean;
+    salarios?: boolean;
+    outros?: boolean;
+    workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["fixedCosts"]>;
+export type FixedCostsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    workspaceId?: boolean;
+    aluguel?: boolean;
+    energia?: boolean;
+    internet?: boolean;
+    salarios?: boolean;
+    outros?: boolean;
+    workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["fixedCosts"]>;
+export type FixedCostsSelectScalar = {
+    workspaceId?: boolean;
+    aluguel?: boolean;
+    energia?: boolean;
+    internet?: boolean;
+    salarios?: boolean;
+    outros?: boolean;
+};
+export type FixedCostsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"workspaceId" | "aluguel" | "energia" | "internet" | "salarios" | "outros", ExtArgs["result"]["fixedCosts"]>;
+export type FixedCostsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>;
+};
+export type FixedCostsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>;
+};
+export type FixedCostsIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>;
+};
+export type $FixedCostsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "FixedCosts";
+    objects: {
+        workspace: Prisma.$WorkspacePayload<ExtArgs>;
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        workspaceId: string;
+        aluguel: bigint;
+        energia: bigint;
+        internet: bigint;
+        salarios: bigint;
+        outros: bigint;
+    }, ExtArgs["result"]["fixedCosts"]>;
+    composites: {};
+};
+export type FixedCostsGetPayload<S extends boolean | null | undefined | FixedCostsDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$FixedCostsPayload, S>;
+export type FixedCostsCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<FixedCostsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: FixedCostsCountAggregateInputType | true;
+};
+export interface FixedCostsDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['FixedCosts'];
+        meta: {
+            name: 'FixedCosts';
+        };
+    };
+    /**
+     * Find zero or one FixedCosts that matches the filter.
+     * @param {FixedCostsFindUniqueArgs} args - Arguments to find a FixedCosts
+     * @example
+     * // Get one FixedCosts
+     * const fixedCosts = await prisma.fixedCosts.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FixedCostsFindUniqueArgs>(args: Prisma.SelectSubset<T, FixedCostsFindUniqueArgs<ExtArgs>>): Prisma.Prisma__FixedCostsClient<runtime.Types.Result.GetResult<Prisma.$FixedCostsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one FixedCosts that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FixedCostsFindUniqueOrThrowArgs} args - Arguments to find a FixedCosts
+     * @example
+     * // Get one FixedCosts
+     * const fixedCosts = await prisma.fixedCosts.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FixedCostsFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, FixedCostsFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__FixedCostsClient<runtime.Types.Result.GetResult<Prisma.$FixedCostsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first FixedCosts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FixedCostsFindFirstArgs} args - Arguments to find a FixedCosts
+     * @example
+     * // Get one FixedCosts
+     * const fixedCosts = await prisma.fixedCosts.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FixedCostsFindFirstArgs>(args?: Prisma.SelectSubset<T, FixedCostsFindFirstArgs<ExtArgs>>): Prisma.Prisma__FixedCostsClient<runtime.Types.Result.GetResult<Prisma.$FixedCostsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first FixedCosts that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FixedCostsFindFirstOrThrowArgs} args - Arguments to find a FixedCosts
+     * @example
+     * // Get one FixedCosts
+     * const fixedCosts = await prisma.fixedCosts.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FixedCostsFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, FixedCostsFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__FixedCostsClient<runtime.Types.Result.GetResult<Prisma.$FixedCostsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more FixedCosts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FixedCostsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FixedCosts
+     * const fixedCosts = await prisma.fixedCosts.findMany()
+     *
+     * // Get first 10 FixedCosts
+     * const fixedCosts = await prisma.fixedCosts.findMany({ take: 10 })
+     *
+     * // Only select the `workspaceId`
+     * const fixedCostsWithWorkspaceIdOnly = await prisma.fixedCosts.findMany({ select: { workspaceId: true } })
+     *
+     */
+    findMany<T extends FixedCostsFindManyArgs>(args?: Prisma.SelectSubset<T, FixedCostsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FixedCostsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a FixedCosts.
+     * @param {FixedCostsCreateArgs} args - Arguments to create a FixedCosts.
+     * @example
+     * // Create one FixedCosts
+     * const FixedCosts = await prisma.fixedCosts.create({
+     *   data: {
+     *     // ... data to create a FixedCosts
+     *   }
+     * })
+     *
+     */
+    create<T extends FixedCostsCreateArgs>(args: Prisma.SelectSubset<T, FixedCostsCreateArgs<ExtArgs>>): Prisma.Prisma__FixedCostsClient<runtime.Types.Result.GetResult<Prisma.$FixedCostsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many FixedCosts.
+     * @param {FixedCostsCreateManyArgs} args - Arguments to create many FixedCosts.
+     * @example
+     * // Create many FixedCosts
+     * const fixedCosts = await prisma.fixedCosts.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends FixedCostsCreateManyArgs>(args?: Prisma.SelectSubset<T, FixedCostsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many FixedCosts and returns the data saved in the database.
+     * @param {FixedCostsCreateManyAndReturnArgs} args - Arguments to create many FixedCosts.
+     * @example
+     * // Create many FixedCosts
+     * const fixedCosts = await prisma.fixedCosts.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many FixedCosts and only return the `workspaceId`
+     * const fixedCostsWithWorkspaceIdOnly = await prisma.fixedCosts.createManyAndReturn({
+     *   select: { workspaceId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends FixedCostsCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, FixedCostsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FixedCostsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a FixedCosts.
+     * @param {FixedCostsDeleteArgs} args - Arguments to delete one FixedCosts.
+     * @example
+     * // Delete one FixedCosts
+     * const FixedCosts = await prisma.fixedCosts.delete({
+     *   where: {
+     *     // ... filter to delete one FixedCosts
+     *   }
+     * })
+     *
+     */
+    delete<T extends FixedCostsDeleteArgs>(args: Prisma.SelectSubset<T, FixedCostsDeleteArgs<ExtArgs>>): Prisma.Prisma__FixedCostsClient<runtime.Types.Result.GetResult<Prisma.$FixedCostsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one FixedCosts.
+     * @param {FixedCostsUpdateArgs} args - Arguments to update one FixedCosts.
+     * @example
+     * // Update one FixedCosts
+     * const fixedCosts = await prisma.fixedCosts.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends FixedCostsUpdateArgs>(args: Prisma.SelectSubset<T, FixedCostsUpdateArgs<ExtArgs>>): Prisma.Prisma__FixedCostsClient<runtime.Types.Result.GetResult<Prisma.$FixedCostsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more FixedCosts.
+     * @param {FixedCostsDeleteManyArgs} args - Arguments to filter FixedCosts to delete.
+     * @example
+     * // Delete a few FixedCosts
+     * const { count } = await prisma.fixedCosts.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends FixedCostsDeleteManyArgs>(args?: Prisma.SelectSubset<T, FixedCostsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more FixedCosts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FixedCostsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FixedCosts
+     * const fixedCosts = await prisma.fixedCosts.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends FixedCostsUpdateManyArgs>(args: Prisma.SelectSubset<T, FixedCostsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more FixedCosts and returns the data updated in the database.
+     * @param {FixedCostsUpdateManyAndReturnArgs} args - Arguments to update many FixedCosts.
+     * @example
+     * // Update many FixedCosts
+     * const fixedCosts = await prisma.fixedCosts.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more FixedCosts and only return the `workspaceId`
+     * const fixedCostsWithWorkspaceIdOnly = await prisma.fixedCosts.updateManyAndReturn({
+     *   select: { workspaceId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends FixedCostsUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, FixedCostsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FixedCostsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one FixedCosts.
+     * @param {FixedCostsUpsertArgs} args - Arguments to update or create a FixedCosts.
+     * @example
+     * // Update or create a FixedCosts
+     * const fixedCosts = await prisma.fixedCosts.upsert({
+     *   create: {
+     *     // ... data to create a FixedCosts
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FixedCosts we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FixedCostsUpsertArgs>(args: Prisma.SelectSubset<T, FixedCostsUpsertArgs<ExtArgs>>): Prisma.Prisma__FixedCostsClient<runtime.Types.Result.GetResult<Prisma.$FixedCostsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of FixedCosts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FixedCostsCountArgs} args - Arguments to filter FixedCosts to count.
+     * @example
+     * // Count the number of FixedCosts
+     * const count = await prisma.fixedCosts.count({
+     *   where: {
+     *     // ... the filter for the FixedCosts we want to count
+     *   }
+     * })
+    **/
+    count<T extends FixedCostsCountArgs>(args?: Prisma.Subset<T, FixedCostsCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], FixedCostsCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a FixedCosts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FixedCostsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FixedCostsAggregateArgs>(args: Prisma.Subset<T, FixedCostsAggregateArgs>): Prisma.PrismaPromise<GetFixedCostsAggregateType<T>>;
+    /**
+     * Group by FixedCosts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FixedCostsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends FixedCostsGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: FixedCostsGroupByArgs['orderBy'];
+    } : {
+        orderBy?: FixedCostsGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, FixedCostsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFixedCostsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the FixedCosts model
+     */
+    readonly fields: FixedCostsFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for FixedCosts.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__FixedCostsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    workspace<T extends Prisma.WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the FixedCosts model
+ */
+export interface FixedCostsFieldRefs {
+    readonly workspaceId: Prisma.FieldRef<"FixedCosts", 'String'>;
+    readonly aluguel: Prisma.FieldRef<"FixedCosts", 'BigInt'>;
+    readonly energia: Prisma.FieldRef<"FixedCosts", 'BigInt'>;
+    readonly internet: Prisma.FieldRef<"FixedCosts", 'BigInt'>;
+    readonly salarios: Prisma.FieldRef<"FixedCosts", 'BigInt'>;
+    readonly outros: Prisma.FieldRef<"FixedCosts", 'BigInt'>;
+}
+/**
+ * FixedCosts findUnique
+ */
+export type FixedCostsFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FixedCosts
+     */
+    select?: Prisma.FixedCostsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FixedCosts
+     */
+    omit?: Prisma.FixedCostsOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.FixedCostsInclude<ExtArgs> | null;
+    /**
+     * Filter, which FixedCosts to fetch.
+     */
+    where: Prisma.FixedCostsWhereUniqueInput;
+};
+/**
+ * FixedCosts findUniqueOrThrow
+ */
+export type FixedCostsFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FixedCosts
+     */
+    select?: Prisma.FixedCostsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FixedCosts
+     */
+    omit?: Prisma.FixedCostsOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.FixedCostsInclude<ExtArgs> | null;
+    /**
+     * Filter, which FixedCosts to fetch.
+     */
+    where: Prisma.FixedCostsWhereUniqueInput;
+};
+/**
+ * FixedCosts findFirst
+ */
+export type FixedCostsFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FixedCosts
+     */
+    select?: Prisma.FixedCostsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FixedCosts
+     */
+    omit?: Prisma.FixedCostsOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.FixedCostsInclude<ExtArgs> | null;
+    /**
+     * Filter, which FixedCosts to fetch.
+     */
+    where?: Prisma.FixedCostsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of FixedCosts to fetch.
+     */
+    orderBy?: Prisma.FixedCostsOrderByWithRelationInput | Prisma.FixedCostsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for FixedCosts.
+     */
+    cursor?: Prisma.FixedCostsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` FixedCosts from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` FixedCosts.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of FixedCosts.
+     */
+    distinct?: Prisma.FixedCostsScalarFieldEnum | Prisma.FixedCostsScalarFieldEnum[];
+};
+/**
+ * FixedCosts findFirstOrThrow
+ */
+export type FixedCostsFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FixedCosts
+     */
+    select?: Prisma.FixedCostsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FixedCosts
+     */
+    omit?: Prisma.FixedCostsOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.FixedCostsInclude<ExtArgs> | null;
+    /**
+     * Filter, which FixedCosts to fetch.
+     */
+    where?: Prisma.FixedCostsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of FixedCosts to fetch.
+     */
+    orderBy?: Prisma.FixedCostsOrderByWithRelationInput | Prisma.FixedCostsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for FixedCosts.
+     */
+    cursor?: Prisma.FixedCostsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` FixedCosts from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` FixedCosts.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of FixedCosts.
+     */
+    distinct?: Prisma.FixedCostsScalarFieldEnum | Prisma.FixedCostsScalarFieldEnum[];
+};
+/**
+ * FixedCosts findMany
+ */
+export type FixedCostsFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FixedCosts
+     */
+    select?: Prisma.FixedCostsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FixedCosts
+     */
+    omit?: Prisma.FixedCostsOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.FixedCostsInclude<ExtArgs> | null;
+    /**
+     * Filter, which FixedCosts to fetch.
+     */
+    where?: Prisma.FixedCostsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of FixedCosts to fetch.
+     */
+    orderBy?: Prisma.FixedCostsOrderByWithRelationInput | Prisma.FixedCostsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing FixedCosts.
+     */
+    cursor?: Prisma.FixedCostsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` FixedCosts from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` FixedCosts.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of FixedCosts.
+     */
+    distinct?: Prisma.FixedCostsScalarFieldEnum | Prisma.FixedCostsScalarFieldEnum[];
+};
+/**
+ * FixedCosts create
+ */
+export type FixedCostsCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FixedCosts
+     */
+    select?: Prisma.FixedCostsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FixedCosts
+     */
+    omit?: Prisma.FixedCostsOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.FixedCostsInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a FixedCosts.
+     */
+    data: Prisma.XOR<Prisma.FixedCostsCreateInput, Prisma.FixedCostsUncheckedCreateInput>;
+};
+/**
+ * FixedCosts createMany
+ */
+export type FixedCostsCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FixedCosts.
+     */
+    data: Prisma.FixedCostsCreateManyInput | Prisma.FixedCostsCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * FixedCosts createManyAndReturn
+ */
+export type FixedCostsCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FixedCosts
+     */
+    select?: Prisma.FixedCostsSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FixedCosts
+     */
+    omit?: Prisma.FixedCostsOmit<ExtArgs> | null;
+    /**
+     * The data used to create many FixedCosts.
+     */
+    data: Prisma.FixedCostsCreateManyInput | Prisma.FixedCostsCreateManyInput[];
+    skipDuplicates?: boolean;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.FixedCostsIncludeCreateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * FixedCosts update
+ */
+export type FixedCostsUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FixedCosts
+     */
+    select?: Prisma.FixedCostsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FixedCosts
+     */
+    omit?: Prisma.FixedCostsOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.FixedCostsInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a FixedCosts.
+     */
+    data: Prisma.XOR<Prisma.FixedCostsUpdateInput, Prisma.FixedCostsUncheckedUpdateInput>;
+    /**
+     * Choose, which FixedCosts to update.
+     */
+    where: Prisma.FixedCostsWhereUniqueInput;
+};
+/**
+ * FixedCosts updateMany
+ */
+export type FixedCostsUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FixedCosts.
+     */
+    data: Prisma.XOR<Prisma.FixedCostsUpdateManyMutationInput, Prisma.FixedCostsUncheckedUpdateManyInput>;
+    /**
+     * Filter which FixedCosts to update
+     */
+    where?: Prisma.FixedCostsWhereInput;
+    /**
+     * Limit how many FixedCosts to update.
+     */
+    limit?: number;
+};
+/**
+ * FixedCosts updateManyAndReturn
+ */
+export type FixedCostsUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FixedCosts
+     */
+    select?: Prisma.FixedCostsSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FixedCosts
+     */
+    omit?: Prisma.FixedCostsOmit<ExtArgs> | null;
+    /**
+     * The data used to update FixedCosts.
+     */
+    data: Prisma.XOR<Prisma.FixedCostsUpdateManyMutationInput, Prisma.FixedCostsUncheckedUpdateManyInput>;
+    /**
+     * Filter which FixedCosts to update
+     */
+    where?: Prisma.FixedCostsWhereInput;
+    /**
+     * Limit how many FixedCosts to update.
+     */
+    limit?: number;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.FixedCostsIncludeUpdateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * FixedCosts upsert
+ */
+export type FixedCostsUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FixedCosts
+     */
+    select?: Prisma.FixedCostsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FixedCosts
+     */
+    omit?: Prisma.FixedCostsOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.FixedCostsInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the FixedCosts to update in case it exists.
+     */
+    where: Prisma.FixedCostsWhereUniqueInput;
+    /**
+     * In case the FixedCosts found by the `where` argument doesn't exist, create a new FixedCosts with this data.
+     */
+    create: Prisma.XOR<Prisma.FixedCostsCreateInput, Prisma.FixedCostsUncheckedCreateInput>;
+    /**
+     * In case the FixedCosts was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.FixedCostsUpdateInput, Prisma.FixedCostsUncheckedUpdateInput>;
+};
+/**
+ * FixedCosts delete
+ */
+export type FixedCostsDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FixedCosts
+     */
+    select?: Prisma.FixedCostsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FixedCosts
+     */
+    omit?: Prisma.FixedCostsOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.FixedCostsInclude<ExtArgs> | null;
+    /**
+     * Filter which FixedCosts to delete.
+     */
+    where: Prisma.FixedCostsWhereUniqueInput;
+};
+/**
+ * FixedCosts deleteMany
+ */
+export type FixedCostsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which FixedCosts to delete
+     */
+    where?: Prisma.FixedCostsWhereInput;
+    /**
+     * Limit how many FixedCosts to delete.
+     */
+    limit?: number;
+};
+/**
+ * FixedCosts without action
+ */
+export type FixedCostsDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FixedCosts
+     */
+    select?: Prisma.FixedCostsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FixedCosts
+     */
+    omit?: Prisma.FixedCostsOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.FixedCostsInclude<ExtArgs> | null;
+};

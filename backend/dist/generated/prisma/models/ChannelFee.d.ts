@@ -1,0 +1,1456 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as $Enums from "../enums.ts";
+import type * as Prisma from "../internal/prismaNamespace.ts";
+/**
+ * Model ChannelFee
+ *
+ */
+export type ChannelFeeModel = runtime.Types.Result.DefaultSelection<Prisma.$ChannelFeePayload>;
+export type AggregateChannelFee = {
+    _count: ChannelFeeCountAggregateOutputType | null;
+    _avg: ChannelFeeAvgAggregateOutputType | null;
+    _sum: ChannelFeeSumAggregateOutputType | null;
+    _min: ChannelFeeMinAggregateOutputType | null;
+    _max: ChannelFeeMaxAggregateOutputType | null;
+};
+export type ChannelFeeAvgAggregateOutputType = {
+    value: number | null;
+    position: number | null;
+};
+export type ChannelFeeSumAggregateOutputType = {
+    value: bigint | null;
+    position: number | null;
+};
+export type ChannelFeeMinAggregateOutputType = {
+    workspaceId: string | null;
+    salesChannelId: string | null;
+    id: string | null;
+    name: string | null;
+    kind: $Enums.FeeKind | null;
+    category: $Enums.FeeCategory | null;
+    value: bigint | null;
+    position: number | null;
+};
+export type ChannelFeeMaxAggregateOutputType = {
+    workspaceId: string | null;
+    salesChannelId: string | null;
+    id: string | null;
+    name: string | null;
+    kind: $Enums.FeeKind | null;
+    category: $Enums.FeeCategory | null;
+    value: bigint | null;
+    position: number | null;
+};
+export type ChannelFeeCountAggregateOutputType = {
+    workspaceId: number;
+    salesChannelId: number;
+    id: number;
+    name: number;
+    kind: number;
+    category: number;
+    value: number;
+    position: number;
+    _all: number;
+};
+export type ChannelFeeAvgAggregateInputType = {
+    value?: true;
+    position?: true;
+};
+export type ChannelFeeSumAggregateInputType = {
+    value?: true;
+    position?: true;
+};
+export type ChannelFeeMinAggregateInputType = {
+    workspaceId?: true;
+    salesChannelId?: true;
+    id?: true;
+    name?: true;
+    kind?: true;
+    category?: true;
+    value?: true;
+    position?: true;
+};
+export type ChannelFeeMaxAggregateInputType = {
+    workspaceId?: true;
+    salesChannelId?: true;
+    id?: true;
+    name?: true;
+    kind?: true;
+    category?: true;
+    value?: true;
+    position?: true;
+};
+export type ChannelFeeCountAggregateInputType = {
+    workspaceId?: true;
+    salesChannelId?: true;
+    id?: true;
+    name?: true;
+    kind?: true;
+    category?: true;
+    value?: true;
+    position?: true;
+    _all?: true;
+};
+export type ChannelFeeAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelFee to aggregate.
+     */
+    where?: Prisma.ChannelFeeWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelFees to fetch.
+     */
+    orderBy?: Prisma.ChannelFeeOrderByWithRelationInput | Prisma.ChannelFeeOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.ChannelFeeWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelFees from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelFees.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned ChannelFees
+    **/
+    _count?: true | ChannelFeeCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: ChannelFeeAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: ChannelFeeSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: ChannelFeeMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: ChannelFeeMaxAggregateInputType;
+};
+export type GetChannelFeeAggregateType<T extends ChannelFeeAggregateArgs> = {
+    [P in keyof T & keyof AggregateChannelFee]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateChannelFee[P]> : Prisma.GetScalarType<T[P], AggregateChannelFee[P]>;
+};
+export type ChannelFeeGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.ChannelFeeWhereInput;
+    orderBy?: Prisma.ChannelFeeOrderByWithAggregationInput | Prisma.ChannelFeeOrderByWithAggregationInput[];
+    by: Prisma.ChannelFeeScalarFieldEnum[] | Prisma.ChannelFeeScalarFieldEnum;
+    having?: Prisma.ChannelFeeScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: ChannelFeeCountAggregateInputType | true;
+    _avg?: ChannelFeeAvgAggregateInputType;
+    _sum?: ChannelFeeSumAggregateInputType;
+    _min?: ChannelFeeMinAggregateInputType;
+    _max?: ChannelFeeMaxAggregateInputType;
+};
+export type ChannelFeeGroupByOutputType = {
+    workspaceId: string;
+    salesChannelId: string;
+    id: string;
+    name: string;
+    kind: $Enums.FeeKind;
+    category: $Enums.FeeCategory;
+    value: bigint;
+    position: number;
+    _count: ChannelFeeCountAggregateOutputType | null;
+    _avg: ChannelFeeAvgAggregateOutputType | null;
+    _sum: ChannelFeeSumAggregateOutputType | null;
+    _min: ChannelFeeMinAggregateOutputType | null;
+    _max: ChannelFeeMaxAggregateOutputType | null;
+};
+export type GetChannelFeeGroupByPayload<T extends ChannelFeeGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<ChannelFeeGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof ChannelFeeGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], ChannelFeeGroupByOutputType[P]> : Prisma.GetScalarType<T[P], ChannelFeeGroupByOutputType[P]>;
+}>>;
+export type ChannelFeeWhereInput = {
+    AND?: Prisma.ChannelFeeWhereInput | Prisma.ChannelFeeWhereInput[];
+    OR?: Prisma.ChannelFeeWhereInput[];
+    NOT?: Prisma.ChannelFeeWhereInput | Prisma.ChannelFeeWhereInput[];
+    workspaceId?: Prisma.UuidFilter<"ChannelFee"> | string;
+    salesChannelId?: Prisma.StringFilter<"ChannelFee"> | string;
+    id?: Prisma.StringFilter<"ChannelFee"> | string;
+    name?: Prisma.StringFilter<"ChannelFee"> | string;
+    kind?: Prisma.EnumFeeKindFilter<"ChannelFee"> | $Enums.FeeKind;
+    category?: Prisma.EnumFeeCategoryFilter<"ChannelFee"> | $Enums.FeeCategory;
+    value?: Prisma.BigIntFilter<"ChannelFee"> | bigint | number;
+    position?: Prisma.IntFilter<"ChannelFee"> | number;
+    workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>;
+    salesChannel?: Prisma.XOR<Prisma.SalesChannelScalarRelationFilter, Prisma.SalesChannelWhereInput>;
+};
+export type ChannelFeeOrderByWithRelationInput = {
+    workspaceId?: Prisma.SortOrder;
+    salesChannelId?: Prisma.SortOrder;
+    id?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    kind?: Prisma.SortOrder;
+    category?: Prisma.SortOrder;
+    value?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+    workspace?: Prisma.WorkspaceOrderByWithRelationInput;
+    salesChannel?: Prisma.SalesChannelOrderByWithRelationInput;
+};
+export type ChannelFeeWhereUniqueInput = Prisma.AtLeast<{
+    workspaceId_salesChannelId_id?: Prisma.ChannelFeeWorkspaceIdSalesChannelIdIdCompoundUniqueInput;
+    AND?: Prisma.ChannelFeeWhereInput | Prisma.ChannelFeeWhereInput[];
+    OR?: Prisma.ChannelFeeWhereInput[];
+    NOT?: Prisma.ChannelFeeWhereInput | Prisma.ChannelFeeWhereInput[];
+    workspaceId?: Prisma.UuidFilter<"ChannelFee"> | string;
+    salesChannelId?: Prisma.StringFilter<"ChannelFee"> | string;
+    id?: Prisma.StringFilter<"ChannelFee"> | string;
+    name?: Prisma.StringFilter<"ChannelFee"> | string;
+    kind?: Prisma.EnumFeeKindFilter<"ChannelFee"> | $Enums.FeeKind;
+    category?: Prisma.EnumFeeCategoryFilter<"ChannelFee"> | $Enums.FeeCategory;
+    value?: Prisma.BigIntFilter<"ChannelFee"> | bigint | number;
+    position?: Prisma.IntFilter<"ChannelFee"> | number;
+    workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>;
+    salesChannel?: Prisma.XOR<Prisma.SalesChannelScalarRelationFilter, Prisma.SalesChannelWhereInput>;
+}, "workspaceId_salesChannelId_id">;
+export type ChannelFeeOrderByWithAggregationInput = {
+    workspaceId?: Prisma.SortOrder;
+    salesChannelId?: Prisma.SortOrder;
+    id?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    kind?: Prisma.SortOrder;
+    category?: Prisma.SortOrder;
+    value?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+    _count?: Prisma.ChannelFeeCountOrderByAggregateInput;
+    _avg?: Prisma.ChannelFeeAvgOrderByAggregateInput;
+    _max?: Prisma.ChannelFeeMaxOrderByAggregateInput;
+    _min?: Prisma.ChannelFeeMinOrderByAggregateInput;
+    _sum?: Prisma.ChannelFeeSumOrderByAggregateInput;
+};
+export type ChannelFeeScalarWhereWithAggregatesInput = {
+    AND?: Prisma.ChannelFeeScalarWhereWithAggregatesInput | Prisma.ChannelFeeScalarWhereWithAggregatesInput[];
+    OR?: Prisma.ChannelFeeScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.ChannelFeeScalarWhereWithAggregatesInput | Prisma.ChannelFeeScalarWhereWithAggregatesInput[];
+    workspaceId?: Prisma.UuidWithAggregatesFilter<"ChannelFee"> | string;
+    salesChannelId?: Prisma.StringWithAggregatesFilter<"ChannelFee"> | string;
+    id?: Prisma.StringWithAggregatesFilter<"ChannelFee"> | string;
+    name?: Prisma.StringWithAggregatesFilter<"ChannelFee"> | string;
+    kind?: Prisma.EnumFeeKindWithAggregatesFilter<"ChannelFee"> | $Enums.FeeKind;
+    category?: Prisma.EnumFeeCategoryWithAggregatesFilter<"ChannelFee"> | $Enums.FeeCategory;
+    value?: Prisma.BigIntWithAggregatesFilter<"ChannelFee"> | bigint | number;
+    position?: Prisma.IntWithAggregatesFilter<"ChannelFee"> | number;
+};
+export type ChannelFeeCreateInput = {
+    id: string;
+    name: string;
+    kind: $Enums.FeeKind;
+    category: $Enums.FeeCategory;
+    value: bigint | number;
+    position: number;
+    workspace: Prisma.WorkspaceCreateNestedOneWithoutChannelFeesInput;
+    salesChannel: Prisma.SalesChannelCreateNestedOneWithoutFeesInput;
+};
+export type ChannelFeeUncheckedCreateInput = {
+    workspaceId: string;
+    salesChannelId: string;
+    id: string;
+    name: string;
+    kind: $Enums.FeeKind;
+    category: $Enums.FeeCategory;
+    value: bigint | number;
+    position: number;
+};
+export type ChannelFeeUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    kind?: Prisma.EnumFeeKindFieldUpdateOperationsInput | $Enums.FeeKind;
+    category?: Prisma.EnumFeeCategoryFieldUpdateOperationsInput | $Enums.FeeCategory;
+    value?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutChannelFeesNestedInput;
+    salesChannel?: Prisma.SalesChannelUpdateOneRequiredWithoutFeesNestedInput;
+};
+export type ChannelFeeUncheckedUpdateInput = {
+    workspaceId?: Prisma.StringFieldUpdateOperationsInput | string;
+    salesChannelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    kind?: Prisma.EnumFeeKindFieldUpdateOperationsInput | $Enums.FeeKind;
+    category?: Prisma.EnumFeeCategoryFieldUpdateOperationsInput | $Enums.FeeCategory;
+    value?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+};
+export type ChannelFeeCreateManyInput = {
+    workspaceId: string;
+    salesChannelId: string;
+    id: string;
+    name: string;
+    kind: $Enums.FeeKind;
+    category: $Enums.FeeCategory;
+    value: bigint | number;
+    position: number;
+};
+export type ChannelFeeUpdateManyMutationInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    kind?: Prisma.EnumFeeKindFieldUpdateOperationsInput | $Enums.FeeKind;
+    category?: Prisma.EnumFeeCategoryFieldUpdateOperationsInput | $Enums.FeeCategory;
+    value?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+};
+export type ChannelFeeUncheckedUpdateManyInput = {
+    workspaceId?: Prisma.StringFieldUpdateOperationsInput | string;
+    salesChannelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    kind?: Prisma.EnumFeeKindFieldUpdateOperationsInput | $Enums.FeeKind;
+    category?: Prisma.EnumFeeCategoryFieldUpdateOperationsInput | $Enums.FeeCategory;
+    value?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+};
+export type ChannelFeeListRelationFilter = {
+    every?: Prisma.ChannelFeeWhereInput;
+    some?: Prisma.ChannelFeeWhereInput;
+    none?: Prisma.ChannelFeeWhereInput;
+};
+export type ChannelFeeOrderByRelationAggregateInput = {
+    _count?: Prisma.SortOrder;
+};
+export type ChannelFeeWorkspaceIdSalesChannelIdIdCompoundUniqueInput = {
+    workspaceId: string;
+    salesChannelId: string;
+    id: string;
+};
+export type ChannelFeeCountOrderByAggregateInput = {
+    workspaceId?: Prisma.SortOrder;
+    salesChannelId?: Prisma.SortOrder;
+    id?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    kind?: Prisma.SortOrder;
+    category?: Prisma.SortOrder;
+    value?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+};
+export type ChannelFeeAvgOrderByAggregateInput = {
+    value?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+};
+export type ChannelFeeMaxOrderByAggregateInput = {
+    workspaceId?: Prisma.SortOrder;
+    salesChannelId?: Prisma.SortOrder;
+    id?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    kind?: Prisma.SortOrder;
+    category?: Prisma.SortOrder;
+    value?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+};
+export type ChannelFeeMinOrderByAggregateInput = {
+    workspaceId?: Prisma.SortOrder;
+    salesChannelId?: Prisma.SortOrder;
+    id?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    kind?: Prisma.SortOrder;
+    category?: Prisma.SortOrder;
+    value?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+};
+export type ChannelFeeSumOrderByAggregateInput = {
+    value?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+};
+export type ChannelFeeCreateNestedManyWithoutWorkspaceInput = {
+    create?: Prisma.XOR<Prisma.ChannelFeeCreateWithoutWorkspaceInput, Prisma.ChannelFeeUncheckedCreateWithoutWorkspaceInput> | Prisma.ChannelFeeCreateWithoutWorkspaceInput[] | Prisma.ChannelFeeUncheckedCreateWithoutWorkspaceInput[];
+    connectOrCreate?: Prisma.ChannelFeeCreateOrConnectWithoutWorkspaceInput | Prisma.ChannelFeeCreateOrConnectWithoutWorkspaceInput[];
+    createMany?: Prisma.ChannelFeeCreateManyWorkspaceInputEnvelope;
+    connect?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+};
+export type ChannelFeeUncheckedCreateNestedManyWithoutWorkspaceInput = {
+    create?: Prisma.XOR<Prisma.ChannelFeeCreateWithoutWorkspaceInput, Prisma.ChannelFeeUncheckedCreateWithoutWorkspaceInput> | Prisma.ChannelFeeCreateWithoutWorkspaceInput[] | Prisma.ChannelFeeUncheckedCreateWithoutWorkspaceInput[];
+    connectOrCreate?: Prisma.ChannelFeeCreateOrConnectWithoutWorkspaceInput | Prisma.ChannelFeeCreateOrConnectWithoutWorkspaceInput[];
+    createMany?: Prisma.ChannelFeeCreateManyWorkspaceInputEnvelope;
+    connect?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+};
+export type ChannelFeeUpdateManyWithoutWorkspaceNestedInput = {
+    create?: Prisma.XOR<Prisma.ChannelFeeCreateWithoutWorkspaceInput, Prisma.ChannelFeeUncheckedCreateWithoutWorkspaceInput> | Prisma.ChannelFeeCreateWithoutWorkspaceInput[] | Prisma.ChannelFeeUncheckedCreateWithoutWorkspaceInput[];
+    connectOrCreate?: Prisma.ChannelFeeCreateOrConnectWithoutWorkspaceInput | Prisma.ChannelFeeCreateOrConnectWithoutWorkspaceInput[];
+    upsert?: Prisma.ChannelFeeUpsertWithWhereUniqueWithoutWorkspaceInput | Prisma.ChannelFeeUpsertWithWhereUniqueWithoutWorkspaceInput[];
+    createMany?: Prisma.ChannelFeeCreateManyWorkspaceInputEnvelope;
+    set?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    disconnect?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    delete?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    connect?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    update?: Prisma.ChannelFeeUpdateWithWhereUniqueWithoutWorkspaceInput | Prisma.ChannelFeeUpdateWithWhereUniqueWithoutWorkspaceInput[];
+    updateMany?: Prisma.ChannelFeeUpdateManyWithWhereWithoutWorkspaceInput | Prisma.ChannelFeeUpdateManyWithWhereWithoutWorkspaceInput[];
+    deleteMany?: Prisma.ChannelFeeScalarWhereInput | Prisma.ChannelFeeScalarWhereInput[];
+};
+export type ChannelFeeUncheckedUpdateManyWithoutWorkspaceNestedInput = {
+    create?: Prisma.XOR<Prisma.ChannelFeeCreateWithoutWorkspaceInput, Prisma.ChannelFeeUncheckedCreateWithoutWorkspaceInput> | Prisma.ChannelFeeCreateWithoutWorkspaceInput[] | Prisma.ChannelFeeUncheckedCreateWithoutWorkspaceInput[];
+    connectOrCreate?: Prisma.ChannelFeeCreateOrConnectWithoutWorkspaceInput | Prisma.ChannelFeeCreateOrConnectWithoutWorkspaceInput[];
+    upsert?: Prisma.ChannelFeeUpsertWithWhereUniqueWithoutWorkspaceInput | Prisma.ChannelFeeUpsertWithWhereUniqueWithoutWorkspaceInput[];
+    createMany?: Prisma.ChannelFeeCreateManyWorkspaceInputEnvelope;
+    set?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    disconnect?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    delete?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    connect?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    update?: Prisma.ChannelFeeUpdateWithWhereUniqueWithoutWorkspaceInput | Prisma.ChannelFeeUpdateWithWhereUniqueWithoutWorkspaceInput[];
+    updateMany?: Prisma.ChannelFeeUpdateManyWithWhereWithoutWorkspaceInput | Prisma.ChannelFeeUpdateManyWithWhereWithoutWorkspaceInput[];
+    deleteMany?: Prisma.ChannelFeeScalarWhereInput | Prisma.ChannelFeeScalarWhereInput[];
+};
+export type ChannelFeeCreateNestedManyWithoutSalesChannelInput = {
+    create?: Prisma.XOR<Prisma.ChannelFeeCreateWithoutSalesChannelInput, Prisma.ChannelFeeUncheckedCreateWithoutSalesChannelInput> | Prisma.ChannelFeeCreateWithoutSalesChannelInput[] | Prisma.ChannelFeeUncheckedCreateWithoutSalesChannelInput[];
+    connectOrCreate?: Prisma.ChannelFeeCreateOrConnectWithoutSalesChannelInput | Prisma.ChannelFeeCreateOrConnectWithoutSalesChannelInput[];
+    createMany?: Prisma.ChannelFeeCreateManySalesChannelInputEnvelope;
+    connect?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+};
+export type ChannelFeeUncheckedCreateNestedManyWithoutSalesChannelInput = {
+    create?: Prisma.XOR<Prisma.ChannelFeeCreateWithoutSalesChannelInput, Prisma.ChannelFeeUncheckedCreateWithoutSalesChannelInput> | Prisma.ChannelFeeCreateWithoutSalesChannelInput[] | Prisma.ChannelFeeUncheckedCreateWithoutSalesChannelInput[];
+    connectOrCreate?: Prisma.ChannelFeeCreateOrConnectWithoutSalesChannelInput | Prisma.ChannelFeeCreateOrConnectWithoutSalesChannelInput[];
+    createMany?: Prisma.ChannelFeeCreateManySalesChannelInputEnvelope;
+    connect?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+};
+export type ChannelFeeUpdateManyWithoutSalesChannelNestedInput = {
+    create?: Prisma.XOR<Prisma.ChannelFeeCreateWithoutSalesChannelInput, Prisma.ChannelFeeUncheckedCreateWithoutSalesChannelInput> | Prisma.ChannelFeeCreateWithoutSalesChannelInput[] | Prisma.ChannelFeeUncheckedCreateWithoutSalesChannelInput[];
+    connectOrCreate?: Prisma.ChannelFeeCreateOrConnectWithoutSalesChannelInput | Prisma.ChannelFeeCreateOrConnectWithoutSalesChannelInput[];
+    upsert?: Prisma.ChannelFeeUpsertWithWhereUniqueWithoutSalesChannelInput | Prisma.ChannelFeeUpsertWithWhereUniqueWithoutSalesChannelInput[];
+    createMany?: Prisma.ChannelFeeCreateManySalesChannelInputEnvelope;
+    set?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    disconnect?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    delete?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    connect?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    update?: Prisma.ChannelFeeUpdateWithWhereUniqueWithoutSalesChannelInput | Prisma.ChannelFeeUpdateWithWhereUniqueWithoutSalesChannelInput[];
+    updateMany?: Prisma.ChannelFeeUpdateManyWithWhereWithoutSalesChannelInput | Prisma.ChannelFeeUpdateManyWithWhereWithoutSalesChannelInput[];
+    deleteMany?: Prisma.ChannelFeeScalarWhereInput | Prisma.ChannelFeeScalarWhereInput[];
+};
+export type ChannelFeeUncheckedUpdateManyWithoutSalesChannelNestedInput = {
+    create?: Prisma.XOR<Prisma.ChannelFeeCreateWithoutSalesChannelInput, Prisma.ChannelFeeUncheckedCreateWithoutSalesChannelInput> | Prisma.ChannelFeeCreateWithoutSalesChannelInput[] | Prisma.ChannelFeeUncheckedCreateWithoutSalesChannelInput[];
+    connectOrCreate?: Prisma.ChannelFeeCreateOrConnectWithoutSalesChannelInput | Prisma.ChannelFeeCreateOrConnectWithoutSalesChannelInput[];
+    upsert?: Prisma.ChannelFeeUpsertWithWhereUniqueWithoutSalesChannelInput | Prisma.ChannelFeeUpsertWithWhereUniqueWithoutSalesChannelInput[];
+    createMany?: Prisma.ChannelFeeCreateManySalesChannelInputEnvelope;
+    set?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    disconnect?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    delete?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    connect?: Prisma.ChannelFeeWhereUniqueInput | Prisma.ChannelFeeWhereUniqueInput[];
+    update?: Prisma.ChannelFeeUpdateWithWhereUniqueWithoutSalesChannelInput | Prisma.ChannelFeeUpdateWithWhereUniqueWithoutSalesChannelInput[];
+    updateMany?: Prisma.ChannelFeeUpdateManyWithWhereWithoutSalesChannelInput | Prisma.ChannelFeeUpdateManyWithWhereWithoutSalesChannelInput[];
+    deleteMany?: Prisma.ChannelFeeScalarWhereInput | Prisma.ChannelFeeScalarWhereInput[];
+};
+export type EnumFeeKindFieldUpdateOperationsInput = {
+    set?: $Enums.FeeKind;
+};
+export type EnumFeeCategoryFieldUpdateOperationsInput = {
+    set?: $Enums.FeeCategory;
+};
+export type ChannelFeeCreateWithoutWorkspaceInput = {
+    id: string;
+    name: string;
+    kind: $Enums.FeeKind;
+    category: $Enums.FeeCategory;
+    value: bigint | number;
+    position: number;
+    salesChannel: Prisma.SalesChannelCreateNestedOneWithoutFeesInput;
+};
+export type ChannelFeeUncheckedCreateWithoutWorkspaceInput = {
+    salesChannelId: string;
+    id: string;
+    name: string;
+    kind: $Enums.FeeKind;
+    category: $Enums.FeeCategory;
+    value: bigint | number;
+    position: number;
+};
+export type ChannelFeeCreateOrConnectWithoutWorkspaceInput = {
+    where: Prisma.ChannelFeeWhereUniqueInput;
+    create: Prisma.XOR<Prisma.ChannelFeeCreateWithoutWorkspaceInput, Prisma.ChannelFeeUncheckedCreateWithoutWorkspaceInput>;
+};
+export type ChannelFeeCreateManyWorkspaceInputEnvelope = {
+    data: Prisma.ChannelFeeCreateManyWorkspaceInput | Prisma.ChannelFeeCreateManyWorkspaceInput[];
+    skipDuplicates?: boolean;
+};
+export type ChannelFeeUpsertWithWhereUniqueWithoutWorkspaceInput = {
+    where: Prisma.ChannelFeeWhereUniqueInput;
+    update: Prisma.XOR<Prisma.ChannelFeeUpdateWithoutWorkspaceInput, Prisma.ChannelFeeUncheckedUpdateWithoutWorkspaceInput>;
+    create: Prisma.XOR<Prisma.ChannelFeeCreateWithoutWorkspaceInput, Prisma.ChannelFeeUncheckedCreateWithoutWorkspaceInput>;
+};
+export type ChannelFeeUpdateWithWhereUniqueWithoutWorkspaceInput = {
+    where: Prisma.ChannelFeeWhereUniqueInput;
+    data: Prisma.XOR<Prisma.ChannelFeeUpdateWithoutWorkspaceInput, Prisma.ChannelFeeUncheckedUpdateWithoutWorkspaceInput>;
+};
+export type ChannelFeeUpdateManyWithWhereWithoutWorkspaceInput = {
+    where: Prisma.ChannelFeeScalarWhereInput;
+    data: Prisma.XOR<Prisma.ChannelFeeUpdateManyMutationInput, Prisma.ChannelFeeUncheckedUpdateManyWithoutWorkspaceInput>;
+};
+export type ChannelFeeScalarWhereInput = {
+    AND?: Prisma.ChannelFeeScalarWhereInput | Prisma.ChannelFeeScalarWhereInput[];
+    OR?: Prisma.ChannelFeeScalarWhereInput[];
+    NOT?: Prisma.ChannelFeeScalarWhereInput | Prisma.ChannelFeeScalarWhereInput[];
+    workspaceId?: Prisma.UuidFilter<"ChannelFee"> | string;
+    salesChannelId?: Prisma.StringFilter<"ChannelFee"> | string;
+    id?: Prisma.StringFilter<"ChannelFee"> | string;
+    name?: Prisma.StringFilter<"ChannelFee"> | string;
+    kind?: Prisma.EnumFeeKindFilter<"ChannelFee"> | $Enums.FeeKind;
+    category?: Prisma.EnumFeeCategoryFilter<"ChannelFee"> | $Enums.FeeCategory;
+    value?: Prisma.BigIntFilter<"ChannelFee"> | bigint | number;
+    position?: Prisma.IntFilter<"ChannelFee"> | number;
+};
+export type ChannelFeeCreateWithoutSalesChannelInput = {
+    id: string;
+    name: string;
+    kind: $Enums.FeeKind;
+    category: $Enums.FeeCategory;
+    value: bigint | number;
+    position: number;
+    workspace: Prisma.WorkspaceCreateNestedOneWithoutChannelFeesInput;
+};
+export type ChannelFeeUncheckedCreateWithoutSalesChannelInput = {
+    id: string;
+    name: string;
+    kind: $Enums.FeeKind;
+    category: $Enums.FeeCategory;
+    value: bigint | number;
+    position: number;
+};
+export type ChannelFeeCreateOrConnectWithoutSalesChannelInput = {
+    where: Prisma.ChannelFeeWhereUniqueInput;
+    create: Prisma.XOR<Prisma.ChannelFeeCreateWithoutSalesChannelInput, Prisma.ChannelFeeUncheckedCreateWithoutSalesChannelInput>;
+};
+export type ChannelFeeCreateManySalesChannelInputEnvelope = {
+    data: Prisma.ChannelFeeCreateManySalesChannelInput | Prisma.ChannelFeeCreateManySalesChannelInput[];
+    skipDuplicates?: boolean;
+};
+export type ChannelFeeUpsertWithWhereUniqueWithoutSalesChannelInput = {
+    where: Prisma.ChannelFeeWhereUniqueInput;
+    update: Prisma.XOR<Prisma.ChannelFeeUpdateWithoutSalesChannelInput, Prisma.ChannelFeeUncheckedUpdateWithoutSalesChannelInput>;
+    create: Prisma.XOR<Prisma.ChannelFeeCreateWithoutSalesChannelInput, Prisma.ChannelFeeUncheckedCreateWithoutSalesChannelInput>;
+};
+export type ChannelFeeUpdateWithWhereUniqueWithoutSalesChannelInput = {
+    where: Prisma.ChannelFeeWhereUniqueInput;
+    data: Prisma.XOR<Prisma.ChannelFeeUpdateWithoutSalesChannelInput, Prisma.ChannelFeeUncheckedUpdateWithoutSalesChannelInput>;
+};
+export type ChannelFeeUpdateManyWithWhereWithoutSalesChannelInput = {
+    where: Prisma.ChannelFeeScalarWhereInput;
+    data: Prisma.XOR<Prisma.ChannelFeeUpdateManyMutationInput, Prisma.ChannelFeeUncheckedUpdateManyWithoutSalesChannelInput>;
+};
+export type ChannelFeeCreateManyWorkspaceInput = {
+    salesChannelId: string;
+    id: string;
+    name: string;
+    kind: $Enums.FeeKind;
+    category: $Enums.FeeCategory;
+    value: bigint | number;
+    position: number;
+};
+export type ChannelFeeUpdateWithoutWorkspaceInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    kind?: Prisma.EnumFeeKindFieldUpdateOperationsInput | $Enums.FeeKind;
+    category?: Prisma.EnumFeeCategoryFieldUpdateOperationsInput | $Enums.FeeCategory;
+    value?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    salesChannel?: Prisma.SalesChannelUpdateOneRequiredWithoutFeesNestedInput;
+};
+export type ChannelFeeUncheckedUpdateWithoutWorkspaceInput = {
+    salesChannelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    kind?: Prisma.EnumFeeKindFieldUpdateOperationsInput | $Enums.FeeKind;
+    category?: Prisma.EnumFeeCategoryFieldUpdateOperationsInput | $Enums.FeeCategory;
+    value?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+};
+export type ChannelFeeUncheckedUpdateManyWithoutWorkspaceInput = {
+    salesChannelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    kind?: Prisma.EnumFeeKindFieldUpdateOperationsInput | $Enums.FeeKind;
+    category?: Prisma.EnumFeeCategoryFieldUpdateOperationsInput | $Enums.FeeCategory;
+    value?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+};
+export type ChannelFeeCreateManySalesChannelInput = {
+    id: string;
+    name: string;
+    kind: $Enums.FeeKind;
+    category: $Enums.FeeCategory;
+    value: bigint | number;
+    position: number;
+};
+export type ChannelFeeUpdateWithoutSalesChannelInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    kind?: Prisma.EnumFeeKindFieldUpdateOperationsInput | $Enums.FeeKind;
+    category?: Prisma.EnumFeeCategoryFieldUpdateOperationsInput | $Enums.FeeCategory;
+    value?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutChannelFeesNestedInput;
+};
+export type ChannelFeeUncheckedUpdateWithoutSalesChannelInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    kind?: Prisma.EnumFeeKindFieldUpdateOperationsInput | $Enums.FeeKind;
+    category?: Prisma.EnumFeeCategoryFieldUpdateOperationsInput | $Enums.FeeCategory;
+    value?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+};
+export type ChannelFeeUncheckedUpdateManyWithoutSalesChannelInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    kind?: Prisma.EnumFeeKindFieldUpdateOperationsInput | $Enums.FeeKind;
+    category?: Prisma.EnumFeeCategoryFieldUpdateOperationsInput | $Enums.FeeCategory;
+    value?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+};
+export type ChannelFeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    workspaceId?: boolean;
+    salesChannelId?: boolean;
+    id?: boolean;
+    name?: boolean;
+    kind?: boolean;
+    category?: boolean;
+    value?: boolean;
+    position?: boolean;
+    workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>;
+    salesChannel?: boolean | Prisma.SalesChannelDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["channelFee"]>;
+export type ChannelFeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    workspaceId?: boolean;
+    salesChannelId?: boolean;
+    id?: boolean;
+    name?: boolean;
+    kind?: boolean;
+    category?: boolean;
+    value?: boolean;
+    position?: boolean;
+    workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>;
+    salesChannel?: boolean | Prisma.SalesChannelDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["channelFee"]>;
+export type ChannelFeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    workspaceId?: boolean;
+    salesChannelId?: boolean;
+    id?: boolean;
+    name?: boolean;
+    kind?: boolean;
+    category?: boolean;
+    value?: boolean;
+    position?: boolean;
+    workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>;
+    salesChannel?: boolean | Prisma.SalesChannelDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["channelFee"]>;
+export type ChannelFeeSelectScalar = {
+    workspaceId?: boolean;
+    salesChannelId?: boolean;
+    id?: boolean;
+    name?: boolean;
+    kind?: boolean;
+    category?: boolean;
+    value?: boolean;
+    position?: boolean;
+};
+export type ChannelFeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"workspaceId" | "salesChannelId" | "id" | "name" | "kind" | "category" | "value" | "position", ExtArgs["result"]["channelFee"]>;
+export type ChannelFeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>;
+    salesChannel?: boolean | Prisma.SalesChannelDefaultArgs<ExtArgs>;
+};
+export type ChannelFeeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>;
+    salesChannel?: boolean | Prisma.SalesChannelDefaultArgs<ExtArgs>;
+};
+export type ChannelFeeIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>;
+    salesChannel?: boolean | Prisma.SalesChannelDefaultArgs<ExtArgs>;
+};
+export type $ChannelFeePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "ChannelFee";
+    objects: {
+        workspace: Prisma.$WorkspacePayload<ExtArgs>;
+        salesChannel: Prisma.$SalesChannelPayload<ExtArgs>;
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        workspaceId: string;
+        salesChannelId: string;
+        id: string;
+        name: string;
+        kind: $Enums.FeeKind;
+        category: $Enums.FeeCategory;
+        value: bigint;
+        position: number;
+    }, ExtArgs["result"]["channelFee"]>;
+    composites: {};
+};
+export type ChannelFeeGetPayload<S extends boolean | null | undefined | ChannelFeeDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$ChannelFeePayload, S>;
+export type ChannelFeeCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<ChannelFeeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: ChannelFeeCountAggregateInputType | true;
+};
+export interface ChannelFeeDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['ChannelFee'];
+        meta: {
+            name: 'ChannelFee';
+        };
+    };
+    /**
+     * Find zero or one ChannelFee that matches the filter.
+     * @param {ChannelFeeFindUniqueArgs} args - Arguments to find a ChannelFee
+     * @example
+     * // Get one ChannelFee
+     * const channelFee = await prisma.channelFee.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ChannelFeeFindUniqueArgs>(args: Prisma.SelectSubset<T, ChannelFeeFindUniqueArgs<ExtArgs>>): Prisma.Prisma__ChannelFeeClient<runtime.Types.Result.GetResult<Prisma.$ChannelFeePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one ChannelFee that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ChannelFeeFindUniqueOrThrowArgs} args - Arguments to find a ChannelFee
+     * @example
+     * // Get one ChannelFee
+     * const channelFee = await prisma.channelFee.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ChannelFeeFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, ChannelFeeFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__ChannelFeeClient<runtime.Types.Result.GetResult<Prisma.$ChannelFeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first ChannelFee that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelFeeFindFirstArgs} args - Arguments to find a ChannelFee
+     * @example
+     * // Get one ChannelFee
+     * const channelFee = await prisma.channelFee.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ChannelFeeFindFirstArgs>(args?: Prisma.SelectSubset<T, ChannelFeeFindFirstArgs<ExtArgs>>): Prisma.Prisma__ChannelFeeClient<runtime.Types.Result.GetResult<Prisma.$ChannelFeePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first ChannelFee that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelFeeFindFirstOrThrowArgs} args - Arguments to find a ChannelFee
+     * @example
+     * // Get one ChannelFee
+     * const channelFee = await prisma.channelFee.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ChannelFeeFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, ChannelFeeFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__ChannelFeeClient<runtime.Types.Result.GetResult<Prisma.$ChannelFeePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more ChannelFees that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelFeeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ChannelFees
+     * const channelFees = await prisma.channelFee.findMany()
+     *
+     * // Get first 10 ChannelFees
+     * const channelFees = await prisma.channelFee.findMany({ take: 10 })
+     *
+     * // Only select the `workspaceId`
+     * const channelFeeWithWorkspaceIdOnly = await prisma.channelFee.findMany({ select: { workspaceId: true } })
+     *
+     */
+    findMany<T extends ChannelFeeFindManyArgs>(args?: Prisma.SelectSubset<T, ChannelFeeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChannelFeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a ChannelFee.
+     * @param {ChannelFeeCreateArgs} args - Arguments to create a ChannelFee.
+     * @example
+     * // Create one ChannelFee
+     * const ChannelFee = await prisma.channelFee.create({
+     *   data: {
+     *     // ... data to create a ChannelFee
+     *   }
+     * })
+     *
+     */
+    create<T extends ChannelFeeCreateArgs>(args: Prisma.SelectSubset<T, ChannelFeeCreateArgs<ExtArgs>>): Prisma.Prisma__ChannelFeeClient<runtime.Types.Result.GetResult<Prisma.$ChannelFeePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many ChannelFees.
+     * @param {ChannelFeeCreateManyArgs} args - Arguments to create many ChannelFees.
+     * @example
+     * // Create many ChannelFees
+     * const channelFee = await prisma.channelFee.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends ChannelFeeCreateManyArgs>(args?: Prisma.SelectSubset<T, ChannelFeeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many ChannelFees and returns the data saved in the database.
+     * @param {ChannelFeeCreateManyAndReturnArgs} args - Arguments to create many ChannelFees.
+     * @example
+     * // Create many ChannelFees
+     * const channelFee = await prisma.channelFee.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many ChannelFees and only return the `workspaceId`
+     * const channelFeeWithWorkspaceIdOnly = await prisma.channelFee.createManyAndReturn({
+     *   select: { workspaceId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends ChannelFeeCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, ChannelFeeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChannelFeePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a ChannelFee.
+     * @param {ChannelFeeDeleteArgs} args - Arguments to delete one ChannelFee.
+     * @example
+     * // Delete one ChannelFee
+     * const ChannelFee = await prisma.channelFee.delete({
+     *   where: {
+     *     // ... filter to delete one ChannelFee
+     *   }
+     * })
+     *
+     */
+    delete<T extends ChannelFeeDeleteArgs>(args: Prisma.SelectSubset<T, ChannelFeeDeleteArgs<ExtArgs>>): Prisma.Prisma__ChannelFeeClient<runtime.Types.Result.GetResult<Prisma.$ChannelFeePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one ChannelFee.
+     * @param {ChannelFeeUpdateArgs} args - Arguments to update one ChannelFee.
+     * @example
+     * // Update one ChannelFee
+     * const channelFee = await prisma.channelFee.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends ChannelFeeUpdateArgs>(args: Prisma.SelectSubset<T, ChannelFeeUpdateArgs<ExtArgs>>): Prisma.Prisma__ChannelFeeClient<runtime.Types.Result.GetResult<Prisma.$ChannelFeePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more ChannelFees.
+     * @param {ChannelFeeDeleteManyArgs} args - Arguments to filter ChannelFees to delete.
+     * @example
+     * // Delete a few ChannelFees
+     * const { count } = await prisma.channelFee.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends ChannelFeeDeleteManyArgs>(args?: Prisma.SelectSubset<T, ChannelFeeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more ChannelFees.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelFeeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ChannelFees
+     * const channelFee = await prisma.channelFee.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends ChannelFeeUpdateManyArgs>(args: Prisma.SelectSubset<T, ChannelFeeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more ChannelFees and returns the data updated in the database.
+     * @param {ChannelFeeUpdateManyAndReturnArgs} args - Arguments to update many ChannelFees.
+     * @example
+     * // Update many ChannelFees
+     * const channelFee = await prisma.channelFee.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more ChannelFees and only return the `workspaceId`
+     * const channelFeeWithWorkspaceIdOnly = await prisma.channelFee.updateManyAndReturn({
+     *   select: { workspaceId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends ChannelFeeUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, ChannelFeeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChannelFeePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one ChannelFee.
+     * @param {ChannelFeeUpsertArgs} args - Arguments to update or create a ChannelFee.
+     * @example
+     * // Update or create a ChannelFee
+     * const channelFee = await prisma.channelFee.upsert({
+     *   create: {
+     *     // ... data to create a ChannelFee
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ChannelFee we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ChannelFeeUpsertArgs>(args: Prisma.SelectSubset<T, ChannelFeeUpsertArgs<ExtArgs>>): Prisma.Prisma__ChannelFeeClient<runtime.Types.Result.GetResult<Prisma.$ChannelFeePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of ChannelFees.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelFeeCountArgs} args - Arguments to filter ChannelFees to count.
+     * @example
+     * // Count the number of ChannelFees
+     * const count = await prisma.channelFee.count({
+     *   where: {
+     *     // ... the filter for the ChannelFees we want to count
+     *   }
+     * })
+    **/
+    count<T extends ChannelFeeCountArgs>(args?: Prisma.Subset<T, ChannelFeeCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], ChannelFeeCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a ChannelFee.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelFeeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ChannelFeeAggregateArgs>(args: Prisma.Subset<T, ChannelFeeAggregateArgs>): Prisma.PrismaPromise<GetChannelFeeAggregateType<T>>;
+    /**
+     * Group by ChannelFee.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ChannelFeeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends ChannelFeeGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: ChannelFeeGroupByArgs['orderBy'];
+    } : {
+        orderBy?: ChannelFeeGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, ChannelFeeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetChannelFeeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the ChannelFee model
+     */
+    readonly fields: ChannelFeeFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for ChannelFee.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__ChannelFeeClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    workspace<T extends Prisma.WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    salesChannel<T extends Prisma.SalesChannelDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SalesChannelDefaultArgs<ExtArgs>>): Prisma.Prisma__SalesChannelClient<runtime.Types.Result.GetResult<Prisma.$SalesChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the ChannelFee model
+ */
+export interface ChannelFeeFieldRefs {
+    readonly workspaceId: Prisma.FieldRef<"ChannelFee", 'String'>;
+    readonly salesChannelId: Prisma.FieldRef<"ChannelFee", 'String'>;
+    readonly id: Prisma.FieldRef<"ChannelFee", 'String'>;
+    readonly name: Prisma.FieldRef<"ChannelFee", 'String'>;
+    readonly kind: Prisma.FieldRef<"ChannelFee", 'FeeKind'>;
+    readonly category: Prisma.FieldRef<"ChannelFee", 'FeeCategory'>;
+    readonly value: Prisma.FieldRef<"ChannelFee", 'BigInt'>;
+    readonly position: Prisma.FieldRef<"ChannelFee", 'Int'>;
+}
+/**
+ * ChannelFee findUnique
+ */
+export type ChannelFeeFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelFee
+     */
+    select?: Prisma.ChannelFeeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ChannelFee
+     */
+    omit?: Prisma.ChannelFeeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ChannelFeeInclude<ExtArgs> | null;
+    /**
+     * Filter, which ChannelFee to fetch.
+     */
+    where: Prisma.ChannelFeeWhereUniqueInput;
+};
+/**
+ * ChannelFee findUniqueOrThrow
+ */
+export type ChannelFeeFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelFee
+     */
+    select?: Prisma.ChannelFeeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ChannelFee
+     */
+    omit?: Prisma.ChannelFeeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ChannelFeeInclude<ExtArgs> | null;
+    /**
+     * Filter, which ChannelFee to fetch.
+     */
+    where: Prisma.ChannelFeeWhereUniqueInput;
+};
+/**
+ * ChannelFee findFirst
+ */
+export type ChannelFeeFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelFee
+     */
+    select?: Prisma.ChannelFeeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ChannelFee
+     */
+    omit?: Prisma.ChannelFeeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ChannelFeeInclude<ExtArgs> | null;
+    /**
+     * Filter, which ChannelFee to fetch.
+     */
+    where?: Prisma.ChannelFeeWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelFees to fetch.
+     */
+    orderBy?: Prisma.ChannelFeeOrderByWithRelationInput | Prisma.ChannelFeeOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ChannelFees.
+     */
+    cursor?: Prisma.ChannelFeeWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelFees from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelFees.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelFees.
+     */
+    distinct?: Prisma.ChannelFeeScalarFieldEnum | Prisma.ChannelFeeScalarFieldEnum[];
+};
+/**
+ * ChannelFee findFirstOrThrow
+ */
+export type ChannelFeeFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelFee
+     */
+    select?: Prisma.ChannelFeeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ChannelFee
+     */
+    omit?: Prisma.ChannelFeeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ChannelFeeInclude<ExtArgs> | null;
+    /**
+     * Filter, which ChannelFee to fetch.
+     */
+    where?: Prisma.ChannelFeeWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelFees to fetch.
+     */
+    orderBy?: Prisma.ChannelFeeOrderByWithRelationInput | Prisma.ChannelFeeOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ChannelFees.
+     */
+    cursor?: Prisma.ChannelFeeWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelFees from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelFees.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelFees.
+     */
+    distinct?: Prisma.ChannelFeeScalarFieldEnum | Prisma.ChannelFeeScalarFieldEnum[];
+};
+/**
+ * ChannelFee findMany
+ */
+export type ChannelFeeFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelFee
+     */
+    select?: Prisma.ChannelFeeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ChannelFee
+     */
+    omit?: Prisma.ChannelFeeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ChannelFeeInclude<ExtArgs> | null;
+    /**
+     * Filter, which ChannelFees to fetch.
+     */
+    where?: Prisma.ChannelFeeWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ChannelFees to fetch.
+     */
+    orderBy?: Prisma.ChannelFeeOrderByWithRelationInput | Prisma.ChannelFeeOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing ChannelFees.
+     */
+    cursor?: Prisma.ChannelFeeWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ChannelFees from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ChannelFees.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ChannelFees.
+     */
+    distinct?: Prisma.ChannelFeeScalarFieldEnum | Prisma.ChannelFeeScalarFieldEnum[];
+};
+/**
+ * ChannelFee create
+ */
+export type ChannelFeeCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelFee
+     */
+    select?: Prisma.ChannelFeeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ChannelFee
+     */
+    omit?: Prisma.ChannelFeeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ChannelFeeInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a ChannelFee.
+     */
+    data: Prisma.XOR<Prisma.ChannelFeeCreateInput, Prisma.ChannelFeeUncheckedCreateInput>;
+};
+/**
+ * ChannelFee createMany
+ */
+export type ChannelFeeCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ChannelFees.
+     */
+    data: Prisma.ChannelFeeCreateManyInput | Prisma.ChannelFeeCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * ChannelFee createManyAndReturn
+ */
+export type ChannelFeeCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelFee
+     */
+    select?: Prisma.ChannelFeeSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ChannelFee
+     */
+    omit?: Prisma.ChannelFeeOmit<ExtArgs> | null;
+    /**
+     * The data used to create many ChannelFees.
+     */
+    data: Prisma.ChannelFeeCreateManyInput | Prisma.ChannelFeeCreateManyInput[];
+    skipDuplicates?: boolean;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ChannelFeeIncludeCreateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * ChannelFee update
+ */
+export type ChannelFeeUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelFee
+     */
+    select?: Prisma.ChannelFeeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ChannelFee
+     */
+    omit?: Prisma.ChannelFeeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ChannelFeeInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a ChannelFee.
+     */
+    data: Prisma.XOR<Prisma.ChannelFeeUpdateInput, Prisma.ChannelFeeUncheckedUpdateInput>;
+    /**
+     * Choose, which ChannelFee to update.
+     */
+    where: Prisma.ChannelFeeWhereUniqueInput;
+};
+/**
+ * ChannelFee updateMany
+ */
+export type ChannelFeeUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ChannelFees.
+     */
+    data: Prisma.XOR<Prisma.ChannelFeeUpdateManyMutationInput, Prisma.ChannelFeeUncheckedUpdateManyInput>;
+    /**
+     * Filter which ChannelFees to update
+     */
+    where?: Prisma.ChannelFeeWhereInput;
+    /**
+     * Limit how many ChannelFees to update.
+     */
+    limit?: number;
+};
+/**
+ * ChannelFee updateManyAndReturn
+ */
+export type ChannelFeeUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelFee
+     */
+    select?: Prisma.ChannelFeeSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ChannelFee
+     */
+    omit?: Prisma.ChannelFeeOmit<ExtArgs> | null;
+    /**
+     * The data used to update ChannelFees.
+     */
+    data: Prisma.XOR<Prisma.ChannelFeeUpdateManyMutationInput, Prisma.ChannelFeeUncheckedUpdateManyInput>;
+    /**
+     * Filter which ChannelFees to update
+     */
+    where?: Prisma.ChannelFeeWhereInput;
+    /**
+     * Limit how many ChannelFees to update.
+     */
+    limit?: number;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ChannelFeeIncludeUpdateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * ChannelFee upsert
+ */
+export type ChannelFeeUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelFee
+     */
+    select?: Prisma.ChannelFeeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ChannelFee
+     */
+    omit?: Prisma.ChannelFeeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ChannelFeeInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the ChannelFee to update in case it exists.
+     */
+    where: Prisma.ChannelFeeWhereUniqueInput;
+    /**
+     * In case the ChannelFee found by the `where` argument doesn't exist, create a new ChannelFee with this data.
+     */
+    create: Prisma.XOR<Prisma.ChannelFeeCreateInput, Prisma.ChannelFeeUncheckedCreateInput>;
+    /**
+     * In case the ChannelFee was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.ChannelFeeUpdateInput, Prisma.ChannelFeeUncheckedUpdateInput>;
+};
+/**
+ * ChannelFee delete
+ */
+export type ChannelFeeDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelFee
+     */
+    select?: Prisma.ChannelFeeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ChannelFee
+     */
+    omit?: Prisma.ChannelFeeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ChannelFeeInclude<ExtArgs> | null;
+    /**
+     * Filter which ChannelFee to delete.
+     */
+    where: Prisma.ChannelFeeWhereUniqueInput;
+};
+/**
+ * ChannelFee deleteMany
+ */
+export type ChannelFeeDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which ChannelFees to delete
+     */
+    where?: Prisma.ChannelFeeWhereInput;
+    /**
+     * Limit how many ChannelFees to delete.
+     */
+    limit?: number;
+};
+/**
+ * ChannelFee without action
+ */
+export type ChannelFeeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChannelFee
+     */
+    select?: Prisma.ChannelFeeSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ChannelFee
+     */
+    omit?: Prisma.ChannelFeeOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ChannelFeeInclude<ExtArgs> | null;
+};
