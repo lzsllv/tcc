@@ -1,0 +1,26 @@
+# Dependências
+node_modules/
+**/node_modules/
+
+# Builds e código gerado
+dist/
+**/dist/
+backend/src/generated/
+
+# Ambientes locais e credenciais
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+
+# Worktrees locais
+.worktrees/
+
+# Sistema operacional e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

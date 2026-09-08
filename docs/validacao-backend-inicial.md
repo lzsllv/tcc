@@ -1,6 +1,6 @@
-# Validação do backend inicial — 03/09/2026
+# Validação do backend inicial — 08/09/2026
 
-Branch de correções: `fix/workspace-fetch-context`, na pasta `C:/TCC/tcc`.
+Validação consolidada na branch `chore/organize-project`, na pasta `C:/TCC/tcc`.
 
 ## Validado nesta rodada
 
@@ -31,10 +31,10 @@ Os testes de sessão montam o contexto real, o serviço de workspace e o reposit
 - Concluir formalmente a auditoria Codex Security. O checkpoint anterior é parcial; estes testes não são um relatório final de auditoria.
 - Exportação pela interface: existe contrato HTTP, mas ainda é necessário verificar/disponibilizar a ação na tela.
 
-Nenhum registro de negócio, conta ou objeto de Storage do usuário foi criado, alterado ou removido por estes testes. Não houve nova migration aplicada nesta rodada. As alterações ainda não foram commitadas nem enviadas ao remoto.
+Nenhum registro de negócio, conta ou objeto de Storage do usuário foi criado, alterado ou removido por estes testes. Não houve nova migration aplicada nesta rodada. As credenciais reais permanecem apenas nos arquivos locais ignorados pelo Git.
 
 ## Reexecutar
 
-Na raiz: `npm test`, `npm run lint`, `npm run build`.
+Em `front`: `npm test`, `npm run lint`, `npm run build`.
 
 Em `backend`: `npm test`, `npm run lint`, `npm run prisma:generate`, `npm run prisma:validate`, `npm run build`.

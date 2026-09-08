@@ -30,19 +30,19 @@
 - Consumes: variáveis Vite existentes e configuração privada do backend.
 - Produces: ambientes locais nos diretórios dos pacotes, ausentes do índice Git.
 
-- [ ] **Step 1: Verificar os caminhos sem ler os valores**
+- [x] **Step 1: Verificar os caminhos sem ler os valores**
 
 Run: `Test-Path .env.local; Test-Path backend/.env; git ls-files .env.local backend/.env`
 
-- [ ] **Step 2: Criar o `.gitignore` raiz**
+- [x] **Step 2: Criar o `.gitignore` raiz**
 
 Ignorar `node_modules/`, `dist/`, `.worktrees/`, `.env`, `.env.*` e liberar `!**/.env.example`.
 
-- [ ] **Step 3: Mover a configuração do frontend e retirar ambientes do índice**
+- [x] **Step 3: Mover a configuração do frontend e retirar ambientes do índice**
 
 Mover `.env.local` para `front/.env.local` e executar `git rm --cached --ignore-unmatch .env.local front/.env.local backend/.env`.
 
-- [ ] **Step 4: Confirmar a proteção**
+- [x] **Step 4: Confirmar a proteção**
 
 Run: `git check-ignore front/.env.local backend/.env; git ls-files "*.env*"`
 
@@ -51,7 +51,7 @@ Expected: os ambientes reais estão ignorados; somente exemplos permanecem versi
 ### Task 2: Remover fontes redundantes e artefatos
 
 **Files:**
-- Delete: `api-node/`
+- Delete: `api-node/`, `front/tcc/`
 - Delete generated: `dist/`, `backend/dist/`, `node_modules/`
 - Untrack generated: `front/node_modules/`, `backend/node_modules/`, `front/dist/`, `backend/src/generated/`
 
@@ -59,19 +59,19 @@ Expected: os ambientes reais estão ignorados; somente exemplos permanecem versi
 - Consumes: estrutura identificada no commit `ab95a50f`.
 - Produces: apenas `front/`, `backend/` e `docs/` como diretórios de projeto.
 
-- [ ] **Step 1: Remover o protótipo pelo Git**
+- [x] **Step 1: Remover os protótipos pelo Git**
 
-Run: `git rm -r -- api-node`
+Run: `git rm -r -- api-node front/tcc`
 
-- [ ] **Step 2: Retirar dependências e builds do índice**
+- [x] **Step 2: Retirar dependências e builds do índice**
 
 Run: `git rm -r --cached --ignore-unmatch -- front/node_modules backend/node_modules front/dist backend/dist backend/src/generated node_modules dist`
 
-- [ ] **Step 3: Validar alvos absolutos e remover somente cópias geradas da raiz**
+- [x] **Step 3: Validar alvos absolutos e remover somente cópias geradas da raiz**
 
 Confirmar que `C:\TCC\tcc\node_modules` e `C:\TCC\tcc\dist` resolvem dentro de `C:\TCC\tcc`, então removê-los. Preservar dependências instaladas dentro de `front/` e `backend/`.
 
-- [ ] **Step 4: Confirmar que nenhum artefato gerado permanece rastreado**
+- [x] **Step 4: Confirmar que nenhum artefato gerado permanece rastreado**
 
 Run: `git ls-files | rg "(^|/)(node_modules|dist|src/generated)/"`
 
@@ -88,19 +88,19 @@ Expected: nenhuma saída.
 - Consumes: scripts existentes em `front/package.json` e `backend/package.json`.
 - Produces: instruções únicas de instalação, execução e testes.
 
-- [ ] **Step 1: Escrever o README da estrutura atual**
+- [x] **Step 1: Escrever o README da estrutura atual**
 
 Documentar pré-requisitos, configuração baseada nos dois `.env.example`, `npm install`, `npm run dev`, testes e portas 5173/3333.
 
-- [ ] **Step 2: Incorporar a proteção exclusiva do worktree**
+- [x] **Step 2: Incorporar a proteção exclusiva do worktree**
 
 Confirmar que `backend/.env` não está mais rastreado na branch atual; não fazer cherry-pick do commit antigo, pois o mesmo efeito já foi produzido.
 
-- [ ] **Step 3: Remover o worktree pelo Git**
+- [x] **Step 3: Remover o worktree pelo Git**
 
 Run: `git worktree remove C:/TCC/tcc/.worktrees/backend-inicial` e depois `git worktree prune`.
 
-- [ ] **Step 4: Verificar a árvore final**
+- [x] **Step 4: Verificar a árvore final**
 
 Expected directories: `front`, `backend`, `docs`. `.git` e dependências locais internas são permitidas.
 
@@ -113,19 +113,19 @@ Expected directories: `front`, `backend`, `docs`. `.git` e dependências locais 
 - Consumes: pacotes organizados.
 - Produces: repositório validado e commit de limpeza.
 
-- [ ] **Step 1: Instalar dependências se necessário**
+- [x] **Step 1: Instalar dependências se necessário**
 
 Run `npm install` em `front/` e `backend/` somente se seus `node_modules` internos estiverem ausentes.
 
-- [ ] **Step 2: Verificar o frontend**
+- [x] **Step 2: Verificar o frontend**
 
 Run em `front/`: `npm test`, `npm run lint`, `npm run build`.
 
-- [ ] **Step 3: Verificar o backend**
+- [x] **Step 3: Verificar o backend**
 
 Run em `backend/`: `npm test`, `npm run lint`, `npm run prisma:generate`, `npm run prisma:validate`, `npm run build`.
 
-- [ ] **Step 4: Verificar higiene do Git**
+- [x] **Step 4: Verificar higiene do Git**
 
 Confirmar ausência de ambientes reais, dependências e builds no índice; executar `git diff --check` e revisar `git status --short`.
 
