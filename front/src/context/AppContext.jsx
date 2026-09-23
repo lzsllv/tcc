@@ -2,64 +2,26 @@
 import { createContext, useContext, useState, useEffect, useReducer, useRef, useCallback } from 'react';
 import { WorkspaceService } from '../application/WorkspaceService.js';
 import { initialWorkspaceState, workspaceReducer } from '../application/workspaceState.js';
-import { RemoteWorkspaceRepository } from '../persistence/RemoteWorkspaceRepository.js';
+import { LocalWorkspaceRepository } from '../persistence/LocalWorkspaceRepository.js';
 import { isDemoAccountEmpty, persistDemoAccount } from '../application/demoAccount.js';
-import { SupabaseAuthService } from '../auth/SupabaseAuthService.js';
-import { createBrowserSupabaseClient } from '../auth/supabaseClient.js';
+import { LocalAuthService } from '../auth/LocalAuthService.js';
+import { LocalAccountStore } from '../auth/localAccountStore.js';
 import { sessionUser } from '../auth/session.js';
-import { calculateOfferVariableCost } from '../domain/pricing/offers.js';
+import { fixedCostsFromView, workspaceToView } from './workspaceView.js';
 
 const AppContext = createContext();
 export function useApp() { return useContext(AppContext); }
 
-function legacyFixedCosts(fixedCosts) {
-  return {
-    ...Object.fromEntries(['aluguel', 'energia', 'internet', 'salarios', 'outros'].map(key => [key, (fixedCosts?.[key] ?? 0) / 100])),
-    extras: (fixedCosts?.extras ?? []).map(extra => ({ id: extra.id, descricao: extra.name, valor: extra.valueCents / 100 })),
-  };
-}
+const createAuthService = () => new LocalAuthService(new LocalAccountStore(localStorage));
+const createWorkspaceRepository = storage => new LocalWorkspaceRepository(storage);
 
-function remoteFixedCosts(fixedCosts) {
-  const cents = value => Math.round(Number(value || 0) * 100);
-  return {
-    ...Object.fromEntries(['aluguel', 'energia', 'internet', 'salarios', 'outros'].map(key => [key, cents(fixedCosts[key])])),
-    extras: (fixedCosts.extras ?? [])
-      .filter(extra => extra.descricao.trim() || Number(extra.valor || 0) > 0)
-      .map(extra => ({ id: String(extra.id), name: extra.descricao.trim(), valueCents: cents(extra.valor) })),
-  };
-}
-
-function legacySettings(settings) {
-  return {
-    margemLucro: settings.defaultMarginBps / 100,
-    custoHora: settings.laborHourCents / 100,
-    regiaoAtuacao: settings.region,
-    nomeNegocio: settings.businessName,
-    logoNegocio: settings.logo,
-  };
-}
-
-function legacyProducts(workspace) {
-  const ingredientsById = Object.fromEntries(workspace.ingredients.map(item => [item.id, item]));
-  return workspace.offers.filter(offer => offer.active).map(offer => {
-    let unitCostCents = 0;
-    try {
-      unitCostCents = calculateOfferVariableCost(offer, ingredientsById, 0).unitCostCents;
-    } catch { /* uma ficha inconsistente permanece visível com custo zero */ }
-    return {
-      id: offer.id,
-      nome: offer.name,
-      categoria: offer.category,
-      custo: unitCostCents / 100,
-      tempoProducao: offer.batchTimeMinutes / offer.batchYield / 60,
-      quantidadeMes: offer.expectedMonthlySales,
-    };
-  });
-}
-
-export function AppProvider({ children }) {
+export function AppProvider({
+  children,
+  authServiceFactory = createAuthService,
+  workspaceRepositoryFactory = createWorkspaceRepository,
+}) {
   const sessionScope = useRef({ ownerId: null });
-  const [authService] = useState(() => new SupabaseAuthService(createBrowserSupabaseClient()));
+  const [authService] = useState(() => authServiceFactory());
   const [workspaceService, setWorkspaceService] = useState(null);
   const [workspaceState, dispatchWorkspace] = useReducer(workspaceReducer, initialWorkspaceState);
   const [usuarioLogado, setUsuarioLogado] = useState(null);
@@ -74,30 +36,27 @@ export function AppProvider({ children }) {
     setConfiguracoes({ margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' });
   }, []);
 
+  const applyWorkspaceView = useCallback((workspace) => {
+    const view = workspaceToView(workspace);
+    setProdutos(view.produtos);
+    setCustosFixos(view.custosFixos);
+    setConfiguracoes(view.configuracoes);
+  }, []);
+
   const acceptSession = useCallback((session) => {
     const user = sessionUser(session);
     const ownerId = user?.id ?? null;
     if (sessionScope.current.ownerId !== ownerId) {
-      // A identidade do objeto também invalida operações em logout + login da mesma conta.
       const scope = { ownerId };
       sessionScope.current = scope;
-      // Cache, revisões e credenciais pertencem a esta sessão, não apenas ao usuário.
-      setWorkspaceService(ownerId ? new WorkspaceService(new RemoteWorkspaceRepository({
-        baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:3333',
-        getAccessToken: async requestedOwner => {
-          const session = await authService.getSession();
-          if (scope !== sessionScope.current || session?.user?.id !== requestedOwner) {
-            throw new Error('A sessão mudou. Reabra os dados da conta atual.');
-          }
-          return session.access_token;
-        },
-        storage: localStorage,
-      }), localStorage) : null);
+      setWorkspaceService(ownerId
+        ? new WorkspaceService(workspaceRepositoryFactory(localStorage), localStorage)
+        : null);
       dispatchWorkspace({ type: 'reset' });
       clearLegacyView();
     }
     setUsuarioLogado(previous => previous?.id === user?.id ? previous : user);
-  }, [authService, clearLegacyView]);
+  }, [clearLegacyView, workspaceRepositoryFactory]);
 
   function assertCurrentSession(scope) {
     if (scope !== sessionScope.current || !scope.ownerId) {
@@ -138,9 +97,7 @@ export function AppProvider({ children }) {
       .then(workspace => {
         if (active && scope === sessionScope.current) {
           dispatchWorkspace({ type: 'loadSucceeded', workspace });
-          setProdutos(legacyProducts(workspace));
-          setCustosFixos(legacyFixedCosts(workspace.fixedCosts));
-          setConfiguracoes(legacySettings(workspace.settings));
+          applyWorkspaceView(workspace);
         }
       })
       .catch(error => {
@@ -148,9 +105,8 @@ export function AppProvider({ children }) {
       });
 
     return () => { active = false; };
-  }, [usuarioLogado, workspaceService]);
+  }, [applyWorkspaceView, usuarioLogado, workspaceService]);
 
-  // ── CALCULOS ──
   function totalCustosFixos() {
     const fixos  = Object.entries(custosFixos).filter(([k]) => k !== 'extras').reduce((a, [, v]) => a + Number(v), 0);
     const extras = (custosFixos.extras || []).reduce((a, e) => a + Number(e.valor || 0), 0);
@@ -183,7 +139,6 @@ export function AppProvider({ children }) {
     return (Number(precoVenda) - Number(custoTotal)) * Number(quantidade);
   }
 
-  // ── DEMO ──
   const podeCarregarDemo = workspaceState.status === 'ready' && isDemoAccountEmpty({
     workspace: workspaceState.data,
     produtos,
@@ -205,7 +160,6 @@ export function AppProvider({ children }) {
     setCustosFixos(demo.custosFixos);
     setConfiguracoes(demo.configuracoes);
   }
-  // ── AUTH ──
   async function login(email, senha) {
     await authService.signIn(email, senha);
     return true;
@@ -219,7 +173,6 @@ export function AppProvider({ children }) {
     await authService.signOut();
   }
 
-  // ── PRODUTOS ──
   function adicionarProduto(p)      { setProdutos(prev => [...prev, { ...p, id: crypto.randomUUID() }]); }
   function editarProduto(id, dados) { setProdutos(prev => prev.map(p => p.id === id ? { ...p, ...dados } : p)); }
   function excluirProduto(id)       { setProdutos(prev => prev.filter(p => p.id !== id)); }
@@ -239,9 +192,7 @@ export function AppProvider({ children }) {
       );
       assertCurrentSession(scope);
       dispatchWorkspace({ type: 'saveSucceeded', workspace });
-      setProdutos(legacyProducts(workspace));
-      setCustosFixos(legacyFixedCosts(workspace.fixedCosts));
-      setConfiguracoes(legacySettings(workspace.settings));
+      applyWorkspaceView(workspace);
       return workspace;
     } catch (error) {
       if (scope === sessionScope.current) dispatchWorkspace({ type: 'failed', error });
@@ -260,7 +211,7 @@ export function AppProvider({ children }) {
   }
 
   async function salvarCustosFixos() {
-    return atualizarWorkspace(current => ({ ...current, fixedCosts: remoteFixedCosts(custosFixos) }));
+    return atualizarWorkspace(current => ({ ...current, fixedCosts: fixedCostsFromView(custosFixos) }));
   }
 
   async function salvarConfiguracoes() {
@@ -284,7 +235,7 @@ export function AppProvider({ children }) {
     }
     assertCurrentSession(scope);
     dispatchWorkspace({ type: 'saveSucceeded', workspace });
-    setConfiguracoes(legacySettings(workspace.settings));
+    setConfiguracoes(workspaceToView(workspace).configuracoes);
     return workspace;
   }
   return (
