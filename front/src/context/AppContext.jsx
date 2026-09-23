@@ -228,7 +228,7 @@ export function AppProvider({
       },
     }));
     assertCurrentSession(scope);
-    if (logoDraft.startsWith('data:image/')) {
+    if (logoDraft && logoDraft !== workspace.settings.logo) {
       workspace = await workspaceService.saveLogo(String(usuarioLogado.id), logoDraft);
     } else if (!logoDraft && workspace.settings.logo) {
       workspace = await workspaceService.deleteLogo(String(usuarioLogado.id));

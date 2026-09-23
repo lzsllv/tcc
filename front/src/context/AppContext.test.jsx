@@ -125,3 +125,19 @@ test('cada conta restaura somente o próprio workspace', async () => {
   await waitFor(() => expect(state()).toMatchObject({ owner: 'user-b', name: 'Negócio B', user: 'user-b' }));
   expect(JSON.parse(localStorage.getItem('precifique:workspace:v2:user-a')).settings.businessName).toBe('Negócio A');
 });
+
+test('salva configurações da demonstração sem regravar o logo interno', async () => {
+  const store = new LocalAccountStore(localStorage);
+  seedAccount(store, account('user-1', 'Ana', 'ana@example.com'));
+  store.setSessionAccountId('user-1');
+
+  render(<AppProvider><Probe /></AppProvider>);
+  await waitFor(() => expect(state().status).toBe('ready'));
+  await act(async () => current.carregarDemo());
+
+  await expect(current.salvarConfiguracoes()).resolves.toMatchObject({
+    settings: { businessName: 'Doces da Maria — DEMO' },
+  });
+  expect(JSON.parse(localStorage.getItem('precifique:workspace:v2:user-1')).settings.logo)
+    .toMatch(/^data:image\/svg\+xml,/);
+});
