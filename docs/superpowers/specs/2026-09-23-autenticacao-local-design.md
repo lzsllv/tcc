@@ -18,6 +18,19 @@ Não fazem parte desta mudança sincronização entre dispositivos, recuperaçã
 
 ## Arquitetura
 
+### Organização do código
+
+O fluxo local será dividido por responsabilidade, sem concentrar autenticação, criptografia, armazenamento e integração React no mesmo arquivo:
+
+- `auth/LocalAuthService.js`: coordena cadastro, login, restauração e logout.
+- `auth/localAccountStore.js`: lê e grava contas e a sessão ativa no armazenamento do navegador.
+- `auth/password.js`: gera salt, deriva hash e compara credenciais com Web Crypto.
+- `auth/session.js`: mantém o mapeamento entre a sessão e o usuário consumido pela aplicação.
+- `context/AppContext.jsx`: conecta a sessão local ao workspace, sem implementar detalhes de credenciais.
+- `persistence/LocalWorkspaceRepository.js`: continua responsável apenas pelos workspaces e logos locais.
+
+Os testes acompanharão esses limites em arquivos próprios. A implementação seguirá as convenções de nomes e módulos já usadas no projeto. Não serão adicionados comentários instrucionais, marcadores de implementação, textos de passo a passo ou explicações artificiais dentro do código; nomes e interfaces devem torná-lo legível por si só.
+
 ### Serviço de autenticação local
 
 Um `LocalAuthService` fornecerá o mesmo contrato de alto nível consumido pelo contexto da aplicação:
@@ -112,4 +125,6 @@ O desenvolvimento seguirá testes primeiro. A cobertura incluirá:
 - Um usuário consegue cadastrar, entrar, editar dados, atualizar a página, sair e entrar novamente mantendo seu workspace.
 - Duas contas no mesmo navegador não veem os dados uma da outra.
 - A aplicação não emite requisições para Supabase ou backend durante esses fluxos.
+- Autenticação, criptografia, armazenamento, contexto React e persistência de workspace permanecem separados em módulos focados.
+- O código novo não contém comentários instrucionais nem texto de processo.
 - Todos os testes, lint e build do frontend passam.
