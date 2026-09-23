@@ -67,3 +67,28 @@ test('preenche em memória o canal selecionado em workspaces v2 anteriores', asy
   assert.equal(loaded.settings.selectedSalesChannelId, 'channel-direct');
   assert.equal(JSON.parse(storage.getItem('precifique:workspace:v2:user-1')).settings.selectedSalesChannelId, undefined);
 });
+
+test('salva e remove o logo somente no workspace solicitado', async () => {
+  const repository = new LocalWorkspaceRepository(new MemoryStorage());
+  await repository.saveWorkspace('user-1', createEmptyWorkspace('user-1'));
+  await repository.saveWorkspace('user-2', createEmptyWorkspace('user-2'));
+
+  await repository.saveLogo('user-1', 'data:image/png;base64,cG5n');
+
+  assert.equal(
+    (await repository.loadWorkspace('user-1')).settings.logo,
+    'data:image/png;base64,cG5n',
+  );
+  assert.equal((await repository.loadWorkspace('user-2')).settings.logo, '');
+  await repository.deleteLogo('user-1');
+  assert.equal((await repository.loadWorkspace('user-1')).settings.logo, '');
+});
+
+test('recusa alterar logo quando o workspace não existe', async () => {
+  const repository = new LocalWorkspaceRepository(new MemoryStorage());
+
+  await assert.rejects(
+    () => repository.saveLogo('missing', 'data:image/png;base64,cG5n'),
+    /não encontrado/i,
+  );
+});

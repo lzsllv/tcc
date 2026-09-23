@@ -68,4 +68,26 @@ export class LocalWorkspaceRepository {
     }
     return JSON.stringify(workspace, null, 2);
   }
+
+  async updateLogo(ownerId, logo) {
+    const workspace = await this.loadWorkspace(ownerId);
+    if (!workspace) {
+      throw new ReferenceError('Workspace não encontrado para atualização do logo.');
+    }
+    return this.saveWorkspace(ownerId, {
+      ...workspace,
+      settings: { ...workspace.settings, logo },
+    });
+  }
+
+  async saveLogo(ownerId, dataUrl) {
+    if (!/^data:image\/(?:png|jpeg|webp);/i.test(dataUrl)) {
+      throw new TypeError('Formato de logo inválido.');
+    }
+    return this.updateLogo(ownerId, dataUrl);
+  }
+
+  async deleteLogo(ownerId) {
+    return this.updateLogo(ownerId, '');
+  }
 }
