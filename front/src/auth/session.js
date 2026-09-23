@@ -4,6 +4,6 @@ export function sessionUser(session) {
   return {
     id: user.id,
     email: user.email ?? '',
-    nome: user.user_metadata?.name ?? user.email?.split('@')[0] ?? 'Usuário',
+    nome: user.name ?? user.email?.split('@')[0] ?? 'Usuário',
   };
 }
