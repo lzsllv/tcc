@@ -10,25 +10,20 @@ export default function Cadastro() {
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [erro, setErro] = useState('');
-  const [sucesso, setSucesso] = useState('');
   const [carregando, setCarregando] = useState(false);
   const { cadastrar } = useApp();
   const navegar = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setErro(''); setSucesso('');
+    setErro('');
     if (!nome || !email || !senha || !confirmarSenha) { setErro('Preencha todos os campos.'); return; }
     if (senha.length < 6) { setErro('A senha deve ter no mínimo 6 caracteres.'); return; }
     if (senha !== confirmarSenha) { setErro('As senhas não coincidem.'); return; }
     setCarregando(true);
     try {
-      const result = await cadastrar(nome, email, senha);
-      if (result.requiresEmailConfirmation) {
-        setSucesso('Conta criada. Confira seu e-mail para confirmar o cadastro antes de entrar.');
-      } else {
-        navegar('/dashboard');
-      }
+      await cadastrar(nome, email, senha);
+      navegar('/dashboard');
     } catch (error) {
       setErro(error.message || 'Não foi possível criar a conta.');
     } finally {
@@ -45,7 +40,7 @@ export default function Cadastro() {
           <h2>Conheça o custo real do que você vende.</h2>
           <p>Produtos, despesas, margem e projeções em um só lugar.</p>
         </div>
-        <p className="auth-visual-note"><ShieldCheck size={18} /> Gratuito e sem cartão de crédito.</p>
+        <p className="auth-visual-note"><ShieldCheck size={18} /> Seus dados ficam salvos somente neste navegador.</p>
       </aside>
 
       <main className="auth-main">
@@ -54,13 +49,12 @@ export default function Cadastro() {
             <span className="auth-logo-icon"><Coins size={21} weight="fill" /></span>
             <span className="auth-logo-nome">Precifique</span>
           </Link>
-          <p className="auth-contexto">Comece gratuitamente</p>
+          <p className="auth-contexto">Comece localmente</p>
           <h1 className="auth-titulo">Crie sua conta</h1>
-          <p className="auth-subtitulo">Leva menos de um minuto.</p>
+          <p className="auth-subtitulo">Sem servidor, sincronização ou confirmação por e-mail.</p>
 
           <form onSubmit={handleSubmit} className="auth-form">
             {erro && <div className="alerta-erro">{erro}</div>}
-            {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
             <div className="campo-grupo">
               <label className="input-label" htmlFor="nome">Nome completo</label>
               <input id="nome" type="text" className="input-field" placeholder="Seu nome" value={nome} onChange={e => setNome(e.target.value)} autoFocus />

@@ -1,91 +1,39 @@
 # Precifique
 
-Aplicação de precificação para pequenos empreendedores, desenvolvida como TCC de Análise e Desenvolvimento de Sistemas.
+Aplicação local de precificação para pequenos empreendedores, desenvolvida como TCC de Análise e Desenvolvimento de Sistemas.
 
 ## Estrutura
 
 ```text
-front/    frontend React 19, Vite 8 e testes
-backend/  API Node.js 22, Express, TypeScript, Prisma e testes
+front/    aplicação React 19, Vite 8 e testes
+backend/  implementação legada, fora do fluxo atual
 docs/     documentação técnica e registros de validação
 ```
 
-O Supabase fornece autenticação, PostgreSQL e o bucket privado de logos. O motor financeiro permanece no frontend; a API valida e persiste o workspace v2.
+## Execução
 
-## Pré-requisitos
-
-- Node.js 22.13+ na linha 22.x, ou Node.js 24+;
-- npm;
-- projeto Supabase de desenvolvimento com Auth, Database e Storage.
-
-## Configuração
-
-No PowerShell, a partir da raiz do repositório:
+Requer Node.js 22.13 ou superior e npm.
 
 ```powershell
-Copy-Item front/.env.example front/.env.local
-Copy-Item backend/.env.example backend/.env
-```
-
-Preencha os dois arquivos locais. `SUPABASE_SECRET_KEY` deve existir somente em `backend/.env` e nunca no frontend.
-
-Instale as dependências:
-
-```powershell
-Set-Location front
+Set-Location C:\TCC\tcc\front
 npm install
-Set-Location ../backend
-npm install
-npm run prisma:generate
-npm run prisma:validate
-npm run prisma:migrate
-```
-
-## Execução local
-
-Backend, em um terminal:
-
-```powershell
-Set-Location backend
 npm run dev
 ```
 
-Frontend, em outro terminal:
+A aplicação fica disponível em `http://localhost:5173`.
 
-```powershell
-Set-Location front
-npm run dev
-```
+## Dados locais
 
-Abra `http://localhost:5173`. A API usa `http://localhost:3333`.
+Contas, senhas derivadas e dados de negócio ficam armazenados somente no navegador atual. Não há sincronização entre dispositivos. Limpar os dados do site remove as contas e os workspaces locais. A exportação disponível na aplicação pode ser usada como backup.
 
 ## Verificação
 
 ```powershell
-Set-Location front
+Set-Location C:\TCC\tcc\front
 npm test
 npm run lint
-npm run build
-
-Set-Location ../backend
-npm test
-npm run lint
-npm run prisma:generate
-npm run prisma:validate
 npm run build
 ```
-
-## API
-
-- `GET /health`
-- `POST /api/v1/workspace/bootstrap`
-- `GET /api/v1/workspace`
-- `PUT /api/v1/workspace`
-- `GET /api/v1/workspace/export`
-- `PUT /api/v1/workspace/logo`
-- `DELETE /api/v1/workspace/logo`
-
-As rotas de workspace exigem Bearer token do Supabase. Conflitos de edição retornam `409 WORKSPACE_CONFLICT`.
 
 ## Autores
 

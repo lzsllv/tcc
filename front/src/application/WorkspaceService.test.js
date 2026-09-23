@@ -76,7 +76,7 @@ test('deduplica inicializações simultâneas do mesmo usuário', async () => {
   assert.equal(storage.backupWrites, 1);
 });
 
-test('delega upload e remoção do logo ao repositório remoto', async () => {
+test('delega gravação e remoção do logo ao repositório', async () => {
   const workspace = { schemaVersion: 2, ownerId: 'user-1', settings: { logo: '' } };
   const repository = {
     async loadWorkspace() { return workspace; },

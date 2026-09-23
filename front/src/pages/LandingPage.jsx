@@ -16,14 +16,14 @@ const funcionalidades = [
 ];
 
 const etapas = [
-  { icon: UserPlus, titulo: 'Crie sua conta', texto: 'Cadastro rápido com nome, e-mail e senha.' },
+  { icon: UserPlus, titulo: 'Crie sua conta local', texto: 'Cadastro rápido com nome, e-mail e senha neste navegador.' },
   { icon: Storefront, titulo: 'Configure seu negócio', texto: 'Informe custos fixos, margem e custo da sua hora.' },
   { icon: Check, titulo: 'Cadastre e precifique', texto: 'Adicione seus produtos e consulte o preço sugerido.' },
 ];
 
 const faq = [
   ['O Precifique é mesmo gratuito?', 'Sim, 100% gratuito. Sem planos pagos, cartão de crédito ou surpresas.'],
-  ['Meus dados ficam salvos?', 'Sim. Os dados são salvos automaticamente no seu navegador e persistem entre sessões.'],
+  ['Meus dados ficam salvos?', 'Sim. Os dados são salvos automaticamente no navegador atual e persistem entre sessões. Eles não sincronizam entre dispositivos.'],
   ['Funciona no celular?', 'Sim, o sistema é responsivo e funciona em computadores, tablets e celulares.'],
   ['Preciso instalar alguma coisa?', 'Não. O Precifique funciona diretamente no navegador.'],
   ['Posso usar para serviços também?', 'Sim. Você pode cadastrar serviços e calcular o preço com base no seu tempo de trabalho.'],
@@ -46,7 +46,7 @@ export default function LandingPage() {
           </nav>
           <div className="lp-header-acoes">
             <Link to="/login" className="lp-btn-ghost">Entrar</Link>
-            <Link to="/cadastro" className="lp-btn-verde">Criar conta grátis</Link>
+            <Link to="/cadastro" className="lp-btn-verde">Criar conta local</Link>
           </div>
           <button className="lp-menu-toggle" aria-label="Abrir menu" onClick={() => {
             document.querySelector('.lp-nav')?.classList.toggle('aberto');
@@ -166,8 +166,8 @@ export default function LandingPage() {
         <section className="lp-cta">
           <div className="lp-cta-inner">
             <h2 className="lp-cta-titulo">Comece a cobrar o que o seu trabalho vale</h2>
-            <p className="lp-cta-sub">Crie sua conta gratuita e organize seus preços hoje.</p>
-            <Link to="/cadastro" className="lp-btn-verde lp-btn-lg">Criar conta grátis <ArrowRight size={19} /></Link>
+            <p className="lp-cta-sub">Crie sua conta local e organize seus preços hoje.</p>
+            <Link to="/cadastro" className="lp-btn-verde lp-btn-lg">Criar conta local <ArrowRight size={19} /></Link>
             <p>Já tem conta? <Link to="/login">Entrar</Link></p>
           </div>
         </section>
