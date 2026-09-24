@@ -25,3 +25,9 @@ test('preserva os limites para listas vazias e margem inviável', () => {
   assert.equal(empty.fixedCostPerProduct(), 0);
   assert.equal(empty.suggestedPrice({ custo: 10, tempoProducao: 0 }), 0);
 });
+
+test('preserva o fallback quando extras recebe um valor vazio', () => {
+  const pricing = createPricingView([], { aluguel: 100, extras: '' }, { custoHora: 0, margemLucro: 20 });
+
+  assert.equal(pricing.totalFixedCosts(), 100);
+});

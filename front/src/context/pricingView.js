@@ -3,7 +3,7 @@ export function createPricingView(products, fixedCosts, settings) {
     const base = Object.entries(fixedCosts)
       .filter(([key]) => key !== 'extras')
       .reduce((total, [, value]) => total + Number(value), 0);
-    const extras = (fixedCosts.extras ?? [])
+    const extras = (fixedCosts.extras || [])
       .reduce((total, extra) => total + Number(extra.valor || 0), 0);
     return base + extras;
   }

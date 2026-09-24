@@ -23,6 +23,10 @@ function Probe() {
   })}</output>;
 }
 
+function OutsideProviderProbe() {
+  return <output data-testid="outside-context">{String(useApp())}</output>;
+}
+
 function state() {
   return JSON.parse(screen.getByTestId('state').textContent);
 }
@@ -77,6 +81,12 @@ test('restaura conta local e persiste atualização sem acesso remoto', async ()
   expect(saved.settings.businessName).toBe('Ateliê');
   expect(state().name).toBe('Ateliê');
   expect(requests).not.toHaveBeenCalled();
+});
+
+test('preserva o valor ausente fora do provedor', () => {
+  render(<OutsideProviderProbe />);
+
+  expect(screen.getByTestId('outside-context').textContent).toBe('undefined');
 });
 
 test('logout remove sessão e limpa os dados visíveis', async () => {
