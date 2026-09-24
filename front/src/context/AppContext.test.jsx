@@ -16,6 +16,7 @@ function Probe() {
     current = value;
   }, [value]);
   return <output data-testid="state">{JSON.stringify({
+    error: value.workspaceError,
     owner: value.workspace?.ownerId ?? null,
     name: value.configuracoes.nomeNegocio,
     status: value.workspaceStatus,
@@ -50,6 +51,16 @@ function account(id, name, email) {
 function seedAccount(store, data) {
   store.addAccount(data);
   return data;
+}
+
+function deferred() {
+  let resolve;
+  let reject;
+  const promise = new Promise((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+  return { promise, reject, resolve };
 }
 
 beforeEach(() => {
@@ -156,6 +167,124 @@ test('cada conta restaura somente o próprio workspace', async () => {
 
   await waitFor(() => expect(state()).toMatchObject({ owner: 'user-b', name: 'Negócio B', user: 'user-b' }));
   expect(JSON.parse(localStorage.getItem('precifique:workspace:v2:user-a')).settings.businessName).toBe('Negócio A');
+});
+
+test('ignora carregamento tardio da conta anterior depois de trocar de sessão', async () => {
+  const store = new LocalAccountStore(localStorage);
+  seedAccount(store, account('user-a', 'Ana', 'ana@example.com'));
+  seedAccount(store, account('user-b', 'Bia', 'bia@example.com'));
+  store.setSessionAccountId('user-a');
+  const authService = new LocalAuthService(store, {
+    create: async () => ({}),
+    verify: async () => true,
+  });
+  const loads = { 'user-a': deferred(), 'user-b': deferred() };
+  const repository = {
+    loadWorkspace: ownerId => loads[ownerId].promise,
+    migrateWorkspace: vi.fn(),
+    saveWorkspace: vi.fn(),
+  };
+  const workspaceA = createEmptyWorkspace('user-a');
+  const workspaceB = createEmptyWorkspace('user-b');
+  workspaceA.settings.businessName = 'Negócio A atrasado';
+  workspaceB.settings.businessName = 'Negócio B atual';
+
+  render(
+    <AppProvider authServiceFactory={() => authService} workspaceRepositoryFactory={() => repository}>
+      <Probe />
+    </AppProvider>,
+  );
+  await waitFor(() => expect(state()).toMatchObject({ user: 'user-a', status: 'loading' }));
+
+  await act(async () => current.login('bia@example.com', 'senha'));
+  await act(async () => loads['user-b'].resolve(workspaceB));
+  await waitFor(() => expect(state()).toMatchObject({ owner: 'user-b', name: 'Negócio B atual', status: 'ready' }));
+
+  await act(async () => loads['user-a'].resolve(workspaceA));
+  expect(state()).toMatchObject({ owner: 'user-b', name: 'Negócio B atual', user: 'user-b', status: 'ready' });
+});
+
+test('rejeita gravação tardia sem substituir o workspace da sessão atual', async () => {
+  const store = new LocalAccountStore(localStorage);
+  seedAccount(store, account('user-a', 'Ana', 'ana@example.com'));
+  seedAccount(store, account('user-b', 'Bia', 'bia@example.com'));
+  store.setSessionAccountId('user-a');
+  const authService = new LocalAuthService(store, {
+    create: async () => ({}),
+    verify: async () => true,
+  });
+  const workspaceA = createEmptyWorkspace('user-a');
+  const workspaceB = createEmptyWorkspace('user-b');
+  workspaceA.settings.businessName = 'Negócio A';
+  workspaceB.settings.businessName = 'Negócio B';
+  const pendingSave = deferred();
+  const repository = {
+    loadWorkspace: async ownerId => ownerId === 'user-a' ? workspaceA : workspaceB,
+    migrateWorkspace: vi.fn(),
+    saveWorkspace: () => pendingSave.promise,
+  };
+
+  render(
+    <AppProvider authServiceFactory={() => authService} workspaceRepositoryFactory={() => repository}>
+      <Probe />
+    </AppProvider>,
+  );
+  await waitFor(() => expect(state()).toMatchObject({ owner: 'user-a', status: 'ready' }));
+
+  let staleSave;
+  act(() => {
+    staleSave = current.atualizarWorkspace(workspace => ({
+      ...workspace,
+      settings: { ...workspace.settings, businessName: 'Não deve aparecer' },
+    }));
+  });
+  const staleSaveResult = staleSave.catch(error => error);
+  await waitFor(() => expect(state().status).toBe('saving'));
+  await act(async () => current.login('bia@example.com', 'senha'));
+  await waitFor(() => expect(state()).toMatchObject({ owner: 'user-b', name: 'Negócio B', status: 'ready' }));
+
+  await act(async () => pendingSave.resolve({
+    ...workspaceA,
+    settings: { ...workspaceA.settings, businessName: 'Não deve aparecer' },
+  }));
+  await expect(staleSaveResult).resolves.toMatchObject({ code: 'SESSION_CHANGED' });
+  expect(state()).toMatchObject({ owner: 'user-b', name: 'Negócio B', user: 'user-b', status: 'ready' });
+});
+
+test('mantém o último workspace válido e expõe erro quando a gravação falha', async () => {
+  const store = new LocalAccountStore(localStorage);
+  seedAccount(store, account('user-1', 'Ana', 'ana@example.com'));
+  store.setSessionAccountId('user-1');
+  const workspace = createEmptyWorkspace('user-1');
+  workspace.settings.businessName = 'Ateliê preservado';
+  const repository = {
+    loadWorkspace: async () => workspace,
+    migrateWorkspace: vi.fn(),
+    saveWorkspace: async () => { throw new Error('falha controlada de gravação'); },
+  };
+
+  render(<AppProvider workspaceRepositoryFactory={() => repository}><Probe /></AppProvider>);
+  await waitFor(() => expect(state()).toMatchObject({ name: 'Ateliê preservado', status: 'ready' }));
+
+  let saveError;
+  await act(async () => {
+    try {
+      await current.atualizarWorkspace(currentWorkspace => ({
+        ...currentWorkspace,
+        settings: { ...currentWorkspace.settings, businessName: 'Alteração recusada' },
+      }));
+    } catch (error) {
+      saveError = error;
+    }
+  });
+
+  expect(saveError).toMatchObject({ message: 'falha controlada de gravação' });
+  await waitFor(() => expect(state()).toMatchObject({
+      error: 'falha controlada de gravação',
+      name: 'Ateliê preservado',
+      owner: 'user-1',
+      status: 'error',
+    }));
 });
 
 test('ignora restauração tardia depois de receber um evento de autenticação', async () => {
