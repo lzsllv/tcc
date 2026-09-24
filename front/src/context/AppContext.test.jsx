@@ -27,6 +27,10 @@ function OutsideProviderProbe() {
   return <output data-testid="outside-context">{String(useApp())}</output>;
 }
 
+function ContractProbe() {
+  return <output data-testid="contract">{JSON.stringify(Object.keys(useApp()).sort())}</output>;
+}
+
 function state() {
   return JSON.parse(screen.getByTestId('state').textContent);
 }
@@ -87,6 +91,23 @@ test('preserva o valor ausente fora do provedor', () => {
   render(<OutsideProviderProbe />);
 
   expect(screen.getByTestId('outside-context').textContent).toBe('undefined');
+});
+
+test('expõe o contrato de contexto usado pelo frontend', () => {
+  render(<AppProvider><ContractProbe /></AppProvider>);
+
+  const keys = JSON.parse(screen.getByTestId('contract').textContent);
+  expect(keys).toEqual([
+    'adicionarProduto', 'atualizarWorkspace', 'authStatus', 'cadastrar',
+    'calcularCustoTotal', 'calcularLucroMensal', 'calcularPrecoSugerido',
+    'carregarDemo', 'configuracoes', 'custoFixoPorProduto',
+    'custoFixoPorUnidade', 'custosFixos', 'editarProduto',
+    'excluirProduto', 'exportarWorkspace', 'login', 'logout',
+    'podeCarregarDemo', 'produtos', 'salvarConfiguracoes',
+    'salvarCustosFixos', 'setConfiguracoes', 'setCustosFixos',
+    'totalCustosFixos', 'totalUnidadesMes', 'usuarioLogado', 'workspace',
+    'workspaceError', 'workspaceStatus',
+  ].sort());
 });
 
 test('logout remove sessão e limpa os dados visíveis', async () => {
