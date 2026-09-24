@@ -2,21 +2,6 @@ import { useState, useCallback } from 'react'
 
 let _id = 0
 
-/**
- * useToast — gerencia a fila de toasts
- *
- * Retorna: { toasts, toast, removeToast }
- *
- * Uso:
- *   const { toasts, toast, removeToast } = useToast()
- *   toast.sucesso('Salvo com sucesso!')
- *   toast.erro('Algo deu errado.')
- *   toast.aviso('Atenção!')
- *   toast.info('Dica do sistema.')
- *
- * No JSX:
- *   <Toast toasts={toasts} removeToast={removeToast} />
- */
 export function useToast() {
   const [toasts, setToasts] = useState([])
 

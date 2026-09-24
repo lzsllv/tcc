@@ -1,17 +1,5 @@
 import '../styles/LoadingButton.css'
 
-/**
- * LoadingButton — botão primário com estado de carregamento
- *
- * Props:
- *   loading   {boolean}   mostra spinner e desabilita o botão
- *   children  {ReactNode} texto do botão
- *   type      {string}    'button' | 'submit' (default: 'button')
- *   onClick   {fn}
- *   className {string}    classes extras
- *   disabled  {boolean}
- *   loadingText {string}  texto durante loading (padrão: 'Aguarde...')
- */
 export default function LoadingButton({
   loading = false,
   children,

@@ -1,15 +1,5 @@
 import '../styles/Skeleton.css'
 
-/**
- * Skeleton — placeholder de carregamento
- *
- * Props:
- *   width   {string}  ex: '100%', '200px'
- *   height  {string}  ex: '1em', '48px'
- *   radius  {string}  ex: '8px', '50%'
- *   count   {number}  quantas linhas (padrão: 1)
- *   gap     {string}  gap entre linhas quando count > 1
- */
 export default function Skeleton({
   width = '100%',
   height = '1em',

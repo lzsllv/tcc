@@ -45,7 +45,6 @@ export default function Simulacao() {
         </div>
 
         <div className="pagina-grid">
-          {/* Formulário */}
           <div className="card">
             <h2 className="secao-titulo">Parâmetros da simulação</h2>
             {produtos.length === 0 ? (
@@ -96,7 +95,6 @@ export default function Simulacao() {
             )}
           </div>
 
-          {/* Resultado */}
           {resultado && (
             <div className="card">
               <h2 className="secao-titulo">Resultado</h2>

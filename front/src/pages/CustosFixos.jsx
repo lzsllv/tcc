@@ -104,7 +104,6 @@ export default function CustosFixos() {
                 </div>
               ))}
 
-              {/* Extras */}
               <div className="extras-container">
                 <button
                   type="button"
@@ -172,7 +171,6 @@ export default function CustosFixos() {
             </form>
           </div>
 
-          {/* Resumo */}
           <div>
             <div className="card">
               <h2 className="secao-titulo">Resumo</h2>

@@ -1,7 +1,3 @@
-/* ============================================================
-   PageTransition — fade entre rotas
-   ============================================================ */
-
 .page-transition {
   transition: opacity .18s ease, transform .18s ease;
 }

@@ -2,14 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import '../styles/PageTransition.css'
 
-/**
- * PageTransition — fade suave entre rotas
- * Envolva o <Routes> com este componente em App.jsx:
- *
- *   <PageTransition>
- *     <Routes> ... </Routes>
- *   </PageTransition>
- */
 export default function PageTransition({ children }) {
   const location = useLocation()
   const [visible, setVisible] = useState(true)

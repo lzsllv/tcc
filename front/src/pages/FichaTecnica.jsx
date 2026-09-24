@@ -198,7 +198,7 @@ function FichaTecnicaEditor({ editingId: id, existing, app }) {
                       const ingredient = ingredientsById[component.ingredientId];
                       const family = ingredient ? getUnitFamily(ingredient.purchaseUnit) : 'count';
                       let cost = null;
-                      try { cost = calculateIngredientCost(ingredient, numberFromInput(component.quantity), component.unit, percentToBps(component.waste || 0)); } catch { /* aguarda dados válidos */ }
+                      try { cost = calculateIngredientCost(ingredient, numberFromInput(component.quantity), component.unit, percentToBps(component.waste || 0)); } catch (error) { void error; }
                       const fieldId = component.id ?? component.localId ?? index;
                       return <div className="ficha-componente" key={fieldId}>
                         <div className="campo-grupo"><label className="input-label" htmlFor={`component-ingredient-${fieldId}`}>Insumo</label><select id={`component-ingredient-${fieldId}`} className="input-field" value={component.ingredientId} onChange={event => updateComponent(index, 'ingredientId', event.target.value)}>{selectableIngredients.filter(item => item.id === component.ingredientId || !form.components.some(current => current.ingredientId === item.id)).map(item => <option key={item.id} value={item.id}>{item.name}{item.active ? '' : ' (arquivado)'}</option>)}</select></div>

@@ -1,5 +1,3 @@
-/* Configuracoes.css */
-
 .config-card {
   max-width: 640px;
 }
@@ -91,8 +89,6 @@
 .input-hidden {
   display: none;
 }
-
-/* ===== BLOCO DEMO ===== */
 
 .demo-card {
   max-width: 640px;

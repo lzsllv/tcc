@@ -1,8 +1,3 @@
-/* ============================================================
-   Relatório — estilos específicos
-   ============================================================ */
-
-/* Aviso explicativo do filtro de período */
 .relatorio-filtro-aviso {
   font-size: 0.85rem;
   color: var(--texto-sec);
@@ -10,7 +5,6 @@
   max-width: 55ch;
 }
 
-/* Campos lado a lado */
 .relatorio-filtro-campos {
   display: flex;
   flex-wrap: wrap;
@@ -25,7 +19,6 @@
   padding-bottom: 0.5rem;
 }
 
-/* Cabeçalho para impressão */
 .relatorio-cabecalho-inner {
   display: flex;
   align-items: center;
@@ -49,16 +42,12 @@
 .relatorio-regiao       { font-size: 0.8rem;   color: var(--texto-sec); margin-top: 0.15rem; }
 .relatorio-sem-identidade { font-size: 0.85rem; color: var(--texto-sec); margin-top: 0.5rem; }
 
-/* Info de rateio acima da tabela */
 .relatorio-rateio-info { margin-bottom: 1rem; font-size: 0.875rem; }
 
-/* Alerta de aviso */
 .relatorio-alerta { margin-bottom: 0.75rem; }
 
-/* Seções internas */
 .relatorio-secao { margin-top: 0; }
 
-/* Grid de informações resumo */
 .relatorio-grid-info {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -84,29 +73,24 @@
   color: var(--texto);
 }
 
-/* Total da tabela */
 .tabela-total td {
   font-weight: 700;
   border-top: 2px solid var(--borda);
 }
 
-/* Nota de rodapé da tabela */
 .tabela-nota {
   margin-top: 0.5rem;
   font-size: 0.78rem;
   color: var(--texto-sec);
 }
 
-/* Texto aviso pequeno (tabela) */
 .texto-aviso-sm {
   color: var(--alerta);
   font-size: 0.8rem;
 }
 
-/* Botão imprimir */
 .btn-imprimir { white-space: nowrap; }
 
-/* Oculta botão ao imprimir */
 @media print {
   .btn-imprimir { display: none !important; }
   .navbar       { display: none !important; }

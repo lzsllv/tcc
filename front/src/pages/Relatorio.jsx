@@ -62,7 +62,6 @@ export default function Relatorio() {
           </button>
         </div>
 
-        {/* Filtro de período */}
         <div className="card relatorio-filtro">
           <h2 className="secao-titulo">📅 Período de referência</h2>
           <p className="relatorio-filtro-aviso">
@@ -88,7 +87,6 @@ export default function Relatorio() {
           </div>
         </div>
 
-        {/* Cabeçalho impresso */}
         <div className="relatorio-cabecalho-impresso card">
           <div className="relatorio-cabecalho-inner">
             {logoNegocio && (
@@ -113,7 +111,6 @@ export default function Relatorio() {
           )}
         </div>
 
-        {/* Alertas */}
         {custosZerados && (
           <div className="alerta-aviso relatorio-alerta">
             Seus custos fixos estão zerados.{' '}
@@ -127,7 +124,6 @@ export default function Relatorio() {
           </div>
         )}
 
-        {/* Resumo geral */}
         <div className="card relatorio-secao">
           <h2 className="secao-titulo">Resumo da projeção - {MESES[mesSel]} {anoSel}</h2>
           <div className="relatorio-grid-info">
@@ -158,7 +154,6 @@ export default function Relatorio() {
           </div>
         </div>
 
-        {/* Custos fixos detalhados */}
         <div className="card relatorio-secao">
           <h2 className="secao-titulo">Custos fixos detalhados</h2>
           {custosZerados ? (
@@ -190,7 +185,6 @@ export default function Relatorio() {
           )}
         </div>
 
-        {/* Tabela de produtos */}
         <div className="card relatorio-secao">
           <h2 className="secao-titulo">Produção e projeção - {MESES[mesSel]} {anoSel}</h2>
 
