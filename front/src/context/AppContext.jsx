@@ -7,6 +7,8 @@ import { isDemoAccountEmpty, persistDemoAccount } from '../application/demoAccou
 import { LocalAuthService } from '../auth/LocalAuthService.js';
 import { LocalAccountStore } from '../auth/localAccountStore.js';
 import { sessionUser } from '../auth/session.js';
+import { createEmptyFixedCostsView, createEmptySettingsView } from './appDefaults.js';
+import { createPricingView } from './pricingView.js';
 import { fixedCostsFromView, workspaceToView } from './workspaceView.js';
 
 const AppContext = createContext();
@@ -27,13 +29,13 @@ export function AppProvider({
   const [usuarioLogado, setUsuarioLogado] = useState(null);
   const [authStatus, setAuthStatus] = useState('loading');
   const [produtos, setProdutos] = useState([]);
-  const [custosFixos, setCustosFixos] = useState({ aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] });
-  const [configuracoes, setConfiguracoes] = useState({ margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' });
+  const [custosFixos, setCustosFixos] = useState(createEmptyFixedCostsView);
+  const [configuracoes, setConfiguracoes] = useState(createEmptySettingsView);
 
   const clearLegacyView = useCallback(() => {
     setProdutos([]);
-    setCustosFixos({ aluguel: 0, energia: 0, internet: 0, salarios: 0, outros: 0, extras: [] });
-    setConfiguracoes({ margemLucro: 20, custoHora: 0, regiaoAtuacao: '', nomeNegocio: '', logoNegocio: '' });
+    setCustosFixos(createEmptyFixedCostsView());
+    setConfiguracoes(createEmptySettingsView());
   }, []);
 
   const applyWorkspaceView = useCallback((workspace) => {
@@ -107,37 +109,14 @@ export function AppProvider({
     return () => { active = false; };
   }, [applyWorkspaceView, usuarioLogado, workspaceService]);
 
-  function totalCustosFixos() {
-    const fixos  = Object.entries(custosFixos).filter(([k]) => k !== 'extras').reduce((a, [, v]) => a + Number(v), 0);
-    const extras = (custosFixos.extras || []).reduce((a, e) => a + Number(e.valor || 0), 0);
-    return fixos + extras;
-  }
-
-  function totalUnidadesMes() {
-    if (!produtos.length) return 1;
-    const total = produtos.reduce((a, p) => a + (Number(p.quantidadeMes) || 0), 0);
-    return total > 0 ? total : 1;
-  }
-
-  function custoFixoPorUnidade()  { return totalCustosFixos() / totalUnidadesMes(); }
-  function custoFixoPorProduto()  { return produtos.length ? totalCustosFixos() / produtos.length : 0; }
-
-  function calcularCustoTotal(p) {
-    return (
-      Number(p.custo || 0) +
-      custoFixoPorUnidade() +
-      Number(configuracoes.custoHora) * Number(p.tempoProducao || 0)
-    );
-  }
-
-  function calcularPrecoSugerido(p) {
-    const margin = Number(configuracoes.margemLucro) / 100;
-    return margin >= 1 ? 0 : calcularCustoTotal(p) / (1 - margin);
-  }
-
-  function calcularLucroMensal(precoVenda, custoTotal, quantidade) {
-    return (Number(precoVenda) - Number(custoTotal)) * Number(quantidade);
-  }
+  const pricing = createPricingView(produtos, custosFixos, configuracoes);
+  const totalCustosFixos = pricing.totalFixedCosts;
+  const totalUnidadesMes = pricing.totalMonthlyUnits;
+  const custoFixoPorUnidade = pricing.fixedCostPerUnit;
+  const custoFixoPorProduto = pricing.fixedCostPerProduct;
+  const calcularCustoTotal = pricing.totalProductCost;
+  const calcularPrecoSugerido = pricing.suggestedPrice;
+  const calcularLucroMensal = pricing.monthlyProfit;
 
   const podeCarregarDemo = workspaceState.status === 'ready' && isDemoAccountEmpty({
     workspace: workspaceState.data,
