@@ -121,10 +121,6 @@ export function AppProvider({
     setCustosFixos(demo.custosFixos);
     setConfiguracoes(demo.configuracoes);
   }
-  function adicionarProduto(p)      { setProdutos(prev => [...prev, { ...p, id: crypto.randomUUID() }]); }
-  function editarProduto(id, dados) { setProdutos(prev => prev.map(p => p.id === id ? { ...p, ...dados } : p)); }
-  function excluirProduto(id)       { setProdutos(prev => prev.filter(p => p.id !== id)); }
-
   async function atualizarWorkspace(updater) {
     const scope = sessionScope.current;
     assertCurrentSession(scope);
@@ -194,7 +190,6 @@ export function AppProvider({
       totalCustosFixos, totalUnidadesMes, custoFixoPorUnidade, custoFixoPorProduto,
       calcularCustoTotal, calcularPrecoSugerido, calcularLucroMensal,
       login, cadastrar, logout,
-      adicionarProduto, editarProduto, excluirProduto,
       podeCarregarDemo, carregarDemo, atualizarWorkspace, exportarWorkspace,
       salvarCustosFixos, salvarConfiguracoes,
     }}>

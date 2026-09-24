@@ -98,11 +98,11 @@ test('expõe o contrato de contexto usado pelo frontend', () => {
 
   const keys = JSON.parse(screen.getByTestId('contract').textContent);
   expect(keys).toEqual([
-    'adicionarProduto', 'atualizarWorkspace', 'authStatus', 'cadastrar',
+    'atualizarWorkspace', 'authStatus', 'cadastrar',
     'calcularCustoTotal', 'calcularLucroMensal', 'calcularPrecoSugerido',
     'carregarDemo', 'configuracoes', 'custoFixoPorProduto',
-    'custoFixoPorUnidade', 'custosFixos', 'editarProduto',
-    'excluirProduto', 'exportarWorkspace', 'login', 'logout',
+    'custoFixoPorUnidade', 'custosFixos',
+    'exportarWorkspace', 'login', 'logout',
     'podeCarregarDemo', 'produtos', 'salvarConfiguracoes',
     'salvarCustosFixos', 'setConfiguracoes', 'setCustosFixos',
     'totalCustosFixos', 'totalUnidadesMes', 'usuarioLogado', 'workspace',
