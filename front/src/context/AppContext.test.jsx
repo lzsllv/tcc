@@ -158,6 +158,25 @@ test('cada conta restaura somente o próprio workspace', async () => {
   expect(JSON.parse(localStorage.getItem('precifique:workspace:v2:user-a')).settings.businessName).toBe('Negócio A');
 });
 
+test('ignora restauração tardia depois de receber um evento de autenticação', async () => {
+  let resolveSession;
+  let subscriber;
+  const authService = {
+    getSession: () => new Promise(resolve => { resolveSession = resolve; }),
+    subscribe: callback => { subscriber = callback; return () => {}; },
+    signIn: vi.fn(),
+    signUp: vi.fn(),
+    signOut: vi.fn(),
+  };
+
+  render(<AppProvider authServiceFactory={() => authService}><Probe /></AppProvider>);
+
+  await act(async () => subscriber({ user: { id: 'user-new', name: 'Nova' } }));
+  await act(async () => resolveSession({ user: { id: 'user-old', name: 'Antiga' } }));
+
+  await waitFor(() => expect(state().user).toBe('user-new'));
+});
+
 test('salva configurações da demonstração sem regravar o logo interno', async () => {
   const store = new LocalAccountStore(localStorage);
   seedAccount(store, account('user-1', 'Ana', 'ana@example.com'));

@@ -5,11 +5,11 @@ import { LocalWorkspaceRepository } from '../persistence/LocalWorkspaceRepositor
 import { isDemoAccountEmpty, persistDemoAccount } from '../application/demoAccount.js';
 import { LocalAuthService } from '../auth/LocalAuthService.js';
 import { LocalAccountStore } from '../auth/localAccountStore.js';
-import { sessionUser } from '../auth/session.js';
 import { AppContext } from './AppContext.js';
 import { createEmptyFixedCostsView, createEmptySettingsView } from './appDefaults.js';
 import { createPricingView } from './pricingView.js';
 import { fixedCostsFromView, workspaceToView } from './workspaceView.js';
+import { useLocalSession } from './useLocalSession.js';
 
 const createAuthService = () => new LocalAuthService(new LocalAccountStore(localStorage));
 const createWorkspaceRepository = storage => new LocalWorkspaceRepository(storage);
@@ -20,11 +20,8 @@ export function AppProvider({
   workspaceRepositoryFactory = createWorkspaceRepository,
 }) {
   const sessionScope = useRef({ ownerId: null });
-  const [authService] = useState(() => authServiceFactory());
   const [workspaceService, setWorkspaceService] = useState(null);
   const [workspaceState, dispatchWorkspace] = useReducer(workspaceReducer, initialWorkspaceState);
-  const [usuarioLogado, setUsuarioLogado] = useState(null);
-  const [authStatus, setAuthStatus] = useState('loading');
   const [produtos, setProdutos] = useState([]);
   const [custosFixos, setCustosFixos] = useState(createEmptyFixedCostsView);
   const [configuracoes, setConfiguracoes] = useState(createEmptySettingsView);
@@ -42,8 +39,7 @@ export function AppProvider({
     setConfiguracoes(view.configuracoes);
   }, []);
 
-  const acceptSession = useCallback((session) => {
-    const user = sessionUser(session);
+  const acceptIdentity = useCallback((user) => {
     const ownerId = user?.id ?? null;
     if (sessionScope.current.ownerId !== ownerId) {
       const scope = { ownerId };
@@ -54,8 +50,12 @@ export function AppProvider({
       dispatchWorkspace({ type: 'reset' });
       clearLegacyView();
     }
-    setUsuarioLogado(previous => previous?.id === user?.id ? previous : user);
   }, [clearLegacyView, workspaceRepositoryFactory]);
+
+  const { usuarioLogado, authStatus, login, cadastrar, logout } = useLocalSession({
+    authServiceFactory,
+    onIdentityChanged: acceptIdentity,
+  });
 
   function assertCurrentSession(scope) {
     if (scope !== sessionScope.current || !scope.ownerId) {
@@ -65,22 +65,7 @@ export function AppProvider({
     }
   }
 
-  useEffect(() => {
-    let active = true;
-    let receivedAuthEvent = false;
-    authService.getSession()
-      .then(session => { if (active && !receivedAuthEvent) acceptSession(session); })
-      .catch(() => { if (active && !receivedAuthEvent) acceptSession(null); })
-      .finally(() => { if (active) setAuthStatus('ready'); });
-    const unsubscribe = authService.subscribe(session => {
-      if (active) {
-        receivedAuthEvent = true;
-        acceptSession(session);
-        setAuthStatus('ready');
-      }
-    });
-    return () => { active = false; sessionScope.current = { ownerId: null }; unsubscribe(); };
-  }, [authService, acceptSession]);
+  useEffect(() => () => { sessionScope.current = { ownerId: null }; }, []);
 
   useEffect(() => {
     let active = true;
@@ -136,19 +121,6 @@ export function AppProvider({
     setCustosFixos(demo.custosFixos);
     setConfiguracoes(demo.configuracoes);
   }
-  async function login(email, senha) {
-    await authService.signIn(email, senha);
-    return true;
-  }
-
-  async function cadastrar(nome, email, senha) {
-    return authService.signUp(nome, email, senha);
-  }
-
-  async function logout() {
-    await authService.signOut();
-  }
-
   function adicionarProduto(p)      { setProdutos(prev => [...prev, { ...p, id: crypto.randomUUID() }]); }
   function editarProduto(id, dados) { setProdutos(prev => prev.map(p => p.id === id ? { ...p, ...dados } : p)); }
   function excluirProduto(id)       { setProdutos(prev => prev.filter(p => p.id !== id)); }
