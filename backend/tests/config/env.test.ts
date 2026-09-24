@@ -22,4 +22,10 @@ describe('parseEnv', () => {
     const incomplete = { ...validEnv, SUPABASE_SECRET_KEY: undefined };
     expect(() => parseEnv(incomplete)).toThrow(/SUPABASE_SECRET_KEY/);
   });
+
+  it('inicia em rede IPv4 usando somente a URL do pooler de sessão', () => {
+    const sessionPoolerEnv = { ...validEnv, DIRECT_URL: undefined };
+
+    expect(parseEnv(sessionPoolerEnv).databaseUrl).toBe(validEnv.DATABASE_URL);
+  });
 });

@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 const envSchema = z.object({
   DATABASE_URL: z.url().startsWith('postgresql://'),
-  DIRECT_URL: z.url().startsWith('postgresql://'),
   SUPABASE_URL: z.url().startsWith('https://'),
   SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
   SUPABASE_SECRET_KEY: z.string().min(1),
@@ -17,7 +16,6 @@ export function parseEnv(input: Record<string, string | undefined>) {
   const parsed = envSchema.parse(input);
   return {
     databaseUrl: parsed.DATABASE_URL,
-    directUrl: parsed.DIRECT_URL,
     supabaseUrl: parsed.SUPABASE_URL,
     supabasePublishableKey: parsed.SUPABASE_PUBLISHABLE_KEY,
     supabaseSecretKey: parsed.SUPABASE_SECRET_KEY,
