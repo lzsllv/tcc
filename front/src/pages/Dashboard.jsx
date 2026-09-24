@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { ChartBar, ChartLineUp, Coins, MagicWand, Package, Tag } from '@phosphor-icons/react';
 import Navbar from '../components/Navbar';
-import { useApp } from '../context/AppContext';
+import { useApp } from '../context/AppContext.js';
 import '../styles/Dashboard.css';
 
 export default function Dashboard() {

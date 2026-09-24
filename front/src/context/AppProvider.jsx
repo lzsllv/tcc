@@ -1,5 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, useEffect, useReducer, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { WorkspaceService } from '../application/WorkspaceService.js';
 import { initialWorkspaceState, workspaceReducer } from '../application/workspaceState.js';
 import { LocalWorkspaceRepository } from '../persistence/LocalWorkspaceRepository.js';
@@ -7,12 +6,10 @@ import { isDemoAccountEmpty, persistDemoAccount } from '../application/demoAccou
 import { LocalAuthService } from '../auth/LocalAuthService.js';
 import { LocalAccountStore } from '../auth/localAccountStore.js';
 import { sessionUser } from '../auth/session.js';
+import { AppContext } from './AppContext.js';
 import { createEmptyFixedCostsView, createEmptySettingsView } from './appDefaults.js';
 import { createPricingView } from './pricingView.js';
 import { fixedCostsFromView, workspaceToView } from './workspaceView.js';
-
-const AppContext = createContext();
-export function useApp() { return useContext(AppContext); }
 
 const createAuthService = () => new LocalAuthService(new LocalAccountStore(localStorage));
 const createWorkspaceRepository = storage => new LocalWorkspaceRepository(storage);

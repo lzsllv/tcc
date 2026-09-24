@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Archive, MagnifyingGlass, PencilSimple, Trash } from '@phosphor-icons/react';
 import Navbar from '../components/Navbar';
-import { useApp } from '../context/AppContext';
+import { useApp } from '../context/AppContext.js';
 import { archiveIngredient, createIngredient, deleteIngredient, updateIngredient } from '../application/ingredients.js';
 import { convertQuantity } from '../domain/pricing/units.js';
 import { formatCents, parseMoneyToCents } from '../domain/pricing/money.js';

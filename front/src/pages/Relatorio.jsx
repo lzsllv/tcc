@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Coins, Package } from '@phosphor-icons/react';
 import Navbar from '../components/Navbar';
 import { Link } from 'react-router-dom';
-import { useApp } from '../context/AppContext';
+import { useApp } from '../context/AppContext.js';
 import '../styles/Pagina.css';
 import '../styles/Relatorio.css';
 

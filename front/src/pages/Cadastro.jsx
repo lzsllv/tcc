@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Coins, Package, ShieldCheck } from '@phosphor-icons/react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '../context/AppContext.js';
 import '../styles/Auth.css';
 
 export default function Cadastro() {

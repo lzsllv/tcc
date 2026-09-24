@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { ArrowLeft, Plus, Trash } from '@phosphor-icons/react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { useApp } from '../context/AppContext';
+import { useApp } from '../context/AppContext.js';
 import { createOffer, updateOffer } from '../application/offers.js';
 import { calculateOfferVariableCost } from '../domain/pricing/offers.js';
 import { calculateIngredientCost } from '../domain/pricing/ingredients.js';

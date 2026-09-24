@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Archive, ChartBar, ChartLineUp, Coins, CreditCard, GearSix, House, List, Package, SignOut, X,
 } from '@phosphor-icons/react';
-import { useApp } from '../context/AppContext';
+import { useApp } from '../context/AppContext.js';
 import '../styles/Navbar.css';
 
 export default function Navbar() {

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Archive, MagnifyingGlass, Package, PencilSimple, Plus, Trash } from '@phosphor-icons/react';
 import { Link, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { useApp } from '../context/AppContext';
+import { useApp } from '../context/AppContext.js';
 import { archiveOffer, deleteOffer } from '../application/offers.js';
 import { priceOfferForChannel } from '../application/offerPricing.js';
 import { selectSalesChannel } from '../application/salesChannels.js';

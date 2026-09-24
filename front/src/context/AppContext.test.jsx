@@ -5,7 +5,8 @@ import { LocalAuthService } from '../auth/LocalAuthService.js';
 import { LocalAccountStore } from '../auth/localAccountStore.js';
 import { LocalWorkspaceRepository } from '../persistence/LocalWorkspaceRepository.js';
 import { createEmptyWorkspace } from '../persistence/workspace.js';
-import { AppProvider, useApp } from './AppContext.jsx';
+import { useApp } from './AppContext.js';
+import { AppProvider } from './AppProvider.jsx';
 
 let current;
 

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Copy, CreditCard, PencilSimple, Plus, Star, Trash, Archive } from '@phosphor-icons/react';
 import Navbar from '../components/Navbar';
-import { useApp } from '../context/AppContext';
+import { useApp } from '../context/AppContext.js';
 import {
   archiveSalesChannel,
   createSalesChannel,

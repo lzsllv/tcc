@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { ImageSquare } from '@phosphor-icons/react';
 import Navbar from '../components/Navbar';
-import { useApp } from '../context/AppContext';
+import { useApp } from '../context/AppContext.js';
 import '../styles/Pagina.css';
 import '../styles/Configuracoes.css';
 
