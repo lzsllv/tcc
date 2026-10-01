@@ -1,0 +1,118 @@
+const db = require('../database/connection');
+
+module.exports = {
+    async listarCustoVariavel(request, response) {
+    try {
+        const [custosVariaveis] = await db.query(
+            'SELECT * FROM custo_variavel'
+        );
+
+        return response.status(200).json({
+            sucesso: true,
+            mensagem: 'Lista de custos variáveis.',
+            dados: custosVariaveis
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: error.message
+        });
+    }
+},
+   async cadastrarcustoVariavel(request, response) {
+    try {
+        const {
+            descricao,
+            valor,
+            id_produto
+        } = request.body;
+
+        const [resultado] = await db.query(
+            `INSERT INTO custo_variavel
+            (descricao, valor, id_produto)
+            VALUES (?, ?, ?)`,
+            [
+                descricao,
+                valor,
+                id_produto
+            ]
+        );
+
+        return response.status(201).json({
+            sucesso: true,
+            mensagem: 'Custo variável cadastrado com sucesso.',
+            dados: resultado
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: error.message
+        });
+    }
+},
+    async editarcustoVariavel(request, response) {
+    try {
+        const {
+            id_custo_variavel,
+            descricao,
+            valor,
+            id_produto
+        } = request.body;
+
+        const [resultado] = await db.query(
+            `UPDATE custo_variavel
+             SET descricao = ?,
+                 valor = ?,
+                 id_produto = ?
+             WHERE id_custo_variavel = ?`,
+            [
+                descricao,
+                valor,
+                id_produto,
+                id_custo_variavel
+            ]
+        );
+
+        return response.status(200).json({
+            sucesso: true,
+            mensagem: 'Custo variável editado com sucesso.',
+            dados: resultado
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: error.message
+        });
+    }
+},
+   async apagarcustoVariavel(request, response) {
+    try {
+        const { id_custo_variavel } = request.body;
+
+        const [resultado] = await db.query(
+            `DELETE FROM custo_variavel
+             WHERE id_custo_variavel = ?`,
+            [id_custo_variavel]
+        );
+
+        return response.status(200).json({
+            sucesso: true,
+            mensagem: 'Custo variável apagado com sucesso.',
+            dados: resultado
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: error.message
+        });
+    }
+},
+}
