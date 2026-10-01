@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
-import { WorkspaceService } from '../application/WorkspaceService.js';
-import { initialWorkspaceState, workspaceReducer } from '../application/workspaceState.js';
-import { LocalWorkspaceRepository } from '../persistence/LocalWorkspaceRepository.js';
+import { WorkspaceService } from '../features/workspace/services/WorkspaceService.js';
+import { initialWorkspaceState, workspaceReducer } from '../features/workspace/store/workspaceState.js';
+import { LocalWorkspaceRepository } from '../features/workspace/persistence/LocalWorkspaceRepository.js';
 import { isDemoAccountEmpty, persistDemoAccount } from '../application/demoAccount.js';
-import { LocalAuthService } from '../auth/LocalAuthService.js';
-import { LocalAccountStore } from '../auth/localAccountStore.js';
+import { LocalAuthService } from '../features/auth/services/LocalAuthService.js';
+import { LocalAccountStore } from '../features/auth/store/localAccountStore.js';
 import { AppContext } from './AppContext.js';
 import { createEmptyFixedCostsView, createEmptySettingsView } from './appDefaults.js';
 import { createPricingView } from './pricingView.js';

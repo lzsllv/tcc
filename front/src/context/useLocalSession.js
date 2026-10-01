@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { sessionUser } from '../auth/session.js';
+import { sessionUser } from '../features/auth/utils/session.js';
 
 export function useLocalSession({ authServiceFactory, onIdentityChanged }) {
   const [authService] = useState(() => authServiceFactory());

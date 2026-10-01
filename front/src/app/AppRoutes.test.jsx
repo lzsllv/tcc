@@ -1,7 +1,7 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, expect, test } from 'vitest';
-import { LocalAccountStore } from '../auth/localAccountStore.js';
+import { LocalAccountStore } from '../features/auth/store/localAccountStore.js';
 import { AppProvider } from '../context/AppProvider.jsx';
 import AppRoutes from './AppRoutes.jsx';
 

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createEmptyWorkspace } from '../persistence/workspace.js';
+import { createEmptyWorkspace } from '../features/workspace/persistence/workspace.js';
 import { fixedCostsFromView, workspaceToView } from './workspaceView.js';
 
 test('converte workspace em estado monetário de apresentação', () => {

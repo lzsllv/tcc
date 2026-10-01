@@ -1,4 +1,4 @@
-import { calculateOfferVariableCost } from '../domain/pricing/offers.js';
+import { calculateOfferVariableCost } from '../features/offers/domain/offers.js';
 
 const fixedCostKeys = ['aluguel', 'energia', 'internet', 'salarios', 'outros'];
 

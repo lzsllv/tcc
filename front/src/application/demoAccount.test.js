@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createDemoAccount, isDemoAccountEmpty } from './demoAccount.js';
-import { migrateLegacyData } from '../persistence/migration.js';
-import { createEmptyWorkspace } from '../persistence/workspace.js';
+import { migrateLegacyData } from '../features/workspace/persistence/migration.js';
+import { createEmptyWorkspace } from '../features/workspace/persistence/workspace.js';
 
 const now = '2026-08-25T12:00:00.000Z';
 const initialLegacyData = {

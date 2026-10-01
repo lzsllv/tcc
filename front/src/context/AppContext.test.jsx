@@ -1,10 +1,10 @@
 import { useLayoutEffect } from 'react';
 import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { LocalAuthService } from '../auth/LocalAuthService.js';
-import { LocalAccountStore } from '../auth/localAccountStore.js';
-import { LocalWorkspaceRepository } from '../persistence/LocalWorkspaceRepository.js';
-import { createEmptyWorkspace } from '../persistence/workspace.js';
+import { LocalAuthService } from '../features/auth/services/LocalAuthService.js';
+import { LocalAccountStore } from '../features/auth/store/localAccountStore.js';
+import { LocalWorkspaceRepository } from '../features/workspace/persistence/LocalWorkspaceRepository.js';
+import { createEmptyWorkspace } from '../features/workspace/persistence/workspace.js';
 import { useApp } from './AppContext.js';
 import { AppProvider } from './AppProvider.jsx';
 

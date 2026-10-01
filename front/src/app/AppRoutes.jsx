@@ -1,18 +1,18 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useApp } from '../context/AppContext.js';
-import Cadastro from '../pages/Cadastro';
-import CanaisVenda from '../pages/CanaisVenda';
-import Configuracoes from '../pages/Configuracoes';
-import CustosFixos from '../pages/CustosFixos';
-import Dashboard from '../pages/Dashboard';
-import FichaTecnica from '../pages/FichaTecnica';
-import Insumos from '../pages/Insumos';
-import LandingPage from '../pages/LandingPage';
-import Login from '../pages/Login';
-import NotFound from '../pages/NotFound';
-import Produtos from '../pages/Produtos';
-import Relatorio from '../pages/Relatorio';
-import Simulacao from '../pages/Simulacao';
+import Cadastro from '../pages/cadastro/page';
+import CanaisVenda from '../pages/canais-venda/page';
+import Configuracoes from '../pages/configuracoes/page';
+import CustosFixos from '../pages/custos-fixos/page';
+import Dashboard from '../pages/dashboard/page';
+import FichaTecnica from '../pages/ficha-tecnica/page';
+import Insumos from '../pages/insumos/page';
+import LandingPage from '../pages/landing/page';
+import Login from '../pages/login/page';
+import NotFound from '../pages/not-found/page';
+import Produtos from '../pages/produtos/page';
+import Relatorio from '../pages/relatorio/page';
+import Simulacao from '../pages/simulacao/page';
 
 function ProtectedRoute({ children }) {
   const { usuarioLogado, authStatus } = useApp();
