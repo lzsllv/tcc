@@ -137,4 +137,119 @@ async apagarProdutos(request, response) {
         });
     }
 },
+async listarProdutosComEmpresa(request, response) {
+    try {
+        const [produtos] = await db.query(
+            `SELECT
+                produto.nome,
+                empresa.nome_fantasia
+             FROM produto
+             INNER JOIN empresa
+                ON produto.id_empresa = empresa.id_empresa`
+        );
+
+        return response.status(200).json({
+            sucesso: true,
+            mensagem: 'Lista de produtos com empresa.',
+            dados: produtos
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: error.message
+        });
+    }
+},
+async buscarProdutos(request, response) {
+    try {
+        const { nome, preco } = request.query;
+
+        const [produtos] = await db.query(
+            `SELECT *
+             FROM produto
+             WHERE nome LIKE ?
+             AND custo_direto <= ?`,
+            [
+                `%${nome}%`,
+                preco
+            ]
+        );
+
+        return response.status(200).json({
+            sucesso: true,
+            mensagem: 'Busca de produtos.',
+            dados: produtos
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: error.message
+        });
+    }
+},
+async listarProdutosPaginados(request, response) {
+    try {
+        const { pagina = 1, limite = 10 } = request.query;
+
+        const offset = (pagina - 1) * limite;
+
+        const [produtos] = await db.query(
+            `SELECT *
+             FROM produto
+             LIMIT ? OFFSET ?`,
+            [
+                Number(limite),
+                Number(offset)
+            ]
+        );
+
+        const [total] = await db.query(
+            `SELECT COUNT(*) AS total
+             FROM produto`
+        );
+
+        return response.status(200).json({
+            sucesso: true,
+            mensagem: 'Lista de produtos paginada.',
+            dados: produtos,
+            total: total[0].total,
+            pagina: Number(pagina),
+            limite: Number(limite)
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: error.message
+        });
+    }
+},
+async listarProdutoAleatorio(request, response) {
+    try {
+        const [produtos] = await db.query(
+            `SELECT *
+             FROM produto
+             ORDER BY RAND()
+             LIMIT 1`
+        );
+
+        return response.status(200).json({
+            sucesso: true,
+            mensagem: 'Produto aleatório.',
+            dados: produtos
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: error.message
+        });
+    }
+},
 }

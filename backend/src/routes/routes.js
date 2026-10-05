@@ -29,6 +29,10 @@ router.post('/produtos', ProdutosController.cadastrarProdutos);
 router.patch('/produtos', ProdutosController.editarProdutos);
 router.delete('/produtos', ProdutosController.apagarProdutos);
 
+router.get('/produtos-empresas', ProdutosController.listarProdutosComEmpresa);
+router.get('/produtos-busca', ProdutosController.buscarProdutos);
+router.get('/produtos-paginados', ProdutosController.listarProdutosPaginados);
+
 router.get('/empresas', EmpresasController.listarEmpresas);
 router.post('/empresas', EmpresasController.cadastrarEmpresas);
 router.patch('/empresas', EmpresasController.editarEmpresas);
@@ -71,5 +75,6 @@ router.delete('/regioes', RegiaoController.apagarRegiao);
 
 router.get('/estados', RegiaoController.listarEstados);
 router.get('/estados/tratados', RegiaoController.listarEstadosTratados);
+router.get('/regioes-busca', RegiaoController.buscarRegiaoPorEstado);
 
 module.exports = router;
