@@ -161,4 +161,54 @@ async listarEstadosTratados(request, response) {
         });
     }
 },
+async buscarRegiaoPorEstado(request, response) {
+    try {
+        const { estado } = request.query;
+
+        const [regioes] = await db.query(
+            `SELECT *
+             FROM regiao
+             WHERE estado LIKE ?`,
+            [`%${estado}%`]
+        );
+
+        return response.status(200).json({
+            sucesso: true,
+            mensagem: 'Busca de regiões por estado.',
+            dados: regioes
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: error.message
+        });
+    }
+},
+async buscarRegiaoPorEstado(request, response) {
+    try {
+        const { estado } = request.query;
+
+        const [regioes] = await db.query(
+            `SELECT *
+             FROM regiao
+             WHERE estado LIKE ?`,
+            [`%${estado}%`]
+        );
+
+        return response.status(200).json({
+            sucesso: true,
+            mensagem: 'Busca de regiões por estado.',
+            dados: regioes
+        });
+
+    } catch(error) {
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: error.message
+        });
+    }
+},       
 }
