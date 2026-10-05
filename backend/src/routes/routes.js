@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+// todas as rotas da aplicação estão aqui, cada rota chama uma função do controller correspondente
 const UsuariosController = require('../controllers/usuarios');
 const CategoriasController = require('../controllers/categorias');
 const ProdutosController = require('../controllers/produtos');
