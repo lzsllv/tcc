@@ -1,5 +1,11 @@
 const db = require('../database/connection');
 
+const {
+    campoObrigatorio,
+    valorNaoNegativo,
+    existeRegistro
+} = require('../utils');
+
 module.exports = {
    async listarEmpresas(request, response) {
     try {
@@ -29,7 +35,32 @@ module.exports = {
             cnpj,
             segmento
         } = request.body;
+        if (
+    !campoObrigatorio(id_usuario) ||
+    !campoObrigatorio(nome_fantasia) ||
+    !campoObrigatorio(cnpj) ||
+    !campoObrigatorio(segmento)
+) {
+    return response.status(400).json({
+        sucesso: false,
+        mensagem: 'Preencha todos os campos obrigatórios.',
+        dados: null
+    });
+}
+const [usuario] = await db.query(
+    `SELECT id_usuario
+     FROM usuario
+     WHERE id_usuario = ?`,
+    [id_usuario]
+);
 
+if (!existeRegistro(usuario)) {
+    return response.status(400).json({
+        sucesso: false,
+        mensagem: 'O usuário informado não existe.',
+        dados: null
+    });
+}
         const [resultado] = await db.query(
             `INSERT INTO empresa
             (nome_fantasia, cnpj, segmento,id_usuario)

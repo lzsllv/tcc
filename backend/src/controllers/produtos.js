@@ -1,4 +1,9 @@
 const db = require('../database/connection');
+const {
+    campoObrigatorio,
+    valorNaoNegativo,
+    existeRegistro
+} = require('../utils');
 
 module.exports = {
    async listarProdutos(request, response) {
@@ -32,6 +37,47 @@ module.exports = {
                 id_empresa,
                 preco_minimo
             } = request.body;
+
+      if (
+    !campoObrigatorio(nome) ||
+    !campoObrigatorio(descricao) ||
+    !campoObrigatorio(tipo) ||
+    !campoObrigatorio(custo_direto) ||
+    !campoObrigatorio(tempo_producao) ||
+    !campoObrigatorio(id_empresa) ||
+    !campoObrigatorio(preco_minimo)
+) {
+    return response.status(400).json({
+        sucesso: false,
+        mensagem: 'Preencha todos os campos obrigatórios.',
+        dados: null
+    });
+}
+if (
+    !valorNaoNegativo(custo_direto) ||
+    !valorNaoNegativo(tempo_producao) ||
+    !valorNaoNegativo(preco_minimo)
+) {
+    return response.status(400).json({
+        sucesso: false,
+        mensagem: 'Os valores do produto não podem ser negativos.',
+        dados: null
+    });
+}
+const [empresa] = await db.query(
+    `SELECT id_empresa
+     FROM empresa
+     WHERE id_empresa = ?`,
+    [id_empresa]
+);
+
+if (!existeRegistro(empresa)) {
+    return response.status(400).json({
+        sucesso: false,
+        mensagem: 'A empresa informada não existe.',
+        dados: null
+    });
+}
 
             const [resultado] = await db.query(
                 `INSERT INTO produto

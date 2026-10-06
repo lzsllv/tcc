@@ -32,6 +32,7 @@ router.delete('/produtos', ProdutosController.apagarProdutos);
 router.get('/produtos-empresas', ProdutosController.listarProdutosComEmpresa);
 router.get('/produtos-busca', ProdutosController.buscarProdutos);
 router.get('/produtos-paginados', ProdutosController.listarProdutosPaginados);
+router.get('/produtos-aleatorio', ProdutosController.listarProdutoAleatorio);
 
 router.get('/empresas', EmpresasController.listarEmpresas);
 router.post('/empresas', EmpresasController.cadastrarEmpresas);

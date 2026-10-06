@@ -1,5 +1,11 @@
 const db = require('../database/connection');
 
+const {
+    campoObrigatorio,
+    valorNaoNegativo,
+    existeRegistro
+} = require('../utils');
+
 module.exports = {
     async listarCustoVariavel(request, response) {
     try {
@@ -28,7 +34,38 @@ module.exports = {
             valor,
             id_produto
         } = request.body;
+if (
+    !campoObrigatorio(descricao) ||
+    !campoObrigatorio(valor) ||
+    !campoObrigatorio(id_produto)
+) {
+    return response.status(400).json({
+        sucesso: false,
+        mensagem: 'Preencha todos os campos obrigatórios.',
+        dados: null
+    });
+}
+if (!valorNaoNegativo(valor)) {
+    return response.status(400).json({
+        sucesso: false,
+        mensagem: 'O valor não pode ser negativo.',
+        dados: null
+    });
+}
+const [produto] = await db.query(
+    `SELECT id_produto
+     FROM produto
+     WHERE id_produto = ?`,
+    [id_produto]
+);
 
+if (!existeRegistro(produto)) {
+    return response.status(400).json({
+        sucesso: false,
+        mensagem: 'O produto informado não existe.',
+        dados: null
+    });
+}
         const [resultado] = await db.query(
             `INSERT INTO custo_variavel
             (descricao, valor, id_produto)
