@@ -33,6 +33,7 @@ module.exports = {
                 dt_cadastro,
                 status_usuario
             } = request.body;
+            console.log(request.body);
 
             const senhaCriptografada = await bcrypt.hash(senha_usuario, 10);
             const [resultado] = await db.query(
@@ -42,7 +43,7 @@ module.exports = {
                 [
                     nome_usuario,
                     email_usuario,
-                    senhaCriptografada,,
+                    senhaCriptografada,
                     dt_cadastro,
                     status_usuario
                 ]
@@ -62,7 +63,126 @@ module.exports = {
             });
         }
     },
+async login(request, response) {
+    try {
+        const {
+            email_usuario,
+            senha_usuario
+        } = request.body;
 
+        const [usuarios] = await db.query(
+            `SELECT *
+             FROM usuario
+             WHERE email_usuario = ?`,
+            [email_usuario]
+        );
+
+        if (usuarios.length === 0) {
+            return response.status(401).json({
+                sucesso: false,
+                mensagem: 'E-mail ou senha inválidos.',
+                dados: null
+            });
+        }
+
+        const usuario = usuarios[0];
+
+        const senhaValida = await bcrypt.compare(
+            senha_usuario,
+            usuario.senha_usuario
+        );
+
+        if (!senhaValida) {
+            return response.status(401).json({
+                sucesso: false,
+                mensagem: 'E-mail ou senha inválidos.',
+                dados: null
+            });
+        }
+
+        return response.status(200).json({
+            sucesso: true,
+            mensagem: 'Login realizado com sucesso.',
+            dados: {
+                id_usuario: usuario.id_usuario,
+                nome_usuario: usuario.nome_usuario,
+                email_usuario: usuario.email_usuario
+            }
+        });
+
+    } catch (error) {
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: error.message
+        });
+    }
+},
+async alterarSenha(request, response) {
+    try {
+        const {
+            id_usuario,
+            senha_atual,
+            nova_senha
+        } = request.body;
+
+        const [usuarios] = await db.query(
+            `SELECT senha_usuario
+             FROM usuario
+             WHERE id_usuario = ?`,
+            [id_usuario]
+        );
+
+        if (usuarios.length === 0) {
+            return response.status(404).json({
+                sucesso: false,
+                mensagem: 'Usuário não encontrado.',
+                dados: null
+            });
+        }
+
+        const senhaValida = await bcrypt.compare(
+            senha_atual,
+            usuarios[0].senha_usuario
+        );
+
+        if (!senhaValida) {
+            return response.status(401).json({
+                sucesso: false,
+                mensagem: 'Senha atual inválida.',
+                dados: null
+            });
+        }
+
+        const novaSenhaCriptografada = await bcrypt.hash(
+            nova_senha,
+            10
+        );
+
+        const [resultado] = await db.query(
+            `UPDATE usuario
+             SET senha_usuario = ?
+             WHERE id_usuario = ?`,
+            [
+                novaSenhaCriptografada,
+                id_usuario
+            ]
+        );
+
+        return response.status(200).json({
+            sucesso: true,
+            mensagem: 'Senha alterada com sucesso.',
+            dados: resultado
+        });
+
+    } catch (error) {
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: error.message
+        });
+    }
+},
     async editarUsuarios(request, response) {
     try {
         const {

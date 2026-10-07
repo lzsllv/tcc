@@ -18,6 +18,8 @@ router.post('/usuarios', UsuariosController.cadastrarUsuarios);
 router.patch('/usuarios', UsuariosController.editarUsuarios);
 router.delete('/usuarios', UsuariosController.apagarUsuarios);
 
+router.post('/login', UsuariosController.login);
+router.patch('/alterar-senha', UsuariosController.alterarSenha);
 
 router.get('/categorias', CategoriasController.listarCategorias);
 router.post('/categorias', CategoriasController.cadastrarCategorias);
