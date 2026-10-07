@@ -91,7 +91,7 @@ if (!existeRegistro(produto)) {
         });
     }
 },
-    async editarcustoVariavel(request, response) {
+   async editarcustoVariavel(request, response) {
     try {
         const {
             id_custo_variavel,
@@ -100,18 +100,39 @@ if (!existeRegistro(produto)) {
             id_produto
         } = request.body;
 
+        let campos = [];
+        let valores = [];
+
+        if (descricao !== undefined) {
+            campos.push('descricao = ?');
+            valores.push(descricao);
+        }
+
+        if (valor !== undefined) {
+            campos.push('valor = ?');
+            valores.push(valor);
+        }
+
+        if (id_produto !== undefined) {
+            campos.push('id_produto = ?');
+            valores.push(id_produto);
+        }
+
+        if (campos.length === 0) {
+            return response.status(400).json({
+                sucesso: false,
+                mensagem: 'Informe pelo menos um campo para alterar.',
+                dados: null
+            });
+        }
+
+        valores.push(id_custo_variavel);
+
         const [resultado] = await db.query(
             `UPDATE custo_variavel
-             SET descricao = ?,
-                 valor = ?,
-                 id_produto = ?
+             SET ${campos.join(', ')}
              WHERE id_custo_variavel = ?`,
-            [
-                descricao,
-                valor,
-                id_produto,
-                id_custo_variavel
-            ]
+            valores
         );
 
         return response.status(200).json({
