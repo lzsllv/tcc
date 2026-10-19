@@ -89,22 +89,25 @@ if (!existeRegistro(empresa)) {
     });
 }
 
-            const [resultado] = await db.query(
-                `INSERT INTO produto
-                 (nome, descricao, tipo, custo_direto, tempo_producao,id_empresa,preco_minimo)
-                  VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                [
-            
-                    nome,
-                    descricao,
-                    tipo,
-                    custo_direto,
-                    tempo_producao,
-                    id_empresa,
-                    preco_minimo
+const imagem = request.file
+    ? `imagens/${request.file.filename}`
+    : null;
 
-                ]
-            );
+const [resultado] = await db.query(
+    `INSERT INTO produto
+     (nome, descricao, tipo, custo_direto, tempo_producao, id_empresa, preco_minimo, imagem)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+        nome,
+        descricao,
+        tipo,
+        custo_direto,
+        tempo_producao,
+        id_empresa,
+        preco_minimo,
+        imagem
+    ]
+);
 
             return response.status(201).json({
                 sucesso: true,
@@ -133,27 +136,35 @@ if (!existeRegistro(empresa)) {
             preco_minimo
         } = request.body;
 
-        const [resultado] = await db.query(
-            `UPDATE produto
-             SET nome = ?,
-                 descricao = ?,
-                 tipo = ?,
-                 custo_direto = ?,
-                 tempo_producao = ?,
-                 id_empresa = ?,
-                 preco_minimo = ?
-             WHERE id_produto = ?`,
-            [
-                nome,
-                descricao,
-                tipo,
-                custo_direto,
-                tempo_producao,
-                id_empresa,
-                preco_minimo,
-                id_produto
-            ]
-        );
+
+const imagem = request.file
+    ? `imagens/${request.file.filename}`
+    : null;
+
+const [resultado] = await db.query(
+    `UPDATE produto
+     SET nome = ?,
+         descricao = ?,
+         tipo = ?,
+         custo_direto = ?,
+         tempo_producao = ?,
+         id_empresa = ?,
+         preco_minimo = ?,
+         imagem = COALESCE(?, imagem)
+     WHERE id_produto = ?`,
+    [
+        nome,
+        descricao,
+        tipo,
+        custo_direto,
+        tempo_producao,
+        id_empresa,
+        preco_minimo,
+        imagem,
+        id_produto
+    ]
+);
+
 
         return response.status(200).json({
             sucesso: true,
@@ -193,21 +204,30 @@ async apagarProdutos(request, response) {
         });
     }
 },
+
 async listarProdutosComEmpresa(request, response) {
     try {
         const [produtos] = await db.query(
             `SELECT
                 produto.nome,
-                empresa.nome_fantasia
+                empresa.nome_fantasia,
+                produto.imagem
              FROM produto
              INNER JOIN empresa
                 ON produto.id_empresa = empresa.id_empresa`
         );
 
+        const produtosComImagem = produtos.map((produto) => {
+            return {
+                ...produto,
+                imagem: gerarUrl(request, produto.imagem)
+            };
+        });
+
         return response.status(200).json({
             sucesso: true,
             mensagem: 'Lista de produtos com empresa.',
-            dados: produtos
+            dados: produtosComImagem
         });
 
     } catch(error) {
@@ -218,6 +238,7 @@ async listarProdutosComEmpresa(request, response) {
         });
     }
 },
+
 async buscarProdutos(request, response) {
     try {
         const { nome, preco } = request.query;

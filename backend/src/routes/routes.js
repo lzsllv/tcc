@@ -33,7 +33,11 @@ router.post(
     upload.single('imagem'),
     ProdutosController.cadastrarProdutos
 );
-router.patch('/produtos', ProdutosController.editarProdutos);
+router.patch(
+    '/produtos',
+    upload.single('imagem'),
+    ProdutosController.editarProdutos
+);
 router.delete('/produtos', ProdutosController.apagarProdutos);
 
 router.get('/produtos-empresas', ProdutosController.listarProdutosComEmpresa);
