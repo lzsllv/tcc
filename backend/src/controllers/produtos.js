@@ -1,4 +1,5 @@
 const db = require('../database/connection');
+const gerarUrl = require('../utils/gerarUrl');
 const {
     campoObrigatorio,
     valorNaoNegativo,
@@ -6,26 +7,35 @@ const {
 } = require('../utils');
 
 module.exports = {
-   async listarProdutos(request, response) {
+   
+async listarProdutos(request, response) {
     try {
         const [produtos] = await db.query(
             'SELECT * FROM produto'
         );
 
+        const produtosComImagem = produtos.map((produto) => {
+            return {
+                ...produto,
+                imagem: gerarUrl(request, produto.imagem)
+            };
+        });
+
         return response.status(200).json({
             sucesso: true,
             mensagem: 'Lista de produtos.',
-            dados: produtos
+            dados: produtosComImagem
         });
-        }catch(error) {
-            return response.status(500).json({
-                sucesso: false,
-                mensagem: 'Erro na requisição.',
-                dados: error.message
-            });
-        }
 
-    },
+    } catch (error) {
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: error.message
+        });
+    }
+},
+
     async cadastrarProdutos(request, response) {
         try {
             const {

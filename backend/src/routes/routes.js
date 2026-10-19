@@ -12,6 +12,7 @@ const HistoricoController = require('../controllers/historico');
 const ParametrosController = require('../controllers/parametros');
 const PrecificacaoController = require('../controllers/precificacao');
 const RegiaoController = require('../controllers/regiao');
+const upload = require('../middlewares/upload');
 
 router.get('/usuarios', UsuariosController.listarUsuarios);
 router.post('/usuarios', UsuariosController.cadastrarUsuarios);
@@ -27,7 +28,11 @@ router.patch('/categorias', CategoriasController.editarCategorias);
 router.delete('/categorias', CategoriasController.apagarCategorias);
 
 router.get('/produtos', ProdutosController.listarProdutos);
-router.post('/produtos', ProdutosController.cadastrarProdutos);
+router.post(
+    '/produtos',
+    upload.single('imagem'),
+    ProdutosController.cadastrarProdutos
+);
 router.patch('/produtos', ProdutosController.editarProdutos);
 router.delete('/produtos', ProdutosController.apagarProdutos);
 
