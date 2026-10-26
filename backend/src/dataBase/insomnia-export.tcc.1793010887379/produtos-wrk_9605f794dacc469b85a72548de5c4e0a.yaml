@@ -1,0 +1,371 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: produtos
+meta:
+  id: wrk_9605f794dacc469b85a72548de5c4e0a
+  created: 1788435063400
+  modified: 1788435063400
+  description: ""
+collection:
+  - url: http://localhost:3333/produtos
+    name: listar produtos
+    meta:
+      id: req_773e19470d014137bbde19f02d6a78e4
+      created: 1788436082550
+      modified: 1788436997812
+      isPrivate: false
+      description: ""
+      sortKey: -1788436082550
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/produtos
+    name: cadastrar produtos
+    meta:
+      id: req_3e685140c44644928003c9fbcce8eb5d
+      created: 1788436108768
+      modified: 1791296877144
+      isPrivate: false
+      description: ""
+      sortKey: -1788436108768
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_usuario": 999,
+          "nome_fantasia": "Empresa Teste",
+          "cnpj": "12.345.678/0001-00",
+          "segmento": "Alimentação"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/produtos
+    name: editar produtos
+    meta:
+      id: req_aac30b88a7e7495cbfbf3d7b265de60f
+      created: 1788436125342
+      modified: 1792431669883
+      isPrivate: false
+      description: ""
+      sortKey: -1788436125342
+    method: PATCH
+    body:
+      mimeType: multipart/form-data
+      params:
+        - name: id_produto
+          value: "6"
+          description: ""
+          disabled: false
+        - name: nome
+          value: Produsto Teste Imagem
+          description: ""
+          disabled: false
+        - name: descricao
+          value: Teste de envio de imagem
+          description: ""
+          disabled: false
+        - name: tipo
+          value: Alimento
+          description: ""
+          disabled: false
+        - name: custo_direto
+          value: "10"
+          description: ""
+          disabled: false
+        - name: tempo_producao
+          value: "1"
+          description: ""
+          disabled: false
+        - name: id_empresa
+          value: "2"
+          description: ""
+          disabled: false
+        - name: preco_minimo
+          value: "15"
+          description: ""
+          disabled: false
+        - name: imagem
+          value: ""
+          description: ""
+          disabled: false
+          fileName: D:\m124-stefanymarques\tcc\backend\public\imagens\bolo2.jpg
+          type: file
+    headers:
+      - name: Content-Type
+        value: multipart/form-data
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/produtos
+    name: apagar produtos
+    meta:
+      id: req_2512b2c4ddd14a3d8e93e5559bcfd2ec
+      created: 1788436152393
+      modified: 1791295624810
+      isPrivate: false
+      description: ""
+      sortKey: -1788436152393
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "id_produto": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/produtos-empresas
+    name: produto e empresa
+    meta:
+      id: req_5394fc8be09a4043aec4174e159cf369
+      created: 1791197897050
+      modified: 1791198152377
+      isPrivate: false
+      description: ""
+      sortKey: -1791197897050
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/produtos-busca?nome=Bolo&preco=20
+    name: buscar produtos
+    meta:
+      id: req_12cb2180a4bb4916b25dd5d19931e2cc
+      created: 1791198154951
+      modified: 1791198395551
+      isPrivate: false
+      description: ""
+      sortKey: -1791198154951
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/produtos-paginados?pagina=1&limite=1
+    name: listar produtos paginados
+    meta:
+      id: req_a5831676eab74eb7bbce9b5494cc5a83
+      created: 1791198397719
+      modified: 1791198417536
+      isPrivate: false
+      description: ""
+      sortKey: -1791198397719
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/produtos-aleatorio
+    name: New Request
+    meta:
+      id: req_d0df61789a344a50b1b21daacd45bb8f
+      created: 1791293353591
+      modified: 1791293360540
+      isPrivate: false
+      description: ""
+      sortKey: -1791293353591
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/produtos
+    name: listar produtos com imagens
+    meta:
+      id: req_bbfde09fd3df4d40a1b94ecff922bdb0
+      created: 1792407402617
+      modified: 1792407445243
+      isPrivate: false
+      description: ""
+      sortKey: -1792407402617
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/produtos
+    name: New Request
+    meta:
+      id: req_2ff13844d5dc4ff28f283997121005f9
+      created: 1792429770687
+      modified: 1792430444502
+      isPrivate: false
+      description: ""
+      sortKey: -1792429770687
+    method: POST
+    body:
+      mimeType: multipart/form-data
+      params:
+        - name: nome
+          value: Produto Teste Imagem
+          description: ""
+          disabled: false
+          multiline: false
+          type: text
+        - name: descricao
+          value: Teste de envio de imagem
+          description: ""
+          disabled: false
+          multiline: false
+          type: text
+        - name: tipo
+          value: Alimento
+          description: ""
+          disabled: false
+          multiline: false
+          type: text
+        - name: custo_direto
+          value: "10"
+          description: ""
+          disabled: false
+          multiline: false
+          type: text
+        - name: tempo_producao
+          value: "1"
+          description: ""
+          disabled: false
+        - name: id_empresa
+          value: "2"
+          description: ""
+          disabled: false
+        - name: preco_minimo
+          value: "15"
+          description: ""
+          disabled: false
+          multiline: false
+          type: text
+        - name: imagem
+          value: ""
+          description: ""
+          disabled: false
+          fileName: D:\m124-stefanymarques\tcc\backend\public\imagens\teste.png
+          type: file
+    headers:
+      - name: Content-Type
+        value: multipart/form-data
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/produtos
+    name: New Request
+    meta:
+      id: req_63058de596d2404488ebaaa219a18012
+      created: 1792430484418
+      modified: 1792430494701
+      isPrivate: false
+      description: ""
+      sortKey: -1792430484418
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/produtos-empresas
+    name: New Request
+    meta:
+      id: req_58f270dc059a425ca08d99b675ac075e
+      created: 1792430803035
+      modified: 1792430807555
+      isPrivate: false
+      description: ""
+      sortKey: -1792430803035
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/produtos
+    name: New Request
+    meta:
+      id: req_4c1eea6bc3a44af18eb2d8fdfa50dc12
+      created: 1792431474112
+      modified: 1792431487652
+      isPrivate: false
+      description: ""
+      sortKey: -1792431474112
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_6de7d817d27b06bfd11203671753e981a349548c
+    created: 1788435063403
+    modified: 1788435063403
+environments:
+  name: Base Environment
+  meta:
+    id: env_6de7d817d27b06bfd11203671753e981a349548c
+    created: 1788435063402
+    modified: 1788435063402
+    isPrivate: false

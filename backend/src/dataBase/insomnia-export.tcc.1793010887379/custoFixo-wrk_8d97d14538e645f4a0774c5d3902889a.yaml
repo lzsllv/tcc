@@ -1,0 +1,139 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: custoFixo
+meta:
+  id: wrk_8d97d14538e645f4a0774c5d3902889a
+  created: 1788435176772
+  modified: 1788435176772
+  description: ""
+collection:
+  - url: http://localhost:3333/custosFixos
+    name: listar custoFixo
+    meta:
+      id: req_97a8c7a46a3f40e28e51f61db4076453
+      created: 1788436692626
+      modified: 1790764167536
+      isPrivate: false
+      description: ""
+      sortKey: -1788436692626
+    method: GET
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "sucesso": true,
+          "mensagem": "Lista de custos fixos.",
+          "dados": []
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/custosFixos
+    name: cadastrar custoFixo
+    meta:
+      id: req_532875bdce464a2fa181e38fc17858df
+      created: 1788436712518
+      modified: 1790764305391
+      isPrivate: false
+      description: ""
+      sortKey: -1788436712518
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "descricao": "Aluguel",
+          "valor": 1500.00,
+          "categoria": "Administrativo",
+          "id_empresa": 2
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/custosFixos
+    name: editar custoFixo
+    meta:
+      id: req_4f269c28d8814fd88fa97c4110c2397a
+      created: 1788436744222
+      modified: 1790853440705
+      isPrivate: false
+      description: ""
+      sortKey: -1788436744222
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_custo_fixo": 1,
+          "descricao": "Aluguel atualizado",
+          "valor": 1800.00,
+          "categoria": "Administrativo",
+          "id_empresa": 2
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/custosFixos
+    name: apagar custoFixo
+    meta:
+      id: req_2d3c3cbd40e640b38c1675257edc371d
+      created: 1788436764605
+      modified: 1790853738302
+      isPrivate: false
+      description: ""
+      sortKey: -1788436764605
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_custo_fixo": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_2c988c85e8a41c95fa2a61b3e49f8183d8c34f9c
+    created: 1788435176775
+    modified: 1788435176775
+environments:
+  name: Base Environment
+  meta:
+    id: env_2c988c85e8a41c95fa2a61b3e49f8183d8c34f9c
+    created: 1788435176773
+    modified: 1788435176773
+    isPrivate: false

@@ -1,0 +1,124 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: custoVariavel
+meta:
+  id: wrk_ac7a38ed449a4d1197c5bf5bb5e6c979
+  created: 1788435149387
+  modified: 1788435149387
+  description: ""
+collection:
+  - url: http://localhost:3333/custosVariaveis
+    name: listar custoVariavel
+    meta:
+      id: req_7ed1e99e57234aed8cb3af1d5dd5590a
+      created: 1788436572255
+      modified: 1788437219918
+      isPrivate: false
+      description: ""
+      sortKey: -1788436572255
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/custosVariaveis
+    name: cadastrar custoVariavel
+    meta:
+      id: req_5493b36ac1744c3688ce8a1391e781d1
+      created: 1788436610222
+      modified: 1791297451737
+      isPrivate: false
+      description: ""
+      sortKey: -1788436610222
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "descricao": "Embalagem",
+          "valor": 10,
+          "id_produto": 3
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/custosVariaveis
+    name: editar custoVariavel
+    meta:
+      id: req_dcdea2b5c7604e89922d7aab07b1ec56
+      created: 1788436641305
+      modified: 1791370738971
+      isPrivate: false
+      description: ""
+      sortKey: -1788436641305
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_custo_variavel": 1,
+          "id_produto": 3
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/custosVariaveis
+    name: apagar custoVariavel
+    meta:
+      id: req_04469ca11b3d4c388dff68cd83678b0e
+      created: 1788436661726
+      modified: 1791370920526
+      isPrivate: false
+      description: ""
+      sortKey: -1788436661726
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_custo_variavel": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_8ab42940760cdfdf7a2e5ad6e5bf4b63048e017e
+    created: 1788435149411
+    modified: 1788435149411
+environments:
+  name: Base Environment
+  meta:
+    id: env_8ab42940760cdfdf7a2e5ad6e5bf4b63048e017e
+    created: 1788435149408
+    modified: 1788435149408
+    isPrivate: false

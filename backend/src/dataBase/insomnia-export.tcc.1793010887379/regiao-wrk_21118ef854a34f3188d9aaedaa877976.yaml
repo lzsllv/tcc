@@ -1,0 +1,193 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: regiao
+meta:
+  id: wrk_21118ef854a34f3188d9aaedaa877976
+  created: 1788435021381
+  modified: 1788435021381
+  description: ""
+collection:
+  - url: http://localhost:3333/regioes
+    name: listar regiao
+    meta:
+      id: req_16efa5b0cbed4d9daca03962b767c9f4
+      created: 1788435918159
+      modified: 1790690889032
+      isPrivate: false
+      description: ""
+      sortKey: -1788435918159
+    method: GET
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "sucesso": true,
+            "mensagem": "Lista de regiões.",
+            "dados": []
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/regioes
+    name: cadastrar regiao
+    meta:
+      id: req_815c659fe83e49b1a5abede2dcf5d171
+      created: 1788435973350
+      modified: 1790692365814
+      isPrivate: false
+      description: ""
+      sortKey: -1788435973350
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "cidade": "Marília",
+          "estado": "São Paulo",
+          "indice_custo_regional": 1.20,
+          "ticket_medio_regional": 60.00
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/regioes
+    name: editar regiao
+    meta:
+      id: req_ceb1f5cf17614aeab84b82cf72e94ec8
+      created: 1788436044095
+      modified: 1790692265991
+      isPrivate: false
+      description: ""
+      sortKey: -1788436044095
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_regiao": 1,
+          "cidade": "Tupã",
+          "estado": "São Paulo",
+          "indice_custo_regional": 1.10,
+          "ticket_medio_regional": 55.00
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/regioes
+    name: apagar regiao
+    meta:
+      id: req_951bb4309e8645afb550fbec44656d36
+      created: 1788436061266
+      modified: 1790692404072
+      isPrivate: false
+      description: ""
+      sortKey: -1788436061266
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_regiao": 2
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/estados
+    name: listar Estados
+    meta:
+      id: req_87cfbce588b349cb9a8e1148b8a20bcd
+      created: 1790855725545
+      modified: 1790855843950
+      isPrivate: false
+      description: ""
+      sortKey: -1790855725545
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/estados/tratados
+    name: listar estados tratados
+    meta:
+      id: req_55547cabd59c4a6795d94b8308f4d6b4
+      created: 1790855953098
+      modified: 1790878112117
+      isPrivate: false
+      description: ""
+      sortKey: -1790855953098
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/regioes-busca?estado=São Paulo&cidade=Tupã
+    name: buscar regioes
+    meta:
+      id: req_784bf975a7204033a8d24890dc0fa20d
+      created: 1791197173238
+      modified: 1791197874628
+      isPrivate: false
+      description: ""
+      sortKey: -1791197173238
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_89c15521530468c945849b1352021ef9245787c4
+    created: 1788435021395
+    modified: 1788435021395
+environments:
+  name: Base Environment
+  meta:
+    id: env_89c15521530468c945849b1352021ef9245787c4
+    created: 1788435021384
+    modified: 1788435021384
+    isPrivate: false

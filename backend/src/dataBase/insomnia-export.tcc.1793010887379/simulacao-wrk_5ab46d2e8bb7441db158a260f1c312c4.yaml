@@ -1,0 +1,141 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: simulacao
+meta:
+  id: wrk_5ab46d2e8bb7441db158a260f1c312c4
+  created: 1788435005748
+  modified: 1788435005748
+  description: ""
+collection:
+  - url: http://localhost:3333/simulacoes
+    name: listar simulacao
+    meta:
+      id: req_986a409e927c46adb94b6086c8cc2840
+      created: 1788435761144
+      modified: 1790690162129
+      isPrivate: false
+      description: ""
+      sortKey: -1788435761144
+    method: GET
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "sucesso": true,
+            "mensagem": "Lista de simulações.",
+            "dados": []
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/simulacoes
+    name: cadastrar simulacao
+    meta:
+      id: req_622a85ad025d43908506146414c3bf1d
+      created: 1788435819912
+      modified: 1790690224317
+      isPrivate: false
+      description: ""
+      sortKey: -1788435819912
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "quantidade_vendida": 100,
+            "faturamento_previsto": 5000.00,
+            "lucro_previsto": 1500.00,
+            "ponto_equilibrio": 50.00,
+            "id_precificacao": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/simulacoes
+    name: editar simulacao
+    meta:
+      id: req_f9ae077092c448b8a2627b6e65d47ecf
+      created: 1788435867339
+      modified: 1790692007147
+      isPrivate: false
+      description: ""
+      sortKey: -1788435867339
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "id_simulacao": 1,
+            "quantidade_vendida": 120,
+            "faturamento_previsto": 6000.00,
+            "lucro_previsto": 1800.00,
+            "ponto_equilibrio": 50.00,
+            "id_precificacao": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/simulacoes
+    name: apagar simulacao
+    meta:
+      id: req_fed26891778a484fb0aaee555acd7795
+      created: 1788435890181
+      modified: 1790692071524
+      isPrivate: false
+      description: ""
+      sortKey: -1788435890181
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "id_simulacao": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_f5ca287019a3e49ba66c3790bc8fc7155ace4360
+    created: 1788435005754
+    modified: 1788435005754
+environments:
+  name: Base Environment
+  meta:
+    id: env_f5ca287019a3e49ba66c3790bc8fc7155ace4360
+    created: 1788435005751
+    modified: 1788435005751
+    isPrivate: false

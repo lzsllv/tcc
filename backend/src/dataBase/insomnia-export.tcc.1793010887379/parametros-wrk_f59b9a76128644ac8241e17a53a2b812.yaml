@@ -1,0 +1,141 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: parametros
+meta:
+  id: wrk_f59b9a76128644ac8241e17a53a2b812
+  created: 1788435102080
+  modified: 1788435102080
+  description: ""
+collection:
+  - url: http://localhost:3333/parametros
+    name: listar parametro
+    meta:
+      id: req_1098cc0585d744f4b0b9b105e66289b7
+      created: 1788436297678
+      modified: 1790691131730
+      isPrivate: false
+      description: ""
+      sortKey: -1788436297678
+    method: GET
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "sucesso": true,
+            "mensagem": "Lista de parâmetros.",
+            "dados": []
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/parametros
+    name: cadastrar parametro
+    meta:
+      id: req_c38ceba92ec34f08b7c6442fcb2c2ceb
+      created: 1788436321539
+      modified: 1790692506248
+      isPrivate: false
+      description: ""
+      sortKey: -1788436321539
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "margem_desejada": 20.00,
+          "horas_trabalhadas_mes": 160.00,
+          "pro_labore": 1500.00,
+          "impostos_percentual": 8.00,
+          "id_empresa": 2
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/parametros
+    name: editar parametro
+    meta:
+      id: req_fec3eea074284ceb98861b783be36248
+      created: 1788436342799
+      modified: 1790692449135
+      isPrivate: false
+      description: ""
+      sortKey: -1788436342799
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_parametro": 1,
+          "margem_desejada": 35.00,
+          "horas_trabalhadas_mes": 160.00,
+          "pro_labore": 2200.00,
+          "impostos_percentual": 10.00,
+          "id_empresa": 2
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/parametros
+    name: apagar parametro
+    meta:
+      id: req_90a033073aae4b428b63ad3a7432d09b
+      created: 1788436362700
+      modified: 1790692554046
+      isPrivate: false
+      description: ""
+      sortKey: -1788436362700
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_parametro": 2
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_1324ac2dea9538c5a585fe740e928eb48d0f8caa
+    created: 1788435102084
+    modified: 1788435102084
+environments:
+  name: Base Environment
+  meta:
+    id: env_1324ac2dea9538c5a585fe740e928eb48d0f8caa
+    created: 1788435102082
+    modified: 1788435102082
+    isPrivate: false

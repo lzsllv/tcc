@@ -1,0 +1,151 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: precificacao
+meta:
+  id: wrk_1fa220c4b9e946c3b92eb4ce2f345834
+  created: 1788435082778
+  modified: 1788435082778
+  description: ""
+collection:
+  - url: http://localhost:3333/precificacoes
+    name: listar precificacao
+    meta:
+      id: req_376b832cbbbe4450be7ce06a52d57e66
+      created: 1788436174521
+      modified: 1790690434150
+      isPrivate: false
+      description: ""
+      sortKey: -1788436174521
+    method: GET
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "sucesso": true,
+            "mensagem": "Lista de precificações.",
+            "dados": []
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/precificacoes
+    name: cadastrar precificacao
+    meta:
+      id: req_15dbfc70edb34d1f8f6e7931cbe3b776
+      created: 1788436208538
+      modified: 1790691525379
+      isPrivate: false
+      description: ""
+      sortKey: -1788436208538
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "preco_sugerido": 25.00,
+            "margem_real": 30.00,
+            "custo_total": 15.00,
+            "mark_up": 1.67,
+            "alerta_prejuizo": 0,
+            "alerta_acima_mercado": 0,
+            "data_calculo": "2026-09-29 10:00:00",
+            "id_produto": 2,
+            "id_regiao": 1,
+            "id_parametro": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/precificacoes
+    name: editar precificacao
+    meta:
+      id: req_93acb94fb8ca4cbaab8fa685e99fe31e
+      created: 1788436238685
+      modified: 1790692704130
+      isPrivate: false
+      description: ""
+      sortKey: -1788436238685
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_precificacao": 1,
+          "preco_sugerido": 27.00,
+          "margem_real": 32.00,
+          "custo_total": 15.00,
+          "mark_up": 1.80,
+          "alerta_prejuizo": 0,
+          "alerta_acima_mercado": 0,
+          "data_calculo": "2026-09-29 10:30:00",
+          "id_produto": 2,
+          "id_regiao": 1,
+          "id_parametro": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/precificacoes
+    name: apagar precificacao
+    meta:
+      id: req_14d63977f9a34181b3bd54e3d08835e8
+      created: 1788436272316
+      modified: 1790692778140
+      isPrivate: false
+      description: ""
+      sortKey: -1788436272316
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_precificacao": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_635aa3cf4a7fc67305b361f304f9bfd8b96136bf
+    created: 1788435082781
+    modified: 1788435082781
+environments:
+  name: Base Environment
+  meta:
+    id: env_635aa3cf4a7fc67305b361f304f9bfd8b96136bf
+    created: 1788435082779
+    modified: 1788435082779
+    isPrivate: false

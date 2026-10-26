@@ -1,0 +1,128 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: historico
+meta:
+  id: wrk_0666f502a6c6400fbc6d797cc2976b2e
+  created: 1788435116620
+  modified: 1788435116620
+  description: ""
+collection:
+  - url: http://localhost:3333/historicos
+    name: listar historico
+    meta:
+      id: req_35e19bf284c540b6a43b06df9a234eed
+      created: 1788436396863
+      modified: 1788437129964
+      isPrivate: false
+      description: ""
+      sortKey: -1788436396863
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/historicos
+    name: cadastrar historico
+    meta:
+      id: req_db92df9aea71468d9324b6c22e4e7748
+      created: 1788436422376
+      modified: 1790854806146
+      isPrivate: false
+      description: ""
+      sortKey: -1788436422376
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "preco_anterior": 25.00,
+            "margem_anterior": 30.00,
+            "data_alteracao": "2026-09-30 10:00:00",
+            "id_precificacao": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/historicos
+    name: editar historico
+    meta:
+      id: req_3b36e96c7d154038918c2d4614294f0f
+      created: 1788436444961
+      modified: 1790854971880
+      isPrivate: false
+      description: ""
+      sortKey: -1788436444961
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "id_historico": 1,
+            "preco_anterior": 27.00,
+            "margem_anterior": 32.00,
+            "data_alteracao": "2026-09-30 10:30:00",
+            "id_precificacao": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/historicos
+    name: apagar historico
+    meta:
+      id: req_e97c96da79a242249efc227b21cfdfe5
+      created: 1788436466478
+      modified: 1790855048174
+      isPrivate: false
+      description: ""
+      sortKey: -1788436466478
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "id_historico": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_f2408537146222131f2e0c1310f4879f10409ece
+    created: 1788435116623
+    modified: 1788435116623
+environments:
+  name: Base Environment
+  meta:
+    id: env_f2408537146222131f2e0c1310f4879f10409ece
+    created: 1788435116622
+    modified: 1788435116622
+    isPrivate: false

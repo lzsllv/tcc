@@ -1,5 +1,5 @@
 const db = require('../database/connection');
-const gerarUrl = require('../utils/gerarUrl');
+const gerarUrl = require('../utils/gerarUrl.js');
 const {
     campoObrigatorio,
     valorNaoNegativo,
@@ -17,7 +17,7 @@ async listarProdutos(request, response) {
         const produtosComImagem = produtos.map((produto) => {
             return {
                 ...produto,
-                imagem: gerarUrl(request, produto.imagem)
+                imagem: gerarUrl(produto.imagem, 'imagens', 'sem-img.png')
             };
         });
 
@@ -220,7 +220,7 @@ async listarProdutosComEmpresa(request, response) {
         const produtosComImagem = produtos.map((produto) => {
             return {
                 ...produto,
-                imagem: gerarUrl(request, produto.imagem)
+                imagem: gerarUrl(produto.imagem, 'imagens', 'sem-img.png')
             };
         });
 

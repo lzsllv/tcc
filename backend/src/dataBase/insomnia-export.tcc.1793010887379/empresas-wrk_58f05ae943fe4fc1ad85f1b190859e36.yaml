@@ -1,0 +1,128 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: empresas
+meta:
+  id: wrk_58f05ae943fe4fc1ad85f1b190859e36
+  created: 1788435129999
+  modified: 1788435129999
+  description: ""
+collection:
+  - url: http://localhost:3333/empresas
+    name: listar empresas
+    meta:
+      id: req_0ac4d3573eaf405388bcc3ce26e8b266
+      created: 1788436484742
+      modified: 1788437169137
+      isPrivate: false
+      description: ""
+      sortKey: -1788436484742
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/empresas
+    name: cadastrar empresas
+    meta:
+      id: req_2b7e144e3f0b46359c6d18a23100353c
+      created: 1788436505002
+      modified: 1791296950915
+      isPrivate: false
+      description: ""
+      sortKey: -1788436505002
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_usuario": 2,
+          "nome_fantasia": "Empresa Teste Aula 5",
+          "cnpj": "12.345.678/0001-00",
+          "segmento": "Alimentação"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/empresas
+    name: editar empresas
+    meta:
+      id: req_a675577f51f84edda1466811d24c1050
+      created: 1788436519963
+      modified: 1790689743062
+      isPrivate: false
+      description: ""
+      sortKey: -1788436519963
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "id_empresa": 1,
+            "nome_fantasia": "Doce Sabor Especial",
+            "cnpj": "12.345.678/0001-90",
+            "segmento": "Alimentação",
+            "id_usuario": 2
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/empresas
+    name: apagar empresas
+    meta:
+      id: req_981e9602c5c543549fe87338125a0793
+      created: 1788436541033
+      modified: 1790689832101
+      isPrivate: false
+      description: ""
+      sortKey: -1788436541033
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "id_empresa": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_cc8d54726191ee58f5917fb96a73fabb19f6906b
+    created: 1788435130021
+    modified: 1788435130021
+environments:
+  name: Base Environment
+  meta:
+    id: env_cc8d54726191ee58f5917fb96a73fabb19f6906b
+    created: 1788435130004
+    modified: 1788435130004
+    isPrivate: false

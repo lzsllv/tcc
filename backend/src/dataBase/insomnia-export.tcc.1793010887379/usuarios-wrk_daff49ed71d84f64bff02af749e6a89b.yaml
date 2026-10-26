@@ -1,0 +1,182 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: usuarios
+meta:
+  id: wrk_daff49ed71d84f64bff02af749e6a89b
+  created: 1787668638178
+  modified: 1787668638178
+  description: ""
+collection:
+  - url: " http://localhost:3333/usuarios"
+    name: listar usuários
+    meta:
+      id: req_d33fb2332ec942e9a37523f209afcd21
+      created: 1787668652670
+      modified: 1788438928929
+      isPrivate: false
+      description: ""
+      sortKey: -1787668652670
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/usuarios
+    name: cadastrar usuários
+    meta:
+      id: req_1ab26b5ddbd1431986eb36dfb44a9a71
+      created: 1788435554145
+      modified: 1791392884005
+      isPrivate: false
+      description: ""
+      sortKey: -1788435554145
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "nome_usuario": "Usuario Teste Bcrypt",
+          "email_usuario": "bcrypt.teste3@email.com",
+          "senha_usuario": "senhaTeste123",
+          "dt_cadastro": "2026-10-07 14:05:00",
+          "status_usuario": "Ativo"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/usuarios
+    name: editar usuários
+    meta:
+      id: req_f9c2251aab874a079f659e02874a88ee
+      created: 1788435645818
+      modified: 1791370409773
+      isPrivate: false
+      description: ""
+      sortKey: -1788435645818
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_usuario": 2
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/usuarios
+    name: apagar usuários
+    meta:
+      id: req_20bcda37b66046099862940974f622bb
+      created: 1788435679526
+      modified: 1788951746909
+      isPrivate: false
+      description: ""
+      sortKey: -1788435679526
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_usuario": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/login
+    name: login
+    meta:
+      id: req_5f7500f780e54cb09dd159cbc94dcee8
+      created: 1791393589092
+      modified: 1791394035901
+      isPrivate: false
+      description: ""
+      sortKey: -1791393589092
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "email_usuario": "bcrypt.teste3@email.com",
+          "senha_usuario": "novaSenhaTeste456"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/alterar-senha
+    name: alterar senha
+    meta:
+      id: req_0abf74af08d1468e913a5801fd2a0558
+      created: 1791393863862
+      modified: 1791393999110
+      isPrivate: false
+      description: ""
+      sortKey: -1791393863862
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+          "id_usuario": 3,
+          "senha_atual": "senhaTeste123",
+          "nova_senha": "novaSenhaTeste456"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_96096ed50e2b2fcf9b311daa16ba811e44f24b09
+    created: 1787668638182
+    modified: 1787668638182
+environments:
+  name: Base Environment
+  meta:
+    id: env_96096ed50e2b2fcf9b311daa16ba811e44f24b09
+    created: 1787668638180
+    modified: 1787668638180
+    isPrivate: false

@@ -1,0 +1,122 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: categorias
+meta:
+  id: wrk_680388a0ddd649c692951f1f9aca9328
+  created: 1788435193656
+  modified: 1788435193656
+  description: ""
+collection:
+  - url: http://localhost:3333/categorias
+    name: listar categorias
+    meta:
+      id: req_719f282387c54ee9a12e8eebb51a304f
+      created: 1788436782340
+      modified: 1788437319533
+      isPrivate: false
+      description: ""
+      sortKey: -1788436782340
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/categorias
+    name: cadastrar categorias
+    meta:
+      id: req_7ba50db9ef5145f8adafbed2fe639579
+      created: 1788436804865
+      modified: 1790591458348
+      isPrivate: false
+      description: ""
+      sortKey: -1788436804865
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "nome_categoria": "Alimentação"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/categorias
+    name: editar categorias
+    meta:
+      id: req_96faa322932c4cf0bd69340f9d64217a
+      created: 1788436824836
+      modified: 1790591562638
+      isPrivate: false
+      description: ""
+      sortKey: -1788436824836
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "id_categoria": 1,
+            "nome_categoria": "Alimentação e Bebidas"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:3333/categorias
+    name: apagar categorias
+    meta:
+      id: req_94b9b9558d7d4502b501f4f81066a835
+      created: 1788436846910
+      modified: 1790591732105
+      isPrivate: false
+      description: ""
+      sortKey: -1788436846910
+    method: DELETE
+    body:
+      mimeType: application/json
+      text: |-
+        {
+            "id_categoria": 1
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_791120d55db3bafe59e9173b37b1a5ba7e9fcd2d
+    created: 1788435193658
+    modified: 1788435193658
+environments:
+  name: Base Environment
+  meta:
+    id: env_791120d55db3bafe59e9173b37b1a5ba7e9fcd2d
+    created: 1788435193657
+    modified: 1788435193657
+    isPrivate: false
