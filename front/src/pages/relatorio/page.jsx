@@ -14,6 +14,7 @@ const COST_NAMES = { aluguel: 'Aluguel', energia: 'Energia', internet: 'Internet
 const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
 function formatMoney(value) {
+  if (value === null) return 'Indisponível';
   return Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 

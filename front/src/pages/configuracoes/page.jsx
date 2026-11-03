@@ -36,6 +36,7 @@ export default function Configuracoes() {
     const margem    = Number(configuracoes.margemLucro);
     const custoHora = Number(configuracoes.custoHora);
     if (margem < 1)    { setErro('A margem de lucro deve ser maior que 0%.'); return; }
+    if (!Number.isFinite(margem) || margem >= 100) { setErro('A margem deve ser menor que 100%.'); return; }
     if (custoHora < 0) { setErro('O custo/hora não pode ser negativo.'); return; }
     if (margem < 10)   setAviso('Margem abaixo de 10% pode ser insuficiente para cobrir imprevistos.');
     try {
@@ -103,7 +104,7 @@ export default function Configuracoes() {
 
             <div className="campo-grupo">
               <label className="input-label">Margem de lucro desejada (%)</label>
-              <input className="input-field" type="number" min="1" max="500" step="0.5"
+              <input className="input-field" type="number" min="1" max="99.99" step="0.01"
                 value={configuracoes.margemLucro}
                 onChange={e => handleChange('margemLucro', e.target.value)}
               />

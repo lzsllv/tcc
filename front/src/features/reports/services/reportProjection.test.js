@@ -2,6 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createReportProjection } from './reportProjection.js';
 
+test('não apresenta receita ou lucro fictícios quando a precificação está indisponível', () => {
+  const projection = createReportProjection([{ quantidadeMes: 0 }],
+    () => 100, () => 0, () => null, () => null, () => null);
+  assert.equal(projection.totalRevenue, null);
+  assert.equal(projection.totalProfit, null);
+  assert.equal(projection.fixedCostPerUnit, null);
+});
+
 test('calcula receita e lucro preservando quantidades textuais ou vazias', () => {
   const products = [
     { id: 'a', quantidadeMes: '2' },

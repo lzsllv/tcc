@@ -6,7 +6,7 @@ import '../../styles/Pagina.css';
 import '../../features/reports/styles/Simulacao.css';
 
 export default function Simulacao() {
-  const { produtos, calcularCustoTotal, calcularLucroMensal, calcularPrecoSugerido, configuracoes } = useApp();
+  const { produtos, calcularCustoTotal, calcularLucroMensal, calcularPrecoSugerido } = useApp();
 
   const [produtoSelecionado, setProdutoSelecionado] = useState('');
   const [precoVenda,         setPrecoVenda]         = useState('');
@@ -17,13 +17,15 @@ export default function Simulacao() {
   const precoSugeridoRef  = produtoAtual ? calcularPrecoSugerido(produtoAtual) : null;
 
   function fmt(v) {
+    if (v === null) return 'Indisponível';
     return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 
   function handleSimular(e) {
     e.preventDefault();
     if (!produtoAtual) return;
-    const custoTotal       = calcularCustoTotal(produtoAtual);
+    const custoTotal       = calcularCustoTotal(produtoAtual, Number(precoVenda));
+    if (custoTotal === null) { setResultado(null); return; }
     const lucroMensal      = calcularLucroMensal(precoVenda, custoTotal, quantidade);
     const lucroUnitario    = Number(precoVenda) - custoTotal;
     const margemSobreVenda = Number(precoVenda) > 0
@@ -71,7 +73,7 @@ export default function Simulacao() {
                   <div className="alerta-info sim-sugestao">
                     💡 Preço sugerido pelo sistema: <strong>{fmt(precoSugeridoRef)}</strong>
                     <small className="sim-nota-markup">
-                      (baseado em markup de {configuracoes.margemLucro}% sobre o custo)
+                      (considera as taxas do canal selecionado e a margem sobre a venda)
                     </small>
                   </div>
                 )}
@@ -79,18 +81,19 @@ export default function Simulacao() {
                 <div className="campo-grupo">
                   <label className="input-label">Preço de venda (R$)</label>
                   <input className="input-field" type="number" min="0" step="0.01"
-                    value={precoVenda} onChange={e => setPrecoVenda(e.target.value)}
+                    value={precoVenda} onChange={e => { setPrecoVenda(e.target.value); setResultado(null); }}
                     placeholder="0,00" required />
                 </div>
 
                 <div className="campo-grupo">
                   <label className="input-label">Quantidade vendida por mês</label>
                   <input className="input-field" type="number" min="1"
-                    value={quantidade} onChange={e => setQuantidade(e.target.value)}
+                    value={quantidade} onChange={e => { setQuantidade(e.target.value); setResultado(null); }}
                     placeholder="Ex: 50" required />
                 </div>
 
-                <button type="submit" className="btn-primary">Simular</button>
+                {precoSugeridoRef === null && <p role="status">Preço indisponível. Confira o planejamento mensal, o canal e a margem do produto.</p>}
+                <button type="submit" className="btn-primary" disabled={precoSugeridoRef === null}>Simular</button>
               </form>
             )}
           </div>
@@ -132,7 +135,7 @@ export default function Simulacao() {
                 </strong>
               </div>
               <small className="sim-nota-margem">
-                Margem calculada sobre o preço de venda (diferente do markup configurado).
+                Margem calculada sobre o preço de venda, após custos e taxas do canal.
               </small>
 
               <div className="resumo-linha destaque">

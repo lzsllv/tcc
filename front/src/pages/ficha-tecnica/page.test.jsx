@@ -4,8 +4,8 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { useApp } from '../../context/AppContext.js';
 import FichaTecnica from './page.jsx';
 
-vi.mock('../context/AppContext.js', () => ({ useApp: vi.fn() }));
-vi.mock('../components/Navbar', () => ({ default: () => <nav>Navbar</nav> }));
+vi.mock('../../context/AppContext.js', () => ({ useApp: vi.fn() }));
+vi.mock('../../components/layout/Navbar', () => ({ default: () => <nav>Navbar</nav> }));
 
 afterEach(cleanup);
 

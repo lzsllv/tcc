@@ -2,8 +2,9 @@ export function createReportProjection(products, totalFixedCosts, totalMonthlyUn
   const totalCosts = totalFixedCosts();
   const totalUnits = totalMonthlyUnits();
   const unitFixedCost = fixedCostPerUnit();
-  const totalRevenue = products.reduce((total, product) => total + suggestedPrice(product) * Number(product.quantidadeMes || 0), 0);
-  const totalProfit = products.reduce((total, product) => {
+  const unavailable = products.some(product => suggestedPrice(product) === null || totalProductCost(product) === null);
+  const totalRevenue = unavailable ? null : products.reduce((total, product) => total + suggestedPrice(product) * Number(product.quantidadeMes || 0), 0);
+  const totalProfit = unavailable ? null : products.reduce((total, product) => {
     const unitProfit = suggestedPrice(product) - totalProductCost(product);
     return total + unitProfit * Number(product.quantidadeMes || 0);
   }, 0);

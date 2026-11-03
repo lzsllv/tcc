@@ -15,11 +15,12 @@ export default function Dashboard() {
   const [demoFeedback, setDemoFeedback] = useState(null);
 
   const totalCustos = totalCustosFixos();
-  const precoMedio = produtos.length > 0
-    ? produtos.reduce((acc, p) => acc + calcularPrecoSugerido(p), 0) / produtos.length
-    : 0;
+  const precos = produtos.map(calcularPrecoSugerido);
+  const precoMedio = precos.some(price => price === null) ? null
+    : precos.length ? precos.reduce((total, price) => total + price, 0) / precos.length : 0;
 
   function fmt(v) {
+    if (v === null) return 'Indisponível';
     return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 

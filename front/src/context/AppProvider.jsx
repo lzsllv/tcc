@@ -91,7 +91,7 @@ export function AppProvider({
     return () => { active = false; };
   }, [applyWorkspaceView, usuarioLogado, workspaceService]);
 
-  const pricing = createPricingView(produtos, custosFixos, configuracoes);
+  const pricing = createPricingView(produtos, custosFixos, configuracoes, workspaceState.data);
   const totalCustosFixos = pricing.totalFixedCosts;
   const totalUnidadesMes = pricing.totalMonthlyUnits;
   const custoFixoPorUnidade = pricing.fixedCostPerUnit;

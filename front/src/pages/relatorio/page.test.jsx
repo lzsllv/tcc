@@ -4,10 +4,29 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { useApp } from '../../context/AppContext.js';
 import Relatorio from './page.jsx';
 
-vi.mock('../context/AppContext.js', () => ({ useApp: vi.fn() }));
-vi.mock('../components/Navbar', () => ({ default: () => <nav>Navbar</nav> }));
+vi.mock('../../context/AppContext.js', () => ({ useApp: vi.fn() }));
+vi.mock('../../components/layout/Navbar', () => ({ default: () => <nav>Navbar</nav> }));
 
 afterEach(cleanup);
+
+test('mostra indisponibilidade sem transformar ausência de planejamento em preço zero', () => {
+  useApp.mockReturnValue({
+    produtos: [{ id: 'p1', nome: 'Brownie', categoria: 'Doces', custo: 2.34, quantidadeMes: 0 }],
+    custosFixos: { aluguel: 100, extras: [] },
+    configuracoes: { margemLucro: 30, custoHora: 0 },
+    totalCustosFixos: () => 100,
+    totalUnidadesMes: () => 0,
+    custoFixoPorUnidade: () => null,
+    calcularCustoTotal: () => null,
+    calcularPrecoSugerido: () => null,
+  });
+  render(<MemoryRouter><Relatorio /></MemoryRouter>);
+  expect(screen.getByRole('status').textContent).toContain('Planejamento mensal necessário');
+  expect(screen.getAllByText('Indisponível').length).toBeGreaterThan(0);
+  const row = screen.getByText('Brownie').closest('tr');
+  expect(row.cells[6].textContent).toBe('Indisponível');
+  expect(row.cells[8].textContent).toBe('Indisponível');
+});
 
 test('mantém totais, avisos e linhas da projeção', () => {
   useApp.mockReturnValue({
