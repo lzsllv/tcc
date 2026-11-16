@@ -37,11 +37,11 @@ CREATE TABLE categoria (
 CREATE TABLE empresa (
     id_empresa INT AUTO_INCREMENT,
     id_usuario INT,
-    nome_empresa VARCHAR(150) NOT NULL,
-    cnpj_empresa VARCHAR(100) NOT NULL,
-    seguimento_empresa VARCHAR(18) NOT NULL,
+    nome_fantasia VARCHAR(150) NOT NULL,
+    cnpj VARCHAR(100) NOT NULL,
+    seguimento VARCHAR(18) NOT NULL,
     PRIMARY KEY (id_empresa),
-    UNIQUE KEY uk_empresa_cnpj (cnpj_empresa),
+    UNIQUE KEY uk_empresa_cnpj (cnpj),
     CONSTRAINT fk_empresa_usuario
         FOREIGN KEY (id_usuario) REFERENCES usuario (id_usuario)
 );
@@ -50,13 +50,13 @@ CREATE TABLE empresa (
 -- 4. TABELA PARAMETRO
 -- =========================================================
 
-CREATE TABLE parametro (
+CREATE TABLE parametro_precificacao (
     id_parametro INT AUTO_INCREMENT,
     id_empresa INT NOT NULL,
-    horas_trabalhadas_parametro DECIMAL(10,2) NOT NULL,
-    pro_labore_parametro DECIMAL(10,2) NOT NULL,
-    impostos_percentual_parametro DECIMAL(10,2) NOT NULL,
-    margem_desejada_parametro DECIMAL(10,2) NOT NULL,
+    horas_trabalhadas_mes DECIMAL(10,2) NOT NULL,
+    pro_labore DECIMAL(10,2) NOT NULL,
+    impostos_percentual DECIMAL(10,2) NOT NULL,
+    margem_desejada DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (id_parametro),
     CONSTRAINT fk_parametro_empresa
         FOREIGN KEY (id_empresa) REFERENCES empresa (id_empresa)
@@ -82,15 +82,15 @@ CREATE TABLE custo_fixo (
 -- =========================================================
 
 CREATE TABLE produto (
-    id_prod INT AUTO_INCREMENT,
+    id_produto INT AUTO_INCREMENT,
     id_empresa INT NOT NULL,
-    nome_prod VARCHAR(120) NOT NULL,
-    descricao_prod VARCHAR(255) NULL,
-    tipo_prod VARCHAR(50) NOT NULL,
-    custo_direto_prod DECIMAL(10,2) NOT NULL,
-    tempo_prod DECIMAL(10,2) NOT NULL,
-    preco_prod DECIMAL(10,2) NULL,
-    PRIMARY KEY (id_prod),
+    nome VARCHAR(120) NOT NULL,
+    descricao VARCHAR(255) NULL,
+    tipo VARCHAR(50) NOT NULL,
+    custo_direto DECIMAL(10,2) NOT NULL,
+    tempo_producao DECIMAL(10,2) NOT NULL,
+    preco_minimoDECIMAL(10,2) NULL,
+    PRIMARY KEY (id_produto),
     CONSTRAINT fk_produto_empresa
         FOREIGN KEY (id_empresa) REFERENCES empresa (id_empresa)
 );
@@ -115,10 +115,10 @@ CREATE TABLE custo_variavel (
 
 CREATE TABLE regiao (
     id_regiao INT AUTO_INCREMENT,
-    cidade_regiao VARCHAR(100) NOT NULL,
-    estado_regiao VARCHAR(50) NOT NULL,
-    indice_regiao DECIMAL(10,2) NOT NULL,
-    ticket_medio_regiao DECIMAL(10,2) NOT NULL,
+    cidade VARCHAR(100) NOT NULL,
+    estado VARCHAR(50) NOT NULL,
+    indice_custo_regional DECIMAL(10,2) NOT NULL,
+    ticket_medio_regional DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (id_regiao)
 );
 
@@ -128,19 +128,19 @@ CREATE TABLE regiao (
 
 CREATE TABLE precificacao (
     id_precificacao INT AUTO_INCREMENT,
-    id_prod INT NOT NULL,
+    id_produto INT NOT NULL,
     id_regiao INT NOT NULL,
     id_parametro INT NOT NULL,
-    margem_real_precificacao DECIMAL(5,2) NOT NULL,
-    preco_sugerido_precificacao DECIMAL(10,2) NOT NULL,
-    custo_total_precificacao DECIMAL(10,2) NOT NULL,
-    mark_up_precificacao DECIMAL(5,2) NOT NULL,
-    alerta_acima_mercado_precificacao BOOLEAN NOT NULL,
-    alerta_prejuizo_precificacao BOOLEAN NOT NULL,
-    dt_calculo_precificacao DATETIME NOT NULL,
+    margem_real DECIMAL(5,2) NOT NULL,
+    preco_sugerido DECIMAL(10,2) NOT NULL,
+    custo_total DECIMAL(10,2) NOT NULL,
+    mark_up DECIMAL(5,2) NOT NULL,
+    alerta_acima_mercado BOOLEAN NOT NULL,
+    alerta_prejuizo BOOLEAN NOT NULL,
+    data_calculo DATETIME NOT NULL,
     PRIMARY KEY (id_precificacao),
     CONSTRAINT fk_precificacao_produto
-        FOREIGN KEY (id_prod) REFERENCES produto (id_prod),
+        FOREIGN KEY (id_produto) REFERENCES produto (id_produto),
     CONSTRAINT fk_precificacao_regiao
         FOREIGN KEY (id_regiao) REFERENCES regiao (id_regiao),
     CONSTRAINT fk_precificacao_parametro
@@ -154,9 +154,9 @@ CREATE TABLE precificacao (
 CREATE TABLE simulacao (
     id_simulacao INT AUTO_INCREMENT,
     id_precificacao INT NOT NULL,
-    qnt_vendida_simulacao INT NOT NULL,
-    faturamento_simulacao DECIMAL(10,2) NOT NULL,
-    lucro_previsto_simulacao DECIMAL(10,2) NOT NULL,
+    quantidade_vendida INT NOT NULL,
+    faturamento_previsto DECIMAL(10,2) NOT NULL,
+    lucro_previsto DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (id_simulacao),
     CONSTRAINT fk_simulacao_precificacao
         FOREIGN KEY (id_precificacao) REFERENCES precificacao (id_precificacao)
@@ -166,12 +166,12 @@ CREATE TABLE simulacao (
 -- 11. TABELA HISTORICO
 -- =========================================================
 
-CREATE TABLE historico (
+CREATE TABLE historico_precificacao (
     id_historico INT AUTO_INCREMENT,
     id_precificacao INT NOT NULL,
-    preco_anterior_historico DECIMAL(10,2) NOT NULL,
-    margem_anterior_historico DECIMAL(5,2) NOT NULL,
-    dt_alteracao_historico DATETIME NOT NULL,
+    preco_anterior DECIMAL(10,2) NOT NULL,
+    margem_anterior DECIMAL(5,2) NOT NULL,
+    data_alteracao DATETIME NOT NULL,
     PRIMARY KEY (id_historico),
     CONSTRAINT fk_historico_precificacao
         FOREIGN KEY (id_precificacao) REFERENCES precificacao (id_precificacao)
