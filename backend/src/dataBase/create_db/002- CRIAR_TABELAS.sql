@@ -14,8 +14,6 @@ CREATE TABLE usuario (
     nome_usuario VARCHAR(100) NOT NULL,
     email_usuario VARCHAR(150) NOT NULL,
     senha_usuario VARCHAR(255) NOT NULL,
-    dt_cadastro DATETIME NOT NULL,
-    status_usuario VARCHAR(20) NOT NULL,
     PRIMARY KEY (id_usuario),
     UNIQUE KEY uk_usuario_email (email_usuario)
 );
@@ -39,7 +37,7 @@ CREATE TABLE empresa (
     id_usuario INT,
     nome_fantasia VARCHAR(150) NOT NULL,
     cnpj VARCHAR(100) NOT NULL,
-    seguimento VARCHAR(18) NOT NULL,
+    segmento VARCHAR(18) NOT NULL,
     PRIMARY KEY (id_empresa),
     UNIQUE KEY uk_empresa_cnpj (cnpj),
     CONSTRAINT fk_empresa_usuario
@@ -69,9 +67,9 @@ CREATE TABLE parametro_precificacao (
 CREATE TABLE custo_fixo (
     id_custo_fixo INT AUTO_INCREMENT,
     id_empresa INT NOT NULL,
-    descricao_custo_fixo VARCHAR(150) NOT NULL,
-    valor_custo_fixo DECIMAL(10,2) NOT NULL,
-    categoria_custo_fixo VARCHAR(50) NOT NULL,
+    descricao VARCHAR(150) NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    categoria VARCHAR(50) NOT NULL,
     PRIMARY KEY (id_custo_fixo),
     CONSTRAINT fk_custo_fixo_empresa
         FOREIGN KEY (id_empresa) REFERENCES empresa (id_empresa)
@@ -101,12 +99,12 @@ CREATE TABLE produto (
 
 CREATE TABLE custo_variavel (
     id_custo_variavel INT AUTO_INCREMENT,
-    id_prod INT NOT NULL,
-    descricao_custo_variavel VARCHAR(150) NOT NULL,
-    valor_custo_variavel DECIMAL(10,2) NOT NULL,
+    id_produto INT NOT NULL,
+    descricao VARCHAR(150) NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (id_custo_variavel),
     CONSTRAINT fk_custo_variavel_produto
-        FOREIGN KEY (id_prod) REFERENCES produto (id_prod)
+        FOREIGN KEY (id_produto) REFERENCES produto (id_produto)
 );
 
 -- =========================================================
