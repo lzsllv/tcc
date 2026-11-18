@@ -5,9 +5,14 @@
 -- pois a tabela PRECIFICACAO depende de REGIAO.
 -- =========================================================
 
-USE db_precificacao;
+USE bd_tcc_etim_124_precificacao;
 
-INSERT INTO regiao (cidade_regiao, estado_regiao, indice_regiao, ticket_medio_regiao) VALUES
+INSERT INTO regiao (
+    cidade,
+    estado,
+    indice_custo_regional,
+    ticket_medio_regional
+) VALUES
 ('Tupã',                'SP', 1.00, 45.00),
 ('São Paulo',           'SP', 1.35, 80.00),
 ('Marília',             'SP', 1.10, 55.00),

@@ -1,7 +1,5 @@
-DROP DATABASE IF EXISTS bd_tcc_etim_124_precificacao;
 
-CREATE DATABASE bd_tcc_etim_124_precificacao;
-
+CREATE DATABASE IF NOT EXISTS bd_tcc_etim_124_precificacao;
 
 USE bd_tcc_etim_124_precificacao;
 
@@ -34,7 +32,7 @@ CREATE TABLE categoria (
 
 CREATE TABLE empresa (
     id_empresa INT AUTO_INCREMENT,
-    id_usuario INT,
+    id_usuario INT NOT NULL,
     nome_fantasia VARCHAR(150) NOT NULL,
     cnpj VARCHAR(100) NOT NULL,
     segmento VARCHAR(18) NOT NULL,
@@ -87,7 +85,8 @@ CREATE TABLE produto (
     tipo VARCHAR(50) NOT NULL,
     custo_direto DECIMAL(10,2) NOT NULL,
     tempo_producao DECIMAL(10,2) NOT NULL,
-    preco_minimoDECIMAL(10,2) NULL,
+    preco_minimo DECIMAL(10,2) NULL,
+    imagem VARCHAR(255) NULL,
     PRIMARY KEY (id_produto),
     CONSTRAINT fk_produto_empresa
         FOREIGN KEY (id_empresa) REFERENCES empresa (id_empresa)
@@ -142,21 +141,22 @@ CREATE TABLE precificacao (
     CONSTRAINT fk_precificacao_regiao
         FOREIGN KEY (id_regiao) REFERENCES regiao (id_regiao),
     CONSTRAINT fk_precificacao_parametro
-        FOREIGN KEY (id_parametro) REFERENCES parametro (id_parametro)
+        FOREIGN KEY (id_parametro) REFERENCES parametro_precificacao (id_parametro)
 );
 
 -- =========================================================
 -- 10. TABELA SIMULACAO
 -- =========================================================
 
-CREATE TABLE simulacao (
+CREATE TABLE simulacao_lucro (
     id_simulacao INT AUTO_INCREMENT,
     id_precificacao INT NOT NULL,
     quantidade_vendida INT NOT NULL,
     faturamento_previsto DECIMAL(10,2) NOT NULL,
     lucro_previsto DECIMAL(10,2) NOT NULL,
+    ponto_equilibrio DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (id_simulacao),
-    CONSTRAINT fk_simulacao_precificacao
+    CONSTRAINT fk_simulacao_lucro_precificacao
         FOREIGN KEY (id_precificacao) REFERENCES precificacao (id_precificacao)
 );
 

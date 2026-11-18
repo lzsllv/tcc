@@ -3,8 +3,8 @@
 -- Criação do banco de dados do sistema de precificação
 -- =========================================================
 
-CREATE DATABASE IF NOT EXISTS db_precificacao
+CREATE DATABASE IF NOT EXISTS bd_tcc_etim_124_precificacao
     DEFAULT CHARACTER SET utf8mb4
     DEFAULT COLLATE utf8mb4_general_ci;
 
-USE db_precificacao;
+USE bd_tcc_etim_124_precificacao;

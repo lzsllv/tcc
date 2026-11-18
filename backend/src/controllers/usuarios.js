@@ -29,23 +29,18 @@ module.exports = {
             const {
                 nome_usuario,
                 email_usuario,
-                senha_usuario,
-                dt_cadastro,
-                status_usuario
+                senha_usuario
             } = request.body;
             console.log(request.body);
 
             const senhaCriptografada = await bcrypt.hash(senha_usuario, 10);
             const [resultado] = await db.query(
                 `INSERT INTO usuario
-                (nome_usuario, email_usuario, senha_usuario, dt_cadastro, status_usuario)
-                VALUES (?, ?, ?, ?, ?)`,
+                (nome_usuario, email_usuario, senha_usuario) (?, ?, ?)`,
                 [
                     nome_usuario,
                     email_usuario,
-                    senhaCriptografada,
-                    dt_cadastro,
-                    status_usuario
+                    senhaCriptografada  
                 ]
             );
 
@@ -205,9 +200,11 @@ async alterarSenha(request, response) {
             valores.push(email_usuario);
         }
 
-        if (senha_usuario !== undefined) {
-            campos.push('senha_usuario = ?');
-            valores.push(senha_usuario);
+       if (senha_usuario !== undefined) {
+          const senhaHash = await bcrypt.hash(senha_usuario, 10);
+
+         campos.push('senha_usuario = ?');
+         valores.push(senhaHash);
         }
 
         if (campos.length === 0) {

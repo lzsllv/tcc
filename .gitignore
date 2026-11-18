@@ -8,13 +8,12 @@ dist/
 backend/src/generated/
 
 # Ambientes locais e credenciais
-#.env
-#.env.*
+.env
+.env.*
 **/.env
 **/.env.*
 !.env.example
 !**/.env.example
-
 # Worktrees locais
 .worktrees/
 
