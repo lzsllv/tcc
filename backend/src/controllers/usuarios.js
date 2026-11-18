@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const db = require('../database/connection');
+const db = require('../dataBase/connection');
 
 module.exports = {
 
@@ -36,7 +36,7 @@ module.exports = {
             const senhaCriptografada = await bcrypt.hash(senha_usuario, 10);
             const [resultado] = await db.query(
                 `INSERT INTO usuario
-                (nome_usuario, email_usuario, senha_usuario) (?, ?, ?)`,
+                (nome_usuario, email_usuario, senha_usuario)  VALUES(?, ?, ?)`,
                 [
                     nome_usuario,
                     email_usuario,

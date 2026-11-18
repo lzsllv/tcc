@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const db = require('../database/connection');
+const db = require('../dataBase/connection');
 
 async function migrarSenhas() {
     try {

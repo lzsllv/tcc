@@ -1,4 +1,4 @@
-const db = require('../database/connection');
+const db = require('../dataBase/connection');
 const gerarUrl = require('../utils/gerarUrl.js');
 const {
     campoObrigatorio,

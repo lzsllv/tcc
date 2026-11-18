@@ -12,6 +12,11 @@ const HistoricoController = require('../controllers/historico');
 const ParametrosController = require('../controllers/parametros');
 const PrecificacaoController = require('../controllers/precificacao');
 const RegiaoController = require('../controllers/regiao');
+const InsumosController = require('../controllers/insumos');
+const OfertasController = require('../controllers/ofertas');
+const CanaisVendaController = require('../controllers/canaisVenda');
+const ConfiguracoesController = require('../controllers/configuracoes');
+const WorkspaceController = require('../controllers/workspace');
 const upload = require('../middlewares/upload');
 
 router.get('/usuarios', UsuariosController.listarUsuarios);
@@ -88,5 +93,28 @@ router.delete('/regioes', RegiaoController.apagarRegiao);
 router.get('/estados', RegiaoController.listarEstados);
 router.get('/estados/tratados', RegiaoController.listarEstadosTratados);
 router.get('/regioes-busca', RegiaoController.buscarRegiaoPorEstado);
+
+
+// Recursos correspondentes aos dados utilizados pelo front-end atual.
+router.get('/insumos', InsumosController.listar);
+router.post('/insumos', InsumosController.cadastrar);
+router.patch('/insumos', InsumosController.editar);
+router.delete('/insumos', InsumosController.excluir);
+
+router.get('/ofertas', OfertasController.listar);
+router.post('/ofertas', OfertasController.cadastrar);
+router.patch('/ofertas', OfertasController.editar);
+router.delete('/ofertas', OfertasController.excluir);
+
+router.get('/canais-venda', CanaisVendaController.listar);
+router.post('/canais-venda', CanaisVendaController.cadastrar);
+router.patch('/canais-venda', CanaisVendaController.editar);
+router.delete('/canais-venda', CanaisVendaController.excluir);
+
+router.get('/configuracoes/:id_empresa', ConfiguracoesController.listar);
+router.put('/configuracoes/:id_empresa', ConfiguracoesController.salvar);
+
+router.get('/workspace/:id_empresa/custos-fixos', WorkspaceController.listarCustosFixos);
+router.put('/workspace/:id_empresa/custos-fixos', WorkspaceController.salvarCustosFixos);
 
 module.exports = router;
