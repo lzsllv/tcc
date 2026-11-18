@@ -1,3 +1,4 @@
+
 const bcrypt = require('bcrypt');
 const db = require('../dataBase/connection');
 
@@ -24,40 +25,80 @@ module.exports = {
         }
     },
 
-    async cadastrarUsuarios(request, response) {
-        try {
-            const {
-                nome_usuario,
-                email_usuario,
-                senha_usuario
-            } = request.body;
-            console.log(request.body);
 
-            const senhaCriptografada = await bcrypt.hash(senha_usuario, 10);
-            const [resultado] = await db.query(
-                `INSERT INTO usuario
-                (nome_usuario, email_usuario, senha_usuario)  VALUES(?, ?, ?)`,
-                [
-                    nome_usuario,
-                    email_usuario,
-                    senhaCriptografada  
-                ]
-            );
+async cadastrarUsuarios(request, response) {
+    try {
+        const {
+            nome_usuario,
+            email_usuario,
+            senha_usuario
+        } = request.body;
 
-            return response.status(201).json({
-                sucesso: true,
-                mensagem: 'Usuário cadastrado com sucesso.',
-                dados: resultado
-            });
-
-        } catch (error) {
-            return response.status(500).json({
+        // Verifica se os campos foram preenchidos
+        if (!nome_usuario || !email_usuario || !senha_usuario) {
+            return response.status(400).json({
                 sucesso: false,
-                mensagem: 'Erro na requisição.',
-                dados: error.message
+                mensagem: 'Preencha todos os campos obrigatórios.',
+                dados: null
             });
         }
-    },
+
+        // Verifica se o e-mail já está cadastrado
+        const [usuarios] = await db.query(
+            'SELECT id_usuario FROM usuario WHERE email_usuario = ?',
+            [email_usuario]
+        );
+
+        if (usuarios.length > 0) {
+            return response.status(409).json({
+                sucesso: false,
+                mensagem: 'Este e-mail já está cadastrado.',
+                dados: null
+            });
+        }
+
+        // Criptografa a senha
+        const senhaCriptografada = await bcrypt.hash(senha_usuario, 10);
+
+        // Cadastra o usuário
+        const [resultado] = await db.query(
+            `INSERT INTO usuario
+            (nome_usuario, email_usuario, senha_usuario, dt_cadastro, status_usuario)
+            VALUES (?, ?, ?, NOW(), ?)`,
+            [
+                nome_usuario,
+                email_usuario,
+                senhaCriptografada,
+                'ativo'
+            ]
+        );
+
+        return response.status(201).json({
+            sucesso: true,
+            mensagem: 'Usuário cadastrado com sucesso.',
+            dados: resultado
+        });
+
+    } catch (error) {
+        // Trata e-mail duplicado, inclusive em cadastros simultâneos
+        if (error.code === 'ER_DUP_ENTRY') {
+            return response.status(409).json({
+                sucesso: false,
+                mensagem: 'Este e-mail já está cadastrado.',
+                dados: null
+            });
+        }
+
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: null
+        });
+    }
+},
+
+
+
 async login(request, response) {
     try {
         const {
@@ -65,6 +106,16 @@ async login(request, response) {
             senha_usuario
         } = request.body;
 
+        // Verifica se os campos foram preenchidos
+        if (!email_usuario || !senha_usuario) {
+            return response.status(400).json({
+                sucesso: false,
+                mensagem: 'Informe o e-mail e a senha.',
+                dados: null
+            });
+        }
+
+        // Busca o usuário pelo e-mail
         const [usuarios] = await db.query(
             `SELECT *
              FROM usuario
@@ -82,6 +133,16 @@ async login(request, response) {
 
         const usuario = usuarios[0];
 
+        // Verifica se o usuário está ativo
+        if (usuario.status_usuario !== 'ativo') {
+            return response.status(401).json({
+                sucesso: false,
+                mensagem: 'Usuário inativo.',
+                dados: null
+            });
+        }
+
+        // Compara a senha digitada com a senha criptografada
         const senhaValida = await bcrypt.compare(
             senha_usuario,
             usuario.senha_usuario
@@ -109,135 +170,137 @@ async login(request, response) {
         return response.status(500).json({
             sucesso: false,
             mensagem: 'Erro na requisição.',
-            dados: error.message
+            dados: null
         });
     }
 },
-async alterarSenha(request, response) {
-    try {
-        const {
-            id_usuario,
-            senha_atual,
-            nova_senha
-        } = request.body;
 
-        const [usuarios] = await db.query(
-            `SELECT senha_usuario
-             FROM usuario
-             WHERE id_usuario = ?`,
-            [id_usuario]
-        );
+    async alterarSenha(request, response) {
+        try {
+            const {
+                id_usuario,
+                senha_atual,
+                nova_senha
+            } = request.body;
 
-        if (usuarios.length === 0) {
-            return response.status(404).json({
+            const [usuarios] = await db.query(
+                `SELECT senha_usuario
+                 FROM usuario
+                 WHERE id_usuario = ?`,
+                [id_usuario]
+            );
+
+            if (usuarios.length === 0) {
+                return response.status(404).json({
+                    sucesso: false,
+                    mensagem: 'Usuário não encontrado.',
+                    dados: null
+                });
+            }
+
+            const senhaValida = await bcrypt.compare(
+                senha_atual,
+                usuarios[0].senha_usuario
+            );
+
+            if (!senhaValida) {
+                return response.status(401).json({
+                    sucesso: false,
+                    mensagem: 'Senha atual inválida.',
+                    dados: null
+                });
+            }
+
+            const novaSenhaCriptografada = await bcrypt.hash(
+                nova_senha,
+                10
+            );
+
+            const [resultado] = await db.query(
+                `UPDATE usuario
+                 SET senha_usuario = ?
+                 WHERE id_usuario = ?`,
+                [
+                    novaSenhaCriptografada,
+                    id_usuario
+                ]
+            );
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Senha alterada com sucesso.',
+                dados: resultado
+            });
+
+        } catch (error) {
+            return response.status(500).json({
                 sucesso: false,
-                mensagem: 'Usuário não encontrado.',
-                dados: null
+                mensagem: 'Erro na requisição.',
+                dados: error.message
             });
         }
+    },
 
-        const senhaValida = await bcrypt.compare(
-            senha_atual,
-            usuarios[0].senha_usuario
-        );
-
-        if (!senhaValida) {
-            return response.status(401).json({
-                sucesso: false,
-                mensagem: 'Senha atual inválida.',
-                dados: null
-            });
-        }
-
-        const novaSenhaCriptografada = await bcrypt.hash(
-            nova_senha,
-            10
-        );
-
-        const [resultado] = await db.query(
-            `UPDATE usuario
-             SET senha_usuario = ?
-             WHERE id_usuario = ?`,
-            [
-                novaSenhaCriptografada,
-                id_usuario
-            ]
-        );
-
-        return response.status(200).json({
-            sucesso: true,
-            mensagem: 'Senha alterada com sucesso.',
-            dados: resultado
-        });
-
-    } catch (error) {
-        return response.status(500).json({
-            sucesso: false,
-            mensagem: 'Erro na requisição.',
-            dados: error.message
-        });
-    }
-},
     async editarUsuarios(request, response) {
-    try {
-        const {
-            id_usuario,
-            nome_usuario,
-            email_usuario,
-            senha_usuario
-        } = request.body;
+        try {
+            const {
+                id_usuario,
+                nome_usuario,
+                email_usuario,
+                senha_usuario
+            } = request.body;
 
-        let campos = [];
-        let valores = [];
+            let campos = [];
+            let valores = [];
 
-        if (nome_usuario !== undefined) {
-            campos.push('nome_usuario = ?');
-            valores.push(nome_usuario);
-        }
+            if (nome_usuario !== undefined) {
+                campos.push('nome_usuario = ?');
+                valores.push(nome_usuario);
+            }
 
-        if (email_usuario !== undefined) {
-            campos.push('email_usuario = ?');
-            valores.push(email_usuario);
-        }
+            if (email_usuario !== undefined) {
+                campos.push('email_usuario = ?');
+                valores.push(email_usuario);
+            }
 
-       if (senha_usuario !== undefined) {
-          const senhaHash = await bcrypt.hash(senha_usuario, 10);
+            if (senha_usuario !== undefined) {
+                const senhaHash = await bcrypt.hash(senha_usuario, 10);
 
-         campos.push('senha_usuario = ?');
-         valores.push(senhaHash);
-        }
+                campos.push('senha_usuario = ?');
+                valores.push(senhaHash);
+            }
 
-        if (campos.length === 0) {
-            return response.status(400).json({
+            if (campos.length === 0) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'Informe pelo menos um campo para alterar.',
+                    dados: null
+                });
+            }
+
+            valores.push(id_usuario);
+
+            const [resultado] = await db.query(
+                `UPDATE usuario
+                 SET ${campos.join(', ')}
+                 WHERE id_usuario = ?`,
+                valores
+            );
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Usuário editado com sucesso.',
+                dados: resultado
+            });
+
+        } catch (error) {
+            return response.status(500).json({
                 sucesso: false,
-                mensagem: 'Informe pelo menos um campo para alterar.',
-                dados: null
+                mensagem: 'Erro na requisição.',
+                dados: error.message
             });
         }
-
-        valores.push(id_usuario);
-
-        const [resultado] = await db.query(
-            `UPDATE usuario
-             SET ${campos.join(', ')}
-             WHERE id_usuario = ?`,
-            valores
-        );
-
-        return response.status(200).json({
-            sucesso: true,
-            mensagem: 'Usuário editado com sucesso.',
-            dados: resultado
-        });
-
-    } catch (error) {
-        return response.status(500).json({
-            sucesso: false,
-            mensagem: 'Erro na requisição.',
-            dados: error.message
-        });
-    }
-},
+    },
 
     async apagarUsuarios(request, response) {
         try {

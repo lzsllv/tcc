@@ -1,4 +1,3 @@
-
 CREATE DATABASE IF NOT EXISTS bd_tcc_etim_124_precificacao;
 
 USE bd_tcc_etim_124_precificacao;
@@ -12,6 +11,8 @@ CREATE TABLE usuario (
     nome_usuario VARCHAR(100) NOT NULL,
     email_usuario VARCHAR(150) NOT NULL,
     senha_usuario VARCHAR(255) NOT NULL,
+    dt_cadastro DATETIME NOT NULL,
+    status_usuario VARCHAR(20) NOT NULL,
     PRIMARY KEY (id_usuario),
     UNIQUE KEY uk_usuario_email (email_usuario)
 );
@@ -36,14 +37,17 @@ CREATE TABLE empresa (
     nome_fantasia VARCHAR(150) NOT NULL,
     cnpj VARCHAR(100) NOT NULL,
     segmento VARCHAR(18) NOT NULL,
+    logo_negocio LONGTEXT NULL,
+    regiao_atuacao VARCHAR(150) NULL,
+    custo_hora_centavos BIGINT NOT NULL DEFAULT 0,
+    margem_padrao_bps INT NOT NULL DEFAULT 2000,
     PRIMARY KEY (id_empresa),
     UNIQUE KEY uk_empresa_cnpj (cnpj),
     CONSTRAINT fk_empresa_usuario
         FOREIGN KEY (id_usuario) REFERENCES usuario (id_usuario)
 );
-
 -- =========================================================
--- 4. TABELA PARAMETRO
+-- 4. TABELA PARAMETRO_PRECIFICACAO
 -- =========================================================
 
 CREATE TABLE parametro_precificacao (
@@ -68,11 +72,11 @@ CREATE TABLE custo_fixo (
     descricao VARCHAR(150) NOT NULL,
     valor DECIMAL(10,2) NOT NULL,
     categoria VARCHAR(50) NOT NULL,
+    id_frontend VARCHAR(36) NULL,
     PRIMARY KEY (id_custo_fixo),
     CONSTRAINT fk_custo_fixo_empresa
         FOREIGN KEY (id_empresa) REFERENCES empresa (id_empresa)
 );
-
 -- =========================================================
 -- 6. TABELA PRODUTO
 -- =========================================================
@@ -143,9 +147,8 @@ CREATE TABLE precificacao (
     CONSTRAINT fk_precificacao_parametro
         FOREIGN KEY (id_parametro) REFERENCES parametro_precificacao (id_parametro)
 );
-
 -- =========================================================
--- 10. TABELA SIMULACAO
+-- 10. TABELA SIMULACAO_LUCRO
 -- =========================================================
 
 CREATE TABLE simulacao_lucro (
@@ -161,7 +164,7 @@ CREATE TABLE simulacao_lucro (
 );
 
 -- =========================================================
--- 11. TABELA HISTORICO
+-- 11. TABELA HISTORICO_PRECIFICACAO
 -- =========================================================
 
 CREATE TABLE historico_precificacao (
@@ -174,3 +177,109 @@ CREATE TABLE historico_precificacao (
     CONSTRAINT fk_historico_precificacao
         FOREIGN KEY (id_precificacao) REFERENCES precificacao (id_precificacao)
 );
+
+-- =========================================================
+-- 12. TABELA INSUMO
+-- =========================================================
+
+CREATE TABLE insumo (
+    id_insumo INT AUTO_INCREMENT PRIMARY KEY,
+    id_empresa INT NOT NULL,
+    id_frontend VARCHAR(36) NULL,
+    nome VARCHAR(150) NOT NULL,
+    categoria VARCHAR(30) NOT NULL,
+    preco_compra_centavos BIGINT NOT NULL,
+    quantidade_compra DECIMAL(12,4) NOT NULL,
+    unidade_compra VARCHAR(10) NOT NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_insumo_frontend_empresa (id_empresa, id_frontend),
+    CONSTRAINT fk_insumo_empresa
+        FOREIGN KEY (id_empresa) REFERENCES empresa (id_empresa)
+);
+
+-- =========================================================
+-- 13. TABELA OFERTA
+-- =========================================================
+
+CREATE TABLE oferta (
+    id_oferta INT AUTO_INCREMENT PRIMARY KEY,
+    id_empresa INT NOT NULL,
+    id_frontend VARCHAR(36) NULL,
+    tipo VARCHAR(20) NOT NULL,
+    nome VARCHAR(150) NOT NULL,
+    categoria VARCHAR(100) NOT NULL DEFAULT 'Outro',
+    rendimento DECIMAL(12,4) NOT NULL DEFAULT 1,
+    tempo_lote_minutos DECIMAL(12,2) NOT NULL DEFAULT 0,
+    vendas_mensais DECIMAL(12,2) NOT NULL DEFAULT 0,
+    margem_desejada_bps INT NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_oferta_frontend_empresa (id_empresa, id_frontend),
+    CONSTRAINT fk_oferta_empresa
+        FOREIGN KEY (id_empresa) REFERENCES empresa (id_empresa)
+);
+
+-- =========================================================
+-- 14. TABELA FICHA_TECNICA_COMPONENTE
+-- =========================================================
+
+CREATE TABLE ficha_tecnica_componente (
+    id_componente INT AUTO_INCREMENT PRIMARY KEY,
+    id_frontend VARCHAR(36) NULL,
+    id_oferta INT NOT NULL,
+    id_insumo INT NOT NULL,
+    quantidade DECIMAL(12,4) NOT NULL,
+    unidade VARCHAR(10) NOT NULL,
+    perda_bps INT NOT NULL DEFAULT 0,
+    UNIQUE KEY uk_componente_frontend_oferta (id_oferta, id_frontend),
+    CONSTRAINT fk_componente_oferta
+        FOREIGN KEY (id_oferta) REFERENCES oferta (id_oferta) ON DELETE CASCADE,
+    CONSTRAINT fk_componente_insumo
+        FOREIGN KEY (id_insumo) REFERENCES insumo (id_insumo)
+);
+
+-- =========================================================
+-- 15. TABELA CANAL_VENDA
+-- =========================================================
+
+CREATE TABLE canal_venda (
+    id_canal INT AUTO_INCREMENT PRIMARY KEY,
+    id_empresa INT NOT NULL,
+    id_frontend VARCHAR(36) NULL,
+    nome VARCHAR(120) NOT NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
+    padrao BOOLEAN NOT NULL DEFAULT FALSE,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_canal_frontend_empresa (id_empresa, id_frontend),
+    CONSTRAINT fk_canal_empresa
+        FOREIGN KEY (id_empresa) REFERENCES empresa (id_empresa)
+);
+
+-- =========================================================
+-- 16. TABELA TAXA_CANAL
+-- =========================================================
+
+CREATE TABLE taxa_canal (
+    id_taxa INT AUTO_INCREMENT PRIMARY KEY,
+    id_frontend VARCHAR(36) NULL,
+    id_canal INT NOT NULL,
+    nome VARCHAR(120) NOT NULL,
+    natureza VARCHAR(20) NOT NULL,
+    categoria VARCHAR(30) NOT NULL,
+    valor BIGINT NOT NULL,
+    UNIQUE KEY uk_taxa_frontend_canal (id_canal, id_frontend),
+    CONSTRAINT fk_taxa_canal
+        FOREIGN KEY (id_canal) REFERENCES canal_venda (id_canal) ON DELETE CASCADE
+);
+
+-- =========================================================
+-- INDICES ADICIONAIS
+-- =========================================================
+
+CREATE INDEX idx_insumo_empresa ON insumo (id_empresa);
+CREATE INDEX idx_oferta_empresa ON oferta (id_empresa);
+CREATE INDEX idx_canal_empresa ON canal_venda (id_empresa);
