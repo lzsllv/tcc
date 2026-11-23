@@ -6,7 +6,7 @@ Aplicação local de precificação para pequenos empreendedores, desenvolvida c
 
 ```text
 front/    aplicação React 19, Vite 8 e testes
-backend/  implementação legada, fora do fluxo atual
+backend/  API Node.js/Express e persistência MySQL
 docs/     documentação técnica e registros de validação
 ```
 
@@ -22,9 +22,18 @@ npm run dev
 
 A aplicação fica disponível em `http://localhost:5173`.
 
-## Dados locais
+Em outro terminal, inicie o backend para disponibilizar os produtos:
 
-Contas, senhas derivadas e dados de negócio ficam armazenados somente no navegador atual. Não há sincronização entre dispositivos. Limpar os dados do site remove as contas e os workspaces locais. A exportação disponível na aplicação pode ser usada como backup.
+```powershell
+Set-Location C:\TCC\tcc\backend
+npm start
+```
+
+## Dados
+
+A tela de login e o cadastro usam os endpoints do backend (`POST /login` e `POST /usuarios`). A tela **Produtos e serviços** mantém as fichas técnicas e os recursos de precificação do frontend e também consulta os produtos cadastrados no backend (`GET /produtos`). Para configurar a URL da API, defina `VITE_API_URL` no ambiente do Vite (o padrão é `http://localhost:3333`) e inicie o backend na porta correspondente.
+
+A autenticação e o cadastro de usuários são feitos no backend. A sessão fica no navegador para manter o acesso entre recargas. Os dados de negócio usados pelas fichas técnicas e pela precificação continuam armazenados localmente; consultar os produtos da API não sincroniza nem altera esse workspace local. A exportação disponível na aplicação pode ser usada como backup.
 
 ## Verificação
 

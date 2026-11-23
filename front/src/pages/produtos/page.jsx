@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Archive, MagnifyingGlass, Package, PencilSimple, Plus, Trash } from '@phosphor-icons/react';
 import { Link, useLocation } from 'react-router-dom';
 import Navbar from '../../components/layout/Navbar';
 import { useApp } from '../../context/AppContext.js';
+import { fetchBackendProducts } from '../../services/products.js';
 import { archiveOffer, deleteOffer } from '../../features/offers/services/offers.js';
 import { priceOfferForChannel } from '../../features/offers/services/offerPricing.js';
 import { selectSalesChannel } from '../../features/sales-channels/services/salesChannels.js';
@@ -18,6 +19,33 @@ export default function Produtos() {
   const [kind, setKind] = useState('all');
   const [category, setCategory] = useState('all');
   const [message, setMessage] = useState(location.state?.saved ? { type: 'success', text: 'Ficha técnica salva com sucesso.' } : null);
+  const [backendProducts, setBackendProducts] = useState([]);
+  const [backendProductsStatus, setBackendProductsStatus] = useState('loading');
+  const [backendProductsError, setBackendProductsError] = useState('');
+  const [backendRefresh, setBackendRefresh] = useState(0);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetchBackendProducts({ signal: controller.signal })
+      .then(products => {
+        setBackendProducts(products);
+        setBackendProductsStatus('ready');
+      })
+      .catch(error => {
+        if (controller.signal.aborted) return;
+        setBackendProductsError(error.message || 'Não foi possível carregar os produtos do servidor.');
+        setBackendProductsStatus('error');
+      });
+
+    return () => controller.abort();
+  }, [backendRefresh]);
+
+  function retryBackendProducts() {
+    setBackendProductsStatus('loading');
+    setBackendProductsError('');
+    setBackendRefresh(current => current + 1);
+  }
 
   const ingredientsById = useMemo(() => Object.fromEntries((workspace?.ingredients ?? []).map(item => [item.id, item])), [workspace]);
   const activeChannels = useMemo(() => (workspace?.salesChannels ?? []).filter(channel => channel.active), [workspace]);
@@ -69,6 +97,12 @@ export default function Produtos() {
 
   const loading = workspaceStatus === 'loading' || workspaceStatus === 'idle';
   const saving = workspaceStatus === 'saving';
+  const formatCurrency = value => {
+    const amount = Number(value);
+    return Number.isFinite(amount)
+      ? amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+      : 'Não informado';
+  };
   return (
     <div>
       <Navbar />
@@ -123,6 +157,45 @@ export default function Produtos() {
             </article>;
           })}</div>
         )}
+
+        <section className="produtos-backend" aria-labelledby="produtos-backend-titulo">
+          <div className="produtos-backend-cabecalho">
+            <div>
+              <h2 id="produtos-backend-titulo" className="secao-titulo">Produtos cadastrados no backend</h2>
+              <p>Produtos carregados do servidor configurado.</p>
+            </div>
+            {backendProductsStatus === 'error' && <button className="btn-secondary" type="button" onClick={retryBackendProducts}>Tentar novamente</button>}
+          </div>
+
+          {backendProductsStatus === 'loading' && <div className="card estado-vazio"><p>Carregando produtos do servidor...</p></div>}
+          {backendProductsStatus === 'error' && <div className="alerta-erro" role="alert">Não foi possível carregar os produtos do backend: {backendProductsError}</div>}
+          {backendProductsStatus === 'ready' && backendProducts.length === 0 && <div className="card estado-vazio"><p>Nenhum produto cadastrado no backend.</p></div>}
+          {backendProductsStatus === 'ready' && backendProducts.length > 0 && (
+            <div className="tabela-wrapper">
+              <table className="tabela">
+                <caption className="sr-only">Produtos cadastrados no backend</caption>
+                <thead><tr><th>Produto</th><th>Tipo</th><th>Descrição</th><th>Custo direto</th><th>Tempo de produção</th><th>Preço mínimo</th></tr></thead>
+                <tbody>
+                  {backendProducts.map(product => (
+                    <tr key={product.id_produto}>
+                      <td className="tabela-nome-produto">
+                        <div className="produto-backend-identidade">
+                          {product.imagem && <img src={product.imagem} alt="" loading="lazy" />}
+                          <span>{product.nome}</span>
+                        </div>
+                      </td>
+                      <td><span className="badge">{product.tipo}</span></td>
+                      <td>{product.descricao || '—'}</td>
+                      <td>{formatCurrency(product.custo_direto)}</td>
+                      <td>{product.tempo_producao ?? '—'}</td>
+                      <td>{product.preco_minimo === null ? 'Não definido' : formatCurrency(product.preco_minimo)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
       </main>
     </div>
   );

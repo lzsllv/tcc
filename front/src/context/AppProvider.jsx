@@ -3,15 +3,14 @@ import { WorkspaceService } from '../features/workspace/services/WorkspaceServic
 import { initialWorkspaceState, workspaceReducer } from '../features/workspace/store/workspaceState.js';
 import { LocalWorkspaceRepository } from '../features/workspace/persistence/LocalWorkspaceRepository.js';
 import { isDemoAccountEmpty, persistDemoAccount } from '../application/demoAccount.js';
-import { LocalAuthService } from '../features/auth/services/LocalAuthService.js';
-import { LocalAccountStore } from '../features/auth/store/localAccountStore.js';
+import { BackendAuthService } from '../features/auth/services/BackendAuthService.js';
 import { AppContext } from './AppContext.js';
 import { createEmptyFixedCostsView, createEmptySettingsView } from './appDefaults.js';
 import { createPricingView } from './pricingView.js';
 import { fixedCostsFromView, workspaceToView } from './workspaceView.js';
 import { useLocalSession } from './useLocalSession.js';
 
-const createAuthService = () => new LocalAuthService(new LocalAccountStore(localStorage));
+const createAuthService = () => new BackendAuthService(localStorage);
 const createWorkspaceRepository = storage => new LocalWorkspaceRepository(storage);
 
 export function AppProvider({

@@ -40,7 +40,7 @@ export default function Cadastro() {
           <h2>Conheça o custo real do que você vende.</h2>
           <p>Produtos, despesas, margem e projeções em um só lugar.</p>
         </div>
-        <p className="auth-visual-note"><ShieldCheck size={18} /> Seus dados ficam salvos somente neste navegador.</p>
+        <p className="auth-visual-note"><ShieldCheck size={18} /> Sua conta será cadastrada no sistema.</p>
       </aside>
 
       <main className="auth-main">
@@ -49,9 +49,9 @@ export default function Cadastro() {
             <span className="auth-logo-icon"><Coins size={21} weight="fill" /></span>
             <span className="auth-logo-nome">Precifique</span>
           </Link>
-          <p className="auth-contexto">Comece localmente</p>
+          <p className="auth-contexto">Cadastro no sistema</p>
           <h1 className="auth-titulo">Crie sua conta</h1>
-          <p className="auth-subtitulo">Sem servidor, sincronização ou confirmação por e-mail.</p>
+          <p className="auth-subtitulo">Crie sua conta para acessar o sistema.</p>
 
           <form onSubmit={handleSubmit} className="auth-form">
             {erro && <div className="alerta-erro">{erro}</div>}

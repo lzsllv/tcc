@@ -134,7 +134,7 @@ async login(request, response) {
         const usuario = usuarios[0];
 
         // Verifica se o usuário está ativo
-        if (usuario.status_usuario !== 'ativo') {
+        if (String(usuario.status_usuario ?? '').trim().toLowerCase() !== 'ativo') {
             return response.status(401).json({
                 sucesso: false,
                 mensagem: 'Usuário inativo.',

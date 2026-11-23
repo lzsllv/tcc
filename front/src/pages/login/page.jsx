@@ -36,7 +36,7 @@ export default function Login() {
           <h2>Preço claro. Negócio mais saudável.</h2>
           <p>Organize seus custos e tome decisões com confiança.</p>
         </div>
-        <p className="auth-visual-note"><ShieldCheck size={18} /> Acesse seus dados salvos neste navegador.</p>
+        <p className="auth-visual-note"><ShieldCheck size={18} /> Entre com sua conta cadastrada no sistema.</p>
       </aside>
 
       <main className="auth-main">
@@ -47,7 +47,7 @@ export default function Login() {
           </Link>
           <p className="auth-contexto">Acesso à sua conta</p>
           <h1 className="auth-titulo">Bem-vindo de volta</h1>
-          <p className="auth-subtitulo">Entre para continuar organizando seus preços neste dispositivo.</p>
+          <p className="auth-subtitulo">Entre para acessar sua conta e os produtos cadastrados no sistema.</p>
 
           <form onSubmit={handleSubmit} className="auth-form">
             {erro && <div className="alerta-erro">{erro}</div>}
@@ -61,7 +61,7 @@ export default function Login() {
             </div>
             <button type="submit" className="btn-primary" disabled={carregando}>{carregando ? 'Entrando...' : 'Entrar'}</button>
           </form>
-          <p className="auth-rodape">Não tem conta? <Link to="/cadastro">Criar conta local</Link></p>
+          <p className="auth-rodape">Não tem conta? <Link to="/cadastro">Criar conta</Link></p>
         </div>
       </main>
     </div>
