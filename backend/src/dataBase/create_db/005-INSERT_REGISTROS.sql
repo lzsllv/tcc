@@ -1,24 +1,28 @@
--- =========================================================
--- 005 - INSERT-REGISTROS.sql
--- Inserção de registros de teste em todas as tabelas
--- Obs.: a ordem respeita as dependências de chave estrangeira
--- Pré-requisito: executar 004-INSERT-CIDADES.sql antes deste
--- =========================================================
-
 USE bd_tcc_etim_124_precificacao;
 
 -- ---------------------------------------------------------
 -- USUARIO
 -- ---------------------------------------------------------
-INSERT INTO usuario (nome_usuario, email_usuario, senha_usuario) VALUES
-('Ana Beatriz Souza', 'ana.souza@email.com', '$2a$10$hashsenha1'),
-('Carlos Eduardo Lima', 'carlos.lima@email.com', '$2a$10$hashsenha2'),
-('Fernanda Alves', 'fernanda.alves@email.com', '$2a$10$hashsenha3');
+INSERT INTO usuario (
+    nome_usuario,
+    email_usuario,
+    senha_usuario,
+    dt_cadastro,
+    status_usuario
+) VALUES
+('Ana Beatriz Souza', 'ana.souza@email.com', '$2b$10$2TSrMuN4TvZqCk9/RkLPF.koHnLnRPpPwGVpfemv7lDR55taPqqrW', NOW(), 'Ativo'),
+('Carlos Eduardo Lima', 'carlos.lima@email.com', '$2b$10$2TSrMuN4TvZqCk9/RkLPF.koHnLnRPpPwGVpfemv7lDR55taPqqrW', NOW(), 'Ativo'),
+('Fernanda Alves', 'fernanda.alves@email.com', '$2b$10$2TSrMuN4TvZqCk9/RkLPF.koHnLnRPpPwGVpfemv7lDR55taPqqrW', NOW(), 'Ativo');
 
 -- ---------------------------------------------------------
 -- EMPRESA
 -- ---------------------------------------------------------
-INSERT INTO empresa (id_usuario, nome_fantasia, cnpj, segmento) VALUES
+INSERT INTO empresa (
+    id_usuario,
+    nome_fantasia,
+    cnpj,
+    segmento
+) VALUES
 (1, 'Doce Sabor Confeitaria', '12345678000101', 'Alimentação'),
 (2, 'Estilo Urbano Moda', '23456789000102', 'Vestuário');
 
@@ -34,14 +38,19 @@ INSERT INTO categoria (nome_categoria) VALUES
 -- ---------------------------------------------------------
 -- CUSTO_FIXO
 -- ---------------------------------------------------------
-INSERT INTO custo_fixo (id_empresa, descricao, valor, categoria) VALUES
+INSERT INTO custo_fixo (
+    id_empresa,
+    descricao,
+    valor,
+    categoria
+) VALUES
 (1, 'Aluguel da loja', 1500.00, 'Aluguel'),
 (1, 'Conta de energia', 450.00, 'Energia Elétrica'),
 (2, 'Salário da equipe', 3200.00, 'Salários'),
 (2, 'Internet e telefone', 180.00, 'Internet e Telefonia');
 
 -- ---------------------------------------------------------
--- PARAMETRO
+-- PARAMETRO_PRECIFICACAO
 -- ---------------------------------------------------------
 INSERT INTO parametro_precificacao (
     id_empresa,
@@ -52,6 +61,7 @@ INSERT INTO parametro_precificacao (
 ) VALUES
 (1, 25.00, 2500.00, 8.00, 30.00),
 (2, 30.00, 3000.00, 10.00, 40.00);
+
 -- ---------------------------------------------------------
 -- PRODUTO
 -- ---------------------------------------------------------
@@ -71,17 +81,21 @@ INSERT INTO produto (
 -- ---------------------------------------------------------
 -- CUSTO_VARIAVEL
 -- ---------------------------------------------------------
-INSERT INTO custo_variavel (id_produto, descricao, valor) VALUES
+INSERT INTO custo_variavel (
+    id_produto,
+    descricao,
+    valor
+) VALUES
 (1, 'Embalagem para entrega', 3.50),
 (1, 'Taxa do cartão de crédito', 2.20),
 (2, 'Embalagem para entrega', 4.00),
 (3, 'Embalagem individual', 1.50);
--- Obs.: os registros de REGIAO já foram inseridos em
--- 004-INSERT-CIDADES.sql (executar aquele arquivo antes deste).
 
 -- ---------------------------------------------------------
 -- PRECIFICACAO
 -- ---------------------------------------------------------
+-- Obs.: os registros de REGIAO devem existir previamente.
+
 INSERT INTO precificacao (
     id_produto,
     id_regiao,
@@ -98,9 +112,8 @@ INSERT INTO precificacao (
 (2, 2, 1, 28.50, 68.00, 52.90, 1.28, TRUE, FALSE, NOW()),
 (3, 3, 2, 40.00, 27.50, 19.50, 1.41, FALSE, FALSE, NOW());
 
-
 -- ---------------------------------------------------------
--- SIMULACAO
+-- SIMULACAO_LUCRO
 -- ---------------------------------------------------------
 INSERT INTO simulacao_lucro (
     id_precificacao,
@@ -114,7 +127,7 @@ INSERT INTO simulacao_lucro (
 (3, 100, 2750.00, 800.00, 45.00);
 
 -- ---------------------------------------------------------
--- HISTORICO
+-- HISTORICO_PRECIFICACAO
 -- ---------------------------------------------------------
 INSERT INTO historico_precificacao (
     id_precificacao,

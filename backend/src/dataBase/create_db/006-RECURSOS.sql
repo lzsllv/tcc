@@ -72,3 +72,27 @@ END$$
 
 DELIMITER ;
 
+-- apagar tabelas e reiniciar o banco de dados
+
+USE bd_tcc_etim_124_precificacao;
+
+DROP TABLE IF EXISTS historico_precificacao;
+DROP TABLE IF EXISTS simulacao_lucro;
+DROP TABLE IF EXISTS precificacao;
+DROP TABLE IF EXISTS ficha_tecnica_componente;
+DROP TABLE IF EXISTS taxa_canal;
+DROP TABLE IF EXISTS custo_variavel;
+DROP TABLE IF EXISTS custo_fixo;
+DROP TABLE IF EXISTS parametro_precificacao;
+DROP TABLE IF EXISTS produto;
+DROP TABLE IF EXISTS oferta;
+DROP TABLE IF EXISTS insumo;
+DROP TABLE IF EXISTS canal_venda;
+DROP TABLE IF EXISTS regiao;
+DROP TABLE IF EXISTS empresa;
+DROP TABLE IF EXISTS categoria;
+DROP TABLE IF EXISTS usuario;
+
+
+-- resetar id - usar somente se necessário, pois pode causar problemas de integridade referencial
+ALTER TABLE usuario AUTO_INCREMENT = 1;
