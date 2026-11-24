@@ -1,7 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Copy, CreditCard, PencilSimple, Plus, Star, Trash, Archive } from '@phosphor-icons/react';
 import Navbar from '../../components/layout/Navbar';
 import { useApp } from '../../context/AppContext.js';
+import {
+  createBackendSalesChannel,
+  deleteBackendSalesChannel,
+  fetchBackendSalesChannels,
+  updateBackendSalesChannel,
+} from '../../features/sales-channels/services/backendSalesChannels.js';
 import {
   archiveSalesChannel,
   createSalesChannel,
@@ -40,17 +46,79 @@ function summarize(channel) {
 }
 
 export default function CanaisVenda() {
-  const { workspace, workspaceStatus, workspaceError, atualizarWorkspace } = useApp();
+  const { usuarioLogado, workspace, workspaceStatus, workspaceError, atualizarWorkspace } = useApp();
   const [form, setForm] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState(null);
   const [message, setMessage] = useState(null);
+  const [companyId, setCompanyId] = useState(null);
+  const [backendStatus, setBackendStatus] = useState('loading');
+  const [backendError, setBackendError] = useState('');
+  const [backendChannels, setBackendChannels] = useState([]);
+  const [retryCount, setRetryCount] = useState(0);
+  const [backendSaving, setBackendSaving] = useState(false);
+  const syncedUserId = useRef(null);
 
-  const channels = useMemo(() => (workspace?.salesChannels ?? [])
-    .toSorted((a, b) => Number(b.isDefault) - Number(a.isDefault) || Number(b.active) - Number(a.active) || a.name.localeCompare(b.name, 'pt-BR')), [workspace]);
-  const activeChannelCount = workspace?.salesChannels?.filter(channel => channel.active).length ?? 0;
+  useEffect(() => {
+    const userId = usuarioLogado?.id;
+    const controller = new AbortController();
+    syncedUserId.current = null;
+
+    Promise.resolve()
+      .then(() => {
+        if (controller.signal.aborted) return null;
+        setCompanyId(null);
+        setBackendChannels([]);
+        setBackendError('');
+        setBackendStatus('loading');
+        if (!userId) throw new Error('Entre na sua conta para carregar os canais de venda.');
+        return fetchBackendSalesChannels(userId, { signal: controller.signal });
+      })
+      .then(result => {
+        if (controller.signal.aborted || !result) return;
+        setCompanyId(result.companyId);
+        setBackendChannels(result.channels);
+        setBackendStatus('loaded');
+      })
+      .catch(error => {
+        if (controller.signal.aborted) return;
+        setBackendError(error.message || 'Não foi possível carregar os canais de venda.');
+        setBackendStatus('error');
+      });
+
+    return () => controller.abort();
+  }, [usuarioLogado?.id, retryCount]);
+
+  useEffect(() => {
+    const userId = usuarioLogado?.id;
+    if (!userId || backendStatus !== 'loaded' || workspaceStatus !== 'ready' || syncedUserId.current === userId) return;
+    syncedUserId.current = userId;
+    const updateWorkspace = atualizarWorkspace(current => {
+      const currentSelection = current.settings.selectedSalesChannelId;
+      const selectedSalesChannelId = backendChannels.some(channel => channel.id === currentSelection && channel.active)
+        ? currentSelection
+        : backendChannels.find(channel => channel.active && channel.isDefault)?.id
+          ?? backendChannels.find(channel => channel.active)?.id;
+      return {
+        ...current,
+        salesChannels: backendChannels,
+        settings: { ...current.settings, selectedSalesChannelId },
+      };
+    });
+    updateWorkspace
+      .then(() => setBackendStatus('ready'))
+      .catch(error => {
+        syncedUserId.current = null;
+        setBackendError(error.message || 'Não foi possível sincronizar os canais no workspace.');
+        setBackendStatus('error');
+      });
+  }, [atualizarWorkspace, backendChannels, backendStatus, usuarioLogado?.id, workspaceStatus]);
+
+  const channels = useMemo(() => (backendStatus === 'ready' ? workspace?.salesChannels ?? [] : [])
+    .toSorted((a, b) => Number(b.isDefault) - Number(a.isDefault) || Number(b.active) - Number(a.active) || a.name.localeCompare(b.name, 'pt-BR')), [backendStatus, workspace]);
+  const activeChannelCount = channels.filter(channel => channel.active).length;
   const selectedChannelId = workspace?.settings?.selectedSalesChannelId;
-  const saving = workspaceStatus === 'saving';
-  const loading = workspaceStatus === 'loading' || workspaceStatus === 'idle';
+  const saving = workspaceStatus === 'saving' || backendSaving;
+  const loading = workspaceStatus === 'loading' || workspaceStatus === 'idle' || backendStatus === 'loading' || backendStatus === 'loaded';
 
   function resetForm() {
     setForm(EMPTY_FORM);
@@ -87,15 +155,11 @@ export default function CanaisVenda() {
   async function submit(event) {
     event.preventDefault();
     setMessage(null);
-    try {
-      await atualizarWorkspace(current => editingId
-        ? updateSalesChannel(current, editingId, payload())
-        : createSalesChannel(current, payload()));
-      setMessage({ type: 'success', text: editingId ? 'Canal atualizado com sucesso.' : 'Canal criado com sucesso.' });
-      resetForm();
-    } catch (error) {
-      setMessage({ type: 'error', text: error.message });
-    }
+    const operation = editingId ? 'update' : 'create';
+    const saved = await run(current => editingId
+      ? updateSalesChannel(current, editingId, payload())
+      : createSalesChannel(current, payload()), editingId ? 'Canal atualizado com sucesso.' : 'Canal criado com sucesso.', operation, editingId);
+    if (saved) resetForm();
   }
 
   function edit(channel) {
@@ -105,18 +169,42 @@ export default function CanaisVenda() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  async function run(action, successMessage) {
+  async function run(action, successMessage, operation = 'update', channelId) {
     setMessage(null);
+    setBackendSaving(true);
     try {
-      await atualizarWorkspace(action);
+      const next = action(workspace);
+      const changedChannel = operation === 'create'
+        ? next.salesChannels.find(channel => !workspace.salesChannels.some(current => current.id === channel.id))
+        : next.salesChannels.find(channel => channel.id === channelId);
+
+      if (operation === 'delete') {
+        await deleteBackendSalesChannel(companyId, channelId);
+      } else if (operation === 'create') {
+        if (!changedChannel) throw new Error('Não foi possível identificar o canal criado.');
+        await createBackendSalesChannel(companyId, changedChannel);
+      } else {
+        if (!changedChannel) throw new Error('Não foi possível identificar o canal atualizado.');
+        await updateBackendSalesChannel(companyId, changedChannel);
+      }
+
+      await atualizarWorkspace(current => ({
+        ...current,
+        salesChannels: next.salesChannels,
+        settings: { ...current.settings, selectedSalesChannelId: next.settings.selectedSalesChannelId },
+      }));
       setMessage({ type: 'success', text: successMessage });
+      return true;
     } catch (error) {
       setMessage({ type: 'error', text: error.message });
+      return false;
+    } finally {
+      setBackendSaving(false);
     }
   }
 
   function duplicate(channel) {
-    run(current => duplicateSalesChannel(current, channel.id), `Cópia de ${channel.name} criada.`);
+    run(current => duplicateSalesChannel(current, channel.id), `Cópia de ${channel.name} criada.`, 'create');
   }
 
   function makeDefault(channel) {
@@ -130,7 +218,12 @@ export default function CanaisVenda() {
 
   function remove(channel) {
     if (!window.confirm(`Excluir “${channel.name}” definitivamente?`)) return;
-    run(current => deleteSalesChannel(current, channel.id), 'Canal excluído.');
+    run(current => deleteSalesChannel(current, channel.id), 'Canal excluído.', 'delete', channel.id);
+  }
+
+  function retryBackendChannels() {
+    syncedUserId.current = null;
+    setRetryCount(current => current + 1);
   }
 
   return (
@@ -161,13 +254,13 @@ export default function CanaisVenda() {
                   <button type="button" className="btn-excluir canal-taxa-remover" onClick={() => removeFee(index)} aria-label={`Remover taxa ${fee.name || index + 1}`}><Trash size={15} /></button>
                 </div>;
               })}</div>}
-              <div className="form-acoes canais-form-acoes"><button className="btn-primary" type="submit" disabled={saving || loading}>{saving ? 'Salvando...' : editingId ? 'Salvar alterações' : 'Criar canal'}</button>{editingId && <button className="btn-secondary" type="button" onClick={resetForm}>Cancelar</button>}</div>
+              <div className="form-acoes canais-form-acoes"><button className="btn-primary" type="submit" disabled={saving || loading || !companyId}>{saving ? 'Salvando...' : editingId ? 'Salvar alterações' : 'Criar canal'}</button>{editingId && <button className="btn-secondary" type="button" onClick={resetForm}>Cancelar</button>}</div>
             </form>
           </section>
 
           <section aria-labelledby="channels-list-title">
             <div className="canais-lista-topo"><div><h2 id="channels-list-title" className="secao-titulo">Canais configurados</h2><p>O canal padrão será usado inicialmente nos preços.</p></div></div>
-            {loading ? <div className="card estado-vazio"><span><CreditCard size={30} /></span><p>Carregando canais...</p></div> : channels.length === 0 ? <div className="card estado-vazio"><span><CreditCard size={30} /></span><p>Nenhum canal de venda cadastrado.</p></div> : <div className="canais-lista">{channels.map(channel => {
+            {loading ? <div className="card estado-vazio"><span><CreditCard size={30} /></span><p>Carregando canais...</p></div> : backendStatus === 'error' ? <div className="card estado-vazio"><span><CreditCard size={30} /></span><p role="alert">{backendError}</p><button className="btn-secondary" type="button" onClick={retryBackendChannels}>Tentar novamente</button></div> : channels.length === 0 ? <div className="card estado-vazio"><span><CreditCard size={30} /></span><p>Nenhum canal de venda cadastrado.</p></div> : <div className="canais-lista">{channels.map(channel => {
               const totals = summarize(channel);
               return <article key={channel.id} className={`card canal-card ${channel.active ? '' : 'canal-card-arquivado'}`}>
                 <div className="canal-card-topo">

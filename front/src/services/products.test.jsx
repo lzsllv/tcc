@@ -20,3 +20,12 @@ test('expõe mensagens de erro devolvidas pelo backend', async () => {
 
   await expect(fetchBackendProducts()).rejects.toThrow('Falha ao consultar produtos.');
 });
+
+test('expõe a mensagem do backend em respostas HTTP com erro', async () => {
+  api.get.mockRejectedValue({
+    message: 'Request failed with status code 500',
+    response: { data: { sucesso: false, mensagem: 'Erro na requisição.' } },
+  });
+
+  await expect(fetchBackendProducts()).rejects.toThrow('Erro na requisição.');
+});

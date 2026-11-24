@@ -1,15 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { X } from '@phosphor-icons/react';
 import Navbar from '../../components/layout/Navbar';
 import { useApp } from '../../context/AppContext.js';
+import { fetchBackendFixedCosts, saveBackendFixedCosts } from '../../features/workspace/services/backendFixedCosts.js';
 import '../../styles/Pagina.css';
 import './CustosFixos.css';
 
 export default function CustosFixos() {
-  const { custosFixos, setCustosFixos, totalCustosFixos, produtos, salvarCustosFixos } = useApp();
+  const { usuarioLogado, workspaceStatus, custosFixos, setCustosFixos, totalCustosFixos, produtos, salvarCustosFixos } = useApp();
   const [sucesso, setSucesso] = useState('');
   const [erro,    setErro]    = useState('');
   const [extrasAberto, setExtrasAberto] = useState(false);
+  const [companyId, setCompanyId] = useState(null);
+  const [statusBackend, setStatusBackend] = useState('loading');
+  const [salvando, setSalvando] = useState(false);
+  const [tentativa, setTentativa] = useState(0);
+
+  useEffect(() => {
+    if (workspaceStatus !== 'ready') return undefined;
+    const controller = new AbortController();
+    Promise.resolve()
+      .then(() => fetchBackendFixedCosts(usuarioLogado?.id, { signal: controller.signal }))
+      .then(result => {
+        if (controller.signal.aborted) return;
+        setCompanyId(result.companyId);
+        setCustosFixos(result.costs);
+        setStatusBackend('ready');
+      })
+      .catch(error => {
+        if (controller.signal.aborted) return;
+        setErro(error.message || 'Não foi possível carregar os custos fixos.');
+        setStatusBackend('error');
+      });
+
+    return () => controller.abort();
+  }, [setCustosFixos, tentativa, usuarioLogado?.id, workspaceStatus]);
 
   function fmt(v) {
     return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -51,13 +76,24 @@ export default function CustosFixos() {
     if (temNegativo || extraNegativo)  { setErro('Nenhum custo pode ser negativo.'); return; }
     if (extraSemDescricao)             { setErro('Preencha a descrição de todos os gastos extras.'); return; }
 
+    setSalvando(true);
     try {
+      await saveBackendFixedCosts(companyId, custosFixos);
       await salvarCustosFixos();
       setSucesso('Custos fixos salvos com sucesso!');
       setTimeout(() => setSucesso(''), 3000);
     } catch (error) {
       setErro(error.message || 'Não foi possível salvar os custos fixos.');
+    } finally {
+      setSalvando(false);
     }
+  }
+
+  function tentarNovamente() {
+    setErro('');
+    setCompanyId(null);
+    setStatusBackend('loading');
+    setTentativa(current => current + 1);
   }
 
   const camposFixos = [
@@ -90,6 +126,8 @@ export default function CustosFixos() {
             <form onSubmit={handleSalvar} className="auth-form">
               {erro    && <div className="alerta-erro">{erro}</div>}
               {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
+              {statusBackend === 'loading' && <div role="status" className="alerta-aviso">Carregando custos fixos do servidor...</div>}
+              {statusBackend === 'error' && <button type="button" className="btn-secondary" onClick={tentarNovamente}>Tentar novamente</button>}
 
               {camposFixos.map(c => (
                 <div className="campo-grupo" key={c.key}>
@@ -167,7 +205,9 @@ export default function CustosFixos() {
                 )}
               </div>
 
-              <button type="submit" className="btn-primary" style={{marginTop:'1.25rem'}}>Salvar custos</button>
+              <button type="submit" className="btn-primary" style={{marginTop:'1.25rem'}} disabled={statusBackend !== 'ready' || salvando}>
+                {salvando ? 'Salvando...' : 'Salvar custos'}
+              </button>
             </form>
           </div>
 

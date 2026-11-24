@@ -1,16 +1,54 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ImageSquare } from '@phosphor-icons/react';
 import Navbar from '../../components/layout/Navbar';
 import { useApp } from '../../context/AppContext.js';
+import { fetchBackendSettings, saveBackendSettings } from '../../features/workspace/services/backendSettings.js';
 import '../../styles/Pagina.css';
 import '../../features/workspace/styles/Configuracoes.css';
 
 export default function Configuracoes() {
-  const { configuracoes, setConfiguracoes, salvarConfiguracoes } = useApp();
+  const { usuarioLogado, workspaceStatus, configuracoes, setConfiguracoes, salvarConfiguracoes } = useApp();
   const [sucesso, setSucesso] = useState('');
   const [erro,    setErro]    = useState('');
   const [aviso,   setAviso]   = useState('');
+  const [companyId, setCompanyId] = useState(null);
+  const [statusBackend, setStatusBackend] = useState('loading');
+  const [carregando, setCarregando] = useState(false);
+  const [tentativa, setTentativa] = useState(0);
   const inputLogoRef = useRef(null);
+
+  useEffect(() => {
+    if (workspaceStatus !== 'ready') return undefined;
+    const controller = new AbortController();
+    Promise.resolve()
+      .then(() => {
+        if (controller.signal.aborted) return null;
+        setCompanyId(null);
+        setErro('');
+        setStatusBackend('loading');
+        return fetchBackendSettings(usuarioLogado?.id, { signal: controller.signal });
+      })
+      .then(result => {
+        if (controller.signal.aborted || !result) return;
+        setCompanyId(result.companyId);
+        setConfiguracoes(current => ({
+          ...current,
+          nomeNegocio: result.settings.nomeNegocio ?? '',
+          logoNegocio: result.settings.logoNegocio ?? '',
+          regiaoAtuacao: result.settings.regiaoAtuacao ?? '',
+          custoHora: result.settings.custoHora ?? 0,
+          margemLucro: result.settings.margemLucro ?? 20,
+        }));
+        setStatusBackend('ready');
+      })
+      .catch(error => {
+        if (controller.signal.aborted) return;
+        setErro(error.message || 'Não foi possível carregar as configurações.');
+        setStatusBackend('error');
+      });
+
+    return () => controller.abort();
+  }, [setConfiguracoes, tentativa, usuarioLogado?.id, workspaceStatus]);
 
   function handleChange(campo, valor) {
     setConfiguracoes(prev => ({ ...prev, [campo]: valor }));
@@ -39,13 +77,26 @@ export default function Configuracoes() {
     if (!Number.isFinite(margem) || margem >= 100) { setErro('A margem deve ser menor que 100%.'); return; }
     if (custoHora < 0) { setErro('O custo/hora não pode ser negativo.'); return; }
     if (margem < 10)   setAviso('Margem abaixo de 10% pode ser insuficiente para cobrir imprevistos.');
+    setCarregando(true);
     try {
+      await saveBackendSettings(companyId, {
+        ...configuracoes,
+        nomeNegocio: configuracoes.nomeNegocio.trim(),
+        custoHora,
+        margemLucro: margem,
+      });
       await salvarConfiguracoes();
       setSucesso('Configurações salvas com sucesso!');
       setTimeout(() => setSucesso(''), 3000);
     } catch (error) {
       setErro(error.message || 'Não foi possível salvar as configurações.');
+    } finally {
+      setCarregando(false);
     }
+  }
+
+  function tentarNovamente() {
+    setTentativa(current => current + 1);
   }
 
   return (
@@ -64,6 +115,8 @@ export default function Configuracoes() {
             {erro    && <div className="alerta-erro">{erro}</div>}
             {aviso   && <div className="alerta-aviso">{aviso}</div>}
             {sucesso && <div className="alerta-sucesso">{sucesso}</div>}
+            {statusBackend === 'loading' && <div role="status" className="alerta-aviso">Carregando configurações do servidor...</div>}
+            {statusBackend === 'error' && <button type="button" className="btn-secondary" onClick={tentarNovamente}>Tentar novamente</button>}
 
             <h3 className="config-secao-titulo">Identidade do negócio</h3>
 
@@ -132,7 +185,9 @@ export default function Configuracoes() {
               />
             </div>
 
-            <button type="submit" className="btn-primary">Salvar configurações</button>
+            <button type="submit" className="btn-primary" disabled={statusBackend !== 'ready' || carregando}>
+              {carregando ? 'Salvando...' : 'Salvar configurações'}
+            </button>
           </form>
         </div>
       </main>

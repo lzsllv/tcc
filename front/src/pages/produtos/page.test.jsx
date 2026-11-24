@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, expect, test, vi } from 'vitest';
 import { useApp } from '../../context/AppContext.js';
@@ -54,4 +54,28 @@ test('mostra erro da API e permite solicitar uma nova tentativa', async () => {
   await waitFor(() => expect(screen.getByRole('alert').textContent).toContain('Servidor indisponível.'));
   screen.getByRole('button', { name: 'Tentar novamente' }).click();
   await waitFor(() => expect(fetchBackendProducts).toHaveBeenCalledTimes(2));
+});
+
+test('aplica busca e categoria aos produtos cadastrados no backend', async () => {
+  fetchBackendProducts.mockResolvedValue([
+    { id_produto: 12, nome: 'Bolo de chocolate', tipo: 'Confeitaria', descricao: 'Bolo com cobertura' },
+    { id_produto: 13, nome: 'Sabonete artesanal', tipo: 'Artesanato', descricao: 'Sabonete natural' },
+  ]);
+
+  renderProducts();
+
+  await waitFor(() => expect(screen.getByText('Bolo de chocolate')).toBeTruthy());
+  const search = screen.getByPlaceholderText('Buscar por nome ou categoria');
+  fireEvent.change(search, { target: { value: 'natural' } });
+
+  expect(screen.getByText('Sabonete artesanal')).toBeTruthy();
+  expect(screen.queryByText('Bolo de chocolate')).toBeNull();
+
+  fireEvent.change(search, { target: { value: '' } });
+  fireEvent.change(screen.getByRole('combobox', { name: 'Filtrar por categoria' }), {
+    target: { value: 'Confeitaria' },
+  });
+
+  expect(screen.getByText('Bolo de chocolate')).toBeTruthy();
+  expect(screen.queryByText('Sabonete artesanal')).toBeNull();
 });

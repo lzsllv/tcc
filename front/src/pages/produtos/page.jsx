@@ -52,7 +52,10 @@ export default function Produtos() {
   const selectedChannelId = activeChannels.some(channel => channel.id === workspace?.settings?.selectedSalesChannelId)
     ? workspace.settings.selectedSalesChannelId
     : activeChannels.find(channel => channel.isDefault)?.id ?? activeChannels[0]?.id;
-  const categories = useMemo(() => [...new Set((workspace?.offers ?? []).map(offer => offer.category))].sort((a, b) => a.localeCompare(b, 'pt-BR')), [workspace]);
+  const categories = useMemo(() => [...new Set([
+    ...(workspace?.offers ?? []).map(offer => offer.category),
+    ...backendProducts.map(product => product.tipo).filter(Boolean),
+  ])].sort((a, b) => a.localeCompare(b, 'pt-BR')), [workspace, backendProducts]);
   const offers = useMemo(() => {
     const term = search.trim().toLocaleLowerCase('pt-BR');
     return (workspace?.offers ?? [])
@@ -61,6 +64,17 @@ export default function Produtos() {
       .filter(offer => !term || offer.name.toLocaleLowerCase('pt-BR').includes(term) || offer.category.toLocaleLowerCase('pt-BR').includes(term))
       .sort((a, b) => Number(b.active) - Number(a.active) || a.name.localeCompare(b.name, 'pt-BR'));
   }, [workspace, kind, category, search]);
+  const filteredBackendProducts = useMemo(() => {
+    const term = search.trim().toLocaleLowerCase('pt-BR');
+    return backendProducts.filter(product => {
+      const matchesCategory = category === 'all' || product.tipo === category;
+      const searchableText = [product.nome, product.tipo, product.descricao]
+        .filter(Boolean)
+        .join(' ')
+        .toLocaleLowerCase('pt-BR');
+      return matchesCategory && (!term || searchableText.includes(term));
+    });
+  }, [backendProducts, category, search]);
 
   function costs(offer) {
     try { return calculateOfferVariableCost(offer, ingredientsById, workspace.settings.laborHourCents); }
@@ -169,14 +183,14 @@ export default function Produtos() {
 
           {backendProductsStatus === 'loading' && <div className="card estado-vazio"><p>Carregando produtos do servidor...</p></div>}
           {backendProductsStatus === 'error' && <div className="alerta-erro" role="alert">Não foi possível carregar os produtos do backend: {backendProductsError}</div>}
-          {backendProductsStatus === 'ready' && backendProducts.length === 0 && <div className="card estado-vazio"><p>Nenhum produto cadastrado no backend.</p></div>}
-          {backendProductsStatus === 'ready' && backendProducts.length > 0 && (
+          {backendProductsStatus === 'ready' && filteredBackendProducts.length === 0 && <div className="card estado-vazio"><p>{backendProducts.length === 0 ? 'Nenhum produto cadastrado no backend.' : 'Nenhum produto corresponde aos filtros.'}</p></div>}
+          {backendProductsStatus === 'ready' && filteredBackendProducts.length > 0 && (
             <div className="tabela-wrapper">
               <table className="tabela">
                 <caption className="sr-only">Produtos cadastrados no backend</caption>
                 <thead><tr><th>Produto</th><th>Tipo</th><th>Descrição</th><th>Custo direto</th><th>Tempo de produção</th><th>Preço mínimo</th></tr></thead>
                 <tbody>
-                  {backendProducts.map(product => (
+                  {filteredBackendProducts.map(product => (
                     <tr key={product.id_produto}>
                       <td className="tabela-nome-produto">
                         <div className="produto-backend-identidade">
