@@ -102,6 +102,7 @@ export default function Insumos() {
 
   const loading = workspaceStatus === 'loading' || workspaceStatus === 'idle';
   const saving = workspaceStatus === 'saving';
+  const unavailable = loading || saving || workspaceStatus === 'error';
 
   return (
     <div>
@@ -150,7 +151,7 @@ export default function Insumos() {
               </div>
               <p className="input-hint insumos-form-hint">Informe como o insumo é comprado. O custo por unidade-base será calculado automaticamente.</p>
               <div className="form-acoes">
-                <button className="btn-primary" type="submit" disabled={loading || saving}>{saving ? 'Salvando...' : editingId ? 'Salvar alterações' : 'Cadastrar insumo'}</button>
+                <button className="btn-primary" type="submit" disabled={unavailable}>{saving ? 'Salvando...' : editingId ? 'Salvar alterações' : 'Cadastrar insumo'}</button>
                 {editingId && <button className="btn-secondary" type="button" onClick={resetForm}>Cancelar</button>}
               </div>
             </form>

@@ -21,6 +21,7 @@ function formatMoney(value) {
 export default function Relatorio() {
   const {
     produtos, custosFixos, configuracoes,
+    workspaceError, workspaceStatus,
     totalCustosFixos, totalUnidadesMes, custoFixoPorUnidade,
     calcularCustoTotal, calcularPrecoSugerido,
   } = useApp();
@@ -38,6 +39,9 @@ export default function Relatorio() {
         <div><h1 className="pagina-titulo">Relatório</h1><p className="pagina-subtitulo">Visão completa dos seus custos, preços e margens</p></div>
         <button className="btn-primary btn-imprimir" onClick={() => window.print()}>🖨️ Imprimir relatório</button>
       </div>
+
+      {workspaceError && <div className="alerta-erro" role="alert">Não foi possível carregar os dados do backend: {workspaceError}</div>}
+      {workspaceStatus === 'loading' && <div className="alerta-aviso" role="status">Carregando dados do backend...</div>}
 
       <div className="card relatorio-filtro">
         <h2 className="secao-titulo">📅 Período de referência</h2>

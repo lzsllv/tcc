@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { WorkspaceService } from '../features/workspace/services/WorkspaceService.js';
 import { initialWorkspaceState, workspaceReducer } from '../features/workspace/store/workspaceState.js';
-import { LocalWorkspaceRepository } from '../features/workspace/persistence/LocalWorkspaceRepository.js';
+import { BackendWorkspaceRepository } from '../features/workspace/persistence/BackendWorkspaceRepository.js';
 import { isDemoAccountEmpty, persistDemoAccount } from '../application/demoAccount.js';
 import { BackendAuthService } from '../features/auth/services/BackendAuthService.js';
 import { AppContext } from './AppContext.js';
@@ -11,7 +11,7 @@ import { fixedCostsFromView, workspaceToView } from './workspaceView.js';
 import { useLocalSession } from './useLocalSession.js';
 
 const createAuthService = () => new BackendAuthService(localStorage);
-const createWorkspaceRepository = storage => new LocalWorkspaceRepository(storage);
+const createWorkspaceRepository = storage => new BackendWorkspaceRepository(storage);
 
 export function AppProvider({
   children,

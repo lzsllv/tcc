@@ -7,7 +7,7 @@ import '../../features/reports/styles/Dashboard.css';
 
 export default function Dashboard() {
   const {
-    usuarioLogado, produtos,
+    usuarioLogado, produtos, workspaceError, workspaceStatus,
     totalCustosFixos, calcularCustoTotal, calcularPrecoSugerido,
     configuracoes, podeCarregarDemo, carregarDemo,
   } = useApp();
@@ -74,6 +74,9 @@ export default function Dashboard() {
             )}
           </div>
         </div>
+
+        {workspaceError && <div className="alerta-erro" role="alert">Não foi possível carregar os dados do backend: {workspaceError}</div>}
+        {workspaceStatus === 'loading' && <div className="alerta-aviso" role="status">Carregando dados do backend...</div>}
 
         {demoFeedback && (
           <p className={`dashboard-demo-feedback alerta-${demoFeedback.type}`} role={demoFeedback.type === 'erro' ? 'alert' : 'status'}>

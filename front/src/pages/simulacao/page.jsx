@@ -6,7 +6,7 @@ import '../../styles/Pagina.css';
 import '../../features/reports/styles/Simulacao.css';
 
 export default function Simulacao() {
-  const { produtos, calcularCustoTotal, calcularLucroMensal, calcularPrecoSugerido } = useApp();
+  const { produtos, workspaceError, workspaceStatus, calcularCustoTotal, calcularLucroMensal, calcularPrecoSugerido } = useApp();
 
   const [produtoSelecionado, setProdutoSelecionado] = useState('');
   const [precoVenda,         setPrecoVenda]         = useState('');
@@ -45,6 +45,9 @@ export default function Simulacao() {
             <p className="pagina-subtitulo">Simule seus ganhos antes de definir o preço</p>
           </div>
         </div>
+
+        {workspaceError && <div className="alerta-erro" role="alert">Não foi possível carregar os dados do backend: {workspaceError}</div>}
+        {workspaceStatus === 'loading' && <div className="alerta-aviso" role="status">Carregando dados do backend...</div>}
 
         <div className="pagina-grid">
           <div className="card">
