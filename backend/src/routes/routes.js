@@ -43,6 +43,7 @@ router.patch(
     upload.single('imagem'),
     ProdutosController.editarProdutos
 );
+router.patch('/produtos/arquivar', ProdutosController.arquivarProdutos);
 router.delete('/produtos', ProdutosController.apagarProdutos);
 
 router.get('/produtos-empresas', ProdutosController.listarProdutosComEmpresa);

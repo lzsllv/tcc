@@ -60,6 +60,38 @@ function FichaTecnicaEditor({ editingId: id, existing, app }) {
     setForm(current => ({ ...current, [field]: value }));
   }
 
+  function changeImage(file) {
+    if (!file) return;
+    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+      setMessage('Escolha uma imagem PNG, JPEG ou WebP.');
+      return;
+    }
+    if (file.size > 400 * 1024) {
+      setMessage('A foto deve ter no máximo 400 KB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result !== 'string') {
+        setMessage('Não foi possível carregar a foto selecionada.');
+        return;
+      }
+      setMessage('');
+      change('image', reader.result);
+    };
+    reader.onerror = () => setMessage('Não foi possível ler a foto selecionada.');
+    reader.readAsDataURL(file);
+  }
+
+  function changeIdentification(field, value) {
+    if (field === 'imageFile') {
+      changeImage(value);
+      return;
+    }
+    change(field, value);
+  }
+
   function changeKind(kind) {
     setForm(current => ({ ...current, kind, batchYield: kind === 'service' ? '1' : current.batchYield }));
   }
@@ -112,7 +144,7 @@ function FichaTecnicaEditor({ editingId: id, existing, app }) {
       {message && <div className="alerta-erro">{message}</div>}
       <form onSubmit={submit} className="ficha-layout">
         <div className="ficha-secoes">
-          <OfferIdentificationSection form={form} onChange={change} onKindChange={changeKind} />
+          <OfferIdentificationSection form={form} onChange={changeIdentification} onKindChange={changeKind} />
           <OfferCompositionSection form={form} ingredientsById={ingredientsById} selectableIngredients={selectableIngredients} onAdd={addComponent} onUpdate={updateComponent} onRemove={removeComponent} />
           <OfferProductionSection form={form} onChange={change} />
         </div>

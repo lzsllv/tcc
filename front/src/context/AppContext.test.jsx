@@ -10,6 +10,28 @@ import { AppProvider } from './AppProvider.jsx';
 
 let current;
 
+class MemoryStorage {
+  constructor() {
+    this.values = new Map();
+  }
+
+  getItem(key) {
+    return this.values.get(key) ?? null;
+  }
+
+  setItem(key, value) {
+    this.values.set(key, String(value));
+  }
+
+  removeItem(key) {
+    this.values.delete(key);
+  }
+
+  clear() {
+    this.values.clear();
+  }
+}
+
 function Probe() {
   const value = useApp();
   useLayoutEffect(() => {
@@ -64,7 +86,7 @@ function deferred() {
 }
 
 beforeEach(() => {
-  localStorage.clear();
+  vi.stubGlobal('localStorage', new MemoryStorage());
   current = null;
 });
 
@@ -96,6 +118,45 @@ test('restaura conta local e persiste atualização sem acesso remoto', async ()
   expect(saved.settings.businessName).toBe('Ateliê');
   expect(state().name).toBe('Ateliê');
   expect(requests).not.toHaveBeenCalled();
+});
+
+test('persiste workspace quando o id do usuário do backend é numérico', async () => {
+  const workspace = createEmptyWorkspace('15');
+  const repository = {
+    loadWorkspace: vi.fn(async () => workspace),
+    migrateWorkspace: vi.fn(),
+    saveWorkspace: vi.fn(async (_ownerId, updatedWorkspace) => updatedWorkspace),
+  };
+  const authService = {
+    getSession: async () => ({ user: { id: 15, name: 'Ana' } }),
+    subscribe: () => () => {},
+    signIn: vi.fn(),
+    signUp: vi.fn(),
+    signOut: vi.fn(),
+  };
+
+  render(
+    <AppProvider
+      authServiceFactory={() => authService}
+      workspaceRepositoryFactory={() => repository}
+    >
+      <Probe />
+    </AppProvider>,
+  );
+  await waitFor(() => expect(state()).toMatchObject({ owner: '15', user: 15, status: 'ready' }));
+
+  await act(async () => {
+    await current.atualizarWorkspace(currentWorkspace => ({
+      ...currentWorkspace,
+      ingredients: [{ id: 'ingredient-1', name: 'Farinha' }],
+    }));
+  });
+
+  expect(repository.saveWorkspace).toHaveBeenCalledWith(
+    '15',
+    expect.objectContaining({ ingredients: [{ id: 'ingredient-1', name: 'Farinha' }] }),
+  );
+  expect(state().status).toBe('ready');
 });
 
 test('preserva o valor ausente fora do provedor', () => {

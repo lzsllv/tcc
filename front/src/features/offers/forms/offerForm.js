@@ -1,7 +1,7 @@
 import { percentToBps } from '../../pricing/domain/money.js';
 
 export const EMPTY_OFFER_FORM = {
-  kind: 'product', name: '', category: '', batchYield: '1', batchTimeMinutes: '',
+  kind: 'product', name: '', category: '', image: '', batchYield: '1', batchTimeMinutes: '',
   expectedMonthlySales: '', desiredMargin: '', components: [],
 };
 
@@ -14,6 +14,7 @@ export function offerToForm(offer) {
     kind: offer.kind,
     name: offer.name,
     category: offer.category,
+    image: offer.image ?? '',
     batchYield: String(offer.batchYield),
     batchTimeMinutes: String(offer.batchTimeMinutes),
     expectedMonthlySales: String(offer.expectedMonthlySales),
@@ -31,6 +32,7 @@ export function formToOfferInput(form) {
     kind: form.kind,
     name: form.name,
     category: form.category,
+    image: form.image || '',
     batchYield: form.kind === 'service' ? 1 : numberFromInput(form.batchYield),
     batchTimeMinutes: numberFromInput(form.batchTimeMinutes || 0),
     expectedMonthlySales: numberFromInput(form.expectedMonthlySales || 0),

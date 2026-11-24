@@ -39,7 +39,7 @@ export function AppProvider({
   }, []);
 
   const acceptIdentity = useCallback((user) => {
-    const ownerId = user?.id ?? null;
+    const ownerId = user?.id == null ? null : String(user.id);
     if (sessionScope.current.ownerId !== ownerId) {
       const scope = { ownerId };
       sessionScope.current = scope;

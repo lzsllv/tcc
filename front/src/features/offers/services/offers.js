@@ -56,6 +56,10 @@ function normalizeOfferInput(workspace, input, componentIds, allowedArchivedIds 
   const name = typeof input.name === 'string' ? input.name.trim() : '';
   if (!name) throw new TypeError('Nome da oferta deve ser informado.');
   const category = typeof input.category === 'string' && input.category.trim() ? input.category.trim() : 'Outro';
+  const image = input.image ?? '';
+  if (typeof image !== 'string' || (image && !/^data:image\/(?:png|jpeg|webp);base64,/i.test(image))) {
+    throw new TypeError('A foto deve ser um arquivo PNG, JPEG ou WebP válido.');
+  }
   const batchYield = input.kind === 'service' ? 1 : input.batchYield;
   if (!Number.isFinite(batchYield) || batchYield <= 0) {
     throw new RangeError('Rendimento do lote deve ser maior que zero.');
@@ -78,6 +82,7 @@ function normalizeOfferInput(workspace, input, componentIds, allowedArchivedIds 
     kind: input.kind,
     name,
     category,
+    image,
     batchYield,
     batchTimeMinutes: input.batchTimeMinutes,
     expectedMonthlySales: input.expectedMonthlySales,

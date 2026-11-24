@@ -12,6 +12,13 @@
 .ficha-tipo { margin-bottom: 1.2rem; display: grid; grid-template-columns: 1fr 1fr; padding: .25rem; border: 1px solid var(--borda); border-radius: var(--radius); background: var(--surface-2); }
 .ficha-tipo button { min-height: 40px; color: var(--texto-muted); border: 0; border-radius: calc(var(--radius) - 3px); background: transparent; font-size: .82rem; font-weight: 750; }
 .ficha-tipo button.ativo { color: var(--accent-dark); background: var(--surface); box-shadow: var(--sombra-xs); }
+.ficha-foto { margin-top: 1rem; }
+.ficha-foto-input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
+.ficha-foto-upload { min-height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .35rem; color: var(--accent-dark); border: 1px dashed var(--borda-forte); border-radius: var(--radius); background: var(--surface-2); cursor: pointer; }
+.ficha-foto-upload span { font-size: .82rem; font-weight: 750; }
+.ficha-foto-upload small { color: var(--texto-muted); font-size: .7rem; }
+.ficha-foto-preview { display: flex; align-items: center; gap: .8rem; }
+.ficha-foto-preview img { width: 96px; height: 96px; border: 1px solid var(--borda); border-radius: var(--radius); object-fit: cover; }
 .ficha-componentes { display: grid; gap: .65rem; }
 .ficha-componentes-vazio { min-height: 88px; margin-bottom: .8rem; display: grid; place-items: center; color: var(--texto-muted); border: 1px dashed var(--borda-forte); border-radius: var(--radius); background: var(--surface-2); font-size: .8rem; }
 .ficha-componente { padding: .85rem; display: grid; grid-template-columns: minmax(150px, 1.5fr) .7fr .7fr .7fr auto auto; gap: .55rem; align-items: end; border: 1px solid var(--borda); border-radius: var(--radius); background: var(--surface-2); }

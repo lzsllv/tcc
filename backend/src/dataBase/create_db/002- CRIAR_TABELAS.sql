@@ -91,6 +91,7 @@ CREATE TABLE produto (
     tempo_producao DECIMAL(10,2) NOT NULL,
     preco_minimo DECIMAL(10,2) NULL,
     imagem VARCHAR(255) NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (id_produto),
     CONSTRAINT fk_produto_empresa
         FOREIGN KEY (id_empresa) REFERENCES empresa (id_empresa)

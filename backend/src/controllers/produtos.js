@@ -159,7 +159,7 @@ const [resultado] = await db.query(
         custo_direto,
         tempo_producao,
         id_empresa,
-        preco_minimo,
+        preco_minimo || null,
         imagem,
         id_produto
     ]
@@ -197,9 +197,53 @@ async apagarProdutos(request, response) {
         });
 
     } catch(error) {
+        if (error.code === 'ER_ROW_IS_REFERENCED_2' || error.code === 'ER_ROW_IS_REFERENCED') {
+            return response.status(409).json({
+                sucesso: false,
+                mensagem: 'Este produto possui registros vinculados e não pode ser excluído. Arquive-o para preservar o histórico.',
+                dados: null
+            });
+        }
         return response.status(500).json({
             sucesso: false,
             mensagem: 'Erro na requisição.',
+            dados: error.message
+        });
+    }
+},
+
+async arquivarProdutos(request, response) {
+    try {
+        const { id_produto, ativo = false } = request.body;
+        if (!campoObrigatorio(id_produto)) {
+            return response.status(400).json({
+                sucesso: false,
+                mensagem: 'Informe o produto que deseja arquivar.',
+                dados: null
+            });
+        }
+
+        const [resultado] = await db.query(
+            'UPDATE produto SET ativo = ? WHERE id_produto = ?',
+            [ativo ? 1 : 0, id_produto]
+        );
+        if (resultado.affectedRows === 0) {
+            return response.status(404).json({
+                sucesso: false,
+                mensagem: 'Produto não encontrado.',
+                dados: null
+            });
+        }
+
+        return response.status(200).json({
+            sucesso: true,
+            mensagem: ativo ? 'Produto reativado com sucesso.' : 'Produto arquivado com sucesso.',
+            dados: resultado
+        });
+    } catch (error) {
+        return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro ao arquivar o produto.',
             dados: error.message
         });
     }

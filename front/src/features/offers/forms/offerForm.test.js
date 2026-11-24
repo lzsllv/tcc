@@ -22,10 +22,22 @@ test('monta o payload atual para produto', () => {
     components: [{ id: 'c1', ingredientId: 'i1', quantity: '500,5', unit: 'g', waste: '2,5' }],
   });
   assert.deepEqual(payload, {
-    kind: 'product', name: 'Bolo', category: 'Doces', batchYield: 10,
+    kind: 'product', name: 'Bolo', category: 'Doces', image: '', batchYield: 10,
     batchTimeMinutes: 90, expectedMonthlySales: 20, desiredMarginBps: 1250,
     components: [{ id: 'c1', ingredientId: 'i1', quantity: 500.5, unit: 'g', wasteBps: 250 }],
   });
+});
+
+test('preserva a foto da oferta ao editar e inclui a foto no payload', () => {
+  const image = 'data:image/png;base64,cG5n';
+  const form = offerToForm({
+    kind: 'product', name: 'Bolo', category: 'Doces', image,
+    batchYield: 1, batchTimeMinutes: 0, expectedMonthlySales: 0,
+    desiredMarginBps: null, components: [],
+  });
+
+  assert.equal(form.image, image);
+  assert.equal(formToOfferInput(form).image, image);
 });
 
 test('força rendimento unitário e mantém margem vazia para serviço', () => {

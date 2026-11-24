@@ -34,7 +34,7 @@ test('cria produto com componentes identificados sem alterar o workspace origina
   assert.equal(workspace.offers.length, 0);
   assert.deepEqual(updated.offers[0], {
     id: 'offer-1', ownerId: 'user-1', kind: 'product', name: 'Bolo de chocolate',
-    category: 'Bolos', active: true, batchYield: 10, batchTimeMinutes: 60,
+    category: 'Bolos', image: '', active: true, batchYield: 10, batchTimeMinutes: 60,
     expectedMonthlySales: 20, desiredMarginBps: 2500,
     components: [{ id: 'component-1', ingredientId: 'flour', quantity: 500, unit: 'g', wasteBps: 500 }],
     createdAt: NOW, updatedAt: NOW,

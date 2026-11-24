@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, expect, test, vi } from 'vitest';
 import { useApp } from '../../context/AppContext.js';
@@ -48,4 +48,24 @@ test('preserva a composição inicial da nova ficha', () => {
   expect(screen.getByLabelText('Nome').value).toBe('');
   expect(screen.getByText('Nenhum insumo adicionado.')).toBeTruthy();
   expect(screen.getByRole('button', { name: 'Criar ficha técnica' })).toBeTruthy();
+});
+
+test('permite selecionar e remover a foto de uma ficha', async () => {
+  useApp.mockReturnValue({
+    workspaceStatus: 'ready',
+    workspaceError: null,
+    workspace: {
+      offers: [], ingredients: [],
+      settings: { laborHourCents: 0 },
+    },
+    atualizarWorkspace: vi.fn(),
+  });
+
+  renderEditor();
+  const file = new File(['photo'], 'produto.png', { type: 'image/png' });
+  fireEvent.change(screen.getByLabelText('Foto do produto'), { target: { files: [file] } });
+
+  expect(await screen.findByAltText('Prévia da foto')).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'Remover foto' }));
+  await waitFor(() => expect(screen.getByText('Escolher uma foto')).toBeTruthy());
 });
