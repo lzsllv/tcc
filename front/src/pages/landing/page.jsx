@@ -46,7 +46,7 @@ export default function LandingPage() {
           </nav>
           <div className="lp-header-acoes">
             <Link to="/login" className="lp-btn-ghost">Entrar</Link>
-            <Link to="/cadastro" className="lp-btn-verde">Criar conta local</Link>
+            <Link to="/cadastro" className="lp-btn-verde">Criar conta</Link>
           </div>
           <button className="lp-menu-toggle" aria-label="Abrir menu" onClick={() => {
             document.querySelector('.lp-nav')?.classList.toggle('aberto');
@@ -166,8 +166,8 @@ export default function LandingPage() {
         <section className="lp-cta">
           <div className="lp-cta-inner">
             <h2 className="lp-cta-titulo">Comece a cobrar o que o seu trabalho vale</h2>
-            <p className="lp-cta-sub">Crie sua conta local e organize seus preços hoje.</p>
-            <Link to="/cadastro" className="lp-btn-verde lp-btn-lg">Criar conta local <ArrowRight size={19} /></Link>
+            <p className="lp-cta-sub">Crie sua conta e organize seus preços hoje.</p>
+            <Link to="/cadastro" className="lp-btn-verde lp-btn-lg">Criar conta <ArrowRight size={19} /></Link>
             <p>Já tem conta? <Link to="/login">Entrar</Link></p>
           </div>
         </section>
