@@ -61,18 +61,6 @@
 .produto-backend-identidade { display: flex; align-items: center; gap: .65rem; }
 .produto-backend-identidade img { width: 42px; height: 42px; flex: 0 0 auto; border-radius: var(--radius-sm); object-fit: cover; }
 .produto-identidade img { width: 56px; height: 56px; flex: 0 0 auto; border-radius: var(--radius); object-fit: cover; }
-.produto-editor-servidor { margin-bottom: 1rem; box-shadow: var(--sombra-sm); }
-.produto-editor-cabecalho { margin-bottom: 1rem; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
-.produto-editor-cabecalho .secao-titulo { margin-bottom: .2rem; }
-.produto-editor-cabecalho p, .produto-editor-imagem small, .produto-editor-imagem > span { color: var(--texto-muted); font-size: .75rem; }
-.produto-editor-fechar { min-width: 36px; min-height: 36px; display: grid; place-items: center; color: var(--texto-muted); border: 1px solid var(--borda); border-radius: var(--radius-sm); background: var(--surface); }
-.produto-editor-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .85rem; }
-.produto-editor-form .campo-grupo { min-width: 0; margin: 0; }
-.produto-editor-form .input-field { margin: 0; }
-.produto-editor-form textarea { min-height: 42px; resize: vertical; }
-.produto-editor-descricao, .produto-editor-imagem { grid-column: span 2; }
-.produto-editor-acoes { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: .6rem; }
-.produto-editor-acoes .btn-primary, .produto-editor-acoes .btn-secondary { width: auto; }
 .produto-precos { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--borda); }
 .produto-precos > div { min-width: 0; padding: 1rem; display: grid; align-content: start; gap: .25rem; }
 .produto-precos > div + div { border-left: 1px solid var(--borda); }
@@ -85,4 +73,3 @@
 @media (max-width: 760px) { .produtos-canal { grid-template-columns: 1fr 1fr; } .produtos-canal > div { grid-column: 1 / -1; } .produto-precos { grid-template-columns: 1fr; } .produto-precos > div + div { border-left: 0; border-top: 1px solid var(--borda); } }
 @media (max-width: 480px) { .produtos-canal { grid-template-columns: 1fr; } .produtos-canal > div { grid-column: auto; } .produtos-canal .btn-secondary { width: 100%; } }
 @media (max-width: 480px) { .produtos-backend-cabecalho { align-items: flex-start; flex-direction: column; } }
-@media (max-width: 620px) { .produto-editor-form { grid-template-columns: 1fr; } .produto-editor-descricao, .produto-editor-imagem { grid-column: auto; } .produto-editor-acoes { flex-direction: column-reverse; } .produto-editor-acoes .btn-primary, .produto-editor-acoes .btn-secondary { width: 100%; } }

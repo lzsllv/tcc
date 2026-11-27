@@ -1,14 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Archive, MagnifyingGlass, Package, PencilSimple, Plus, Trash, X } from '@phosphor-icons/react';
+import { Archive, MagnifyingGlass, Package, PencilSimple, Plus, Trash } from '@phosphor-icons/react';
 import { Link, useLocation } from 'react-router-dom';
 import Navbar from '../../components/layout/Navbar';
 import { useApp } from '../../context/AppContext.js';
-import {
-  archiveBackendProduct,
-  deleteBackendProduct,
-  fetchBackendProducts,
-  updateBackendProduct,
-} from '../../services/products.js';
+import { archiveBackendProduct, deleteBackendProduct, fetchBackendProducts } from '../../services/products.js';
 import { archiveOffer, deleteOffer } from '../../features/offers/services/offers.js';
 import { priceOfferForChannel } from '../../features/offers/services/offerPricing.js';
 import { selectSalesChannel } from '../../features/sales-channels/services/salesChannels.js';
@@ -23,15 +18,11 @@ export default function Produtos() {
   const [search, setSearch] = useState('');
   const [kind, setKind] = useState('all');
   const [category, setCategory] = useState('all');
-  const [message, setMessage] = useState(location.state?.saved ? { type: 'success', text: 'Ficha técnica salva com sucesso.' } : null);
+  const [message, setMessage] = useState(location.state?.saved ? { type: 'success', text: location.state.savedMessage || 'Ficha técnica salva com sucesso.' } : null);
   const [backendProducts, setBackendProducts] = useState([]);
   const [backendProductsStatus, setBackendProductsStatus] = useState('loading');
   const [backendProductsError, setBackendProductsError] = useState('');
   const [backendRefresh, setBackendRefresh] = useState(0);
-  const [editingBackendProduct, setEditingBackendProduct] = useState(null);
-  const [backendProductForm, setBackendProductForm] = useState(null);
-  const [backendProductImage, setBackendProductImage] = useState(null);
-  const [savingBackendProduct, setSavingBackendProduct] = useState(false);
   const [backendProductActionId, setBackendProductActionId] = useState(null);
 
   useEffect(() => {
@@ -57,65 +48,6 @@ export default function Produtos() {
     setBackendRefresh(current => current + 1);
   }
 
-  function editBackendProduct(product) {
-    setEditingBackendProduct(product);
-    setBackendProductForm({
-      nome: product.nome ?? '',
-      descricao: product.descricao ?? '',
-      tipo: product.tipo ?? '',
-      custo_direto: product.custo_direto ?? '',
-      tempo_producao: product.tempo_producao ?? '',
-      preco_minimo: product.preco_minimo ?? '',
-    });
-    setBackendProductImage(null);
-    setMessage(null);
-  }
-
-  function closeBackendProductEditor() {
-    if (savingBackendProduct) return;
-    setEditingBackendProduct(null);
-    setBackendProductForm(null);
-    setBackendProductImage(null);
-  }
-
-  async function saveBackendProduct(event) {
-    event.preventDefault();
-    if (!editingBackendProduct || !backendProductForm) return;
-    setSavingBackendProduct(true);
-    setMessage(null);
-    try {
-      await updateBackendProduct({
-        ...editingBackendProduct,
-        ...backendProductForm,
-        custo_direto: Number(backendProductForm.custo_direto),
-        tempo_producao: Number(backendProductForm.tempo_producao),
-        preco_minimo: backendProductForm.preco_minimo === '' ? null : Number(backendProductForm.preco_minimo),
-      }, backendProductImage);
-      setEditingBackendProduct(null);
-      setBackendProductForm(null);
-      setBackendProductImage(null);
-      setMessage({ type: 'success', text: 'Produto do servidor atualizado com sucesso.' });
-      retryBackendProducts();
-    } catch (error) {
-      setMessage({ type: 'error', text: error.message || 'Não foi possível atualizar o produto.' });
-    } finally {
-      setSavingBackendProduct(false);
-    }
-  }
-
-  function chooseBackendProductImage(file) {
-    if (!file) return;
-    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
-      setMessage({ type: 'error', text: 'Escolha uma imagem PNG, JPEG ou WebP.' });
-      return;
-    }
-    if (file.size > 400 * 1024) {
-      setMessage({ type: 'error', text: 'A imagem deve ter no máximo 400 KB.' });
-      return;
-    }
-    setBackendProductImage(file);
-  }
-
   async function archiveServerProduct(product) {
     if (!window.confirm(`Arquivar “${product.nome}”?`)) return;
     setBackendProductActionId(product.id_produto);
@@ -137,7 +69,6 @@ export default function Produtos() {
     setMessage(null);
     try {
       await deleteBackendProduct(product.id_produto);
-      if (editingBackendProduct?.id_produto === product.id_produto) closeBackendProductEditor();
       setMessage({ type: 'success', text: 'Produto excluído do servidor.' });
       retryBackendProducts();
     } catch (error) {
@@ -238,28 +169,6 @@ export default function Produtos() {
 
         {workspaceError && <div className="alerta-erro">Não foi possível acessar seus dados: {workspaceError}</div>}
         {message && <div role="status" className={message.type === 'error' ? 'alerta-erro' : 'alerta-sucesso'}>{message.text}</div>}
-        {editingBackendProduct && backendProductForm && (
-          <section className="card produto-editor-servidor" aria-labelledby="produto-editor-titulo">
-            <div className="produto-editor-cabecalho">
-              <div><h2 id="produto-editor-titulo" className="secao-titulo">Editar produto do servidor</h2><p>As alterações serão salvas no cadastro do servidor.</p></div>
-              <button type="button" className="produto-editor-fechar" aria-label="Fechar edição" onClick={closeBackendProductEditor} disabled={savingBackendProduct}><X size={20} /></button>
-            </div>
-            <form className="produto-editor-form" onSubmit={saveBackendProduct}>
-              <label className="campo-grupo"><span className="input-label">Nome</span><input className="input-field" value={backendProductForm.nome} onChange={event => setBackendProductForm(current => ({ ...current, nome: event.target.value }))} maxLength={120} required /></label>
-              <label className="campo-grupo"><span className="input-label">Categoria</span><input className="input-field" value={backendProductForm.tipo} onChange={event => setBackendProductForm(current => ({ ...current, tipo: event.target.value }))} maxLength={50} required /></label>
-              <label className="campo-grupo produto-editor-descricao"><span className="input-label">Descrição</span><textarea className="input-field" value={backendProductForm.descricao} onChange={event => setBackendProductForm(current => ({ ...current, descricao: event.target.value }))} maxLength={255} /></label>
-              <label className="campo-grupo"><span className="input-label">Custo direto (R$)</span><input className="input-field" type="number" min="0" step="0.01" value={backendProductForm.custo_direto} onChange={event => setBackendProductForm(current => ({ ...current, custo_direto: event.target.value }))} required /></label>
-              <label className="campo-grupo"><span className="input-label">Tempo de produção</span><input className="input-field" type="number" min="0" step="0.01" value={backendProductForm.tempo_producao} onChange={event => setBackendProductForm(current => ({ ...current, tempo_producao: event.target.value }))} required /></label>
-              <label className="campo-grupo"><span className="input-label">Preço mínimo (R$)</span><input className="input-field" type="number" min="0" step="0.01" value={backendProductForm.preco_minimo} onChange={event => setBackendProductForm(current => ({ ...current, preco_minimo: event.target.value }))} /></label>
-              <label className="campo-grupo produto-editor-imagem"><span className="input-label">Foto do produto</span><input className="input-field" type="file" accept="image/png,image/jpeg,image/webp" onChange={event => chooseBackendProductImage(event.target.files?.[0])} />{backendProductImage && <span>{backendProductImage.name}</span>}{!backendProductImage && <small>Deixe vazio para manter a foto atual. PNG, JPEG ou WebP até 400 KB.</small>}</label>
-              <div className="produto-editor-acoes">
-                <button type="button" className="btn-secondary" onClick={closeBackendProductEditor} disabled={savingBackendProduct}>Cancelar</button>
-                <button type="submit" className="btn-primary" disabled={savingBackendProduct}>{savingBackendProduct ? 'Salvando...' : 'Salvar alterações'}</button>
-              </div>
-            </form>
-          </section>
-        )}
-
         <div className="card produtos-toolbar">
           <label className="produtos-busca"><MagnifyingGlass size={18} /><span className="sr-only">Buscar produto ou serviço</span><input value={search} onChange={event => setSearch(event.target.value)} placeholder="Buscar por nome ou categoria" /></label>
           <div className="produtos-tipos" role="group" aria-label="Filtrar por tipo">
@@ -299,9 +208,9 @@ export default function Produtos() {
                         <div className="produto-badges"><span className="badge">Produto</span><span>{item.tipo || 'Sem categoria'}</span><span>Cadastrado no servidor</span></div>
                       </div>
                       {active && <div className="acoes">
-                        <button className="btn-editar" type="button" aria-label={`Editar ${item.nome}`} onClick={() => editBackendProduct(item)} disabled={savingBackendProduct || backendProductActionId !== null}><PencilSimple size={15} /> Editar</button>
-                        <button className="produto-arquivar" type="button" aria-label={`Arquivar ${item.nome}`} title="Arquivar" onClick={() => archiveServerProduct(item)} disabled={backendProductActionId !== null || savingBackendProduct}><Archive size={16} /></button>
-                        <button className="btn-excluir" type="button" aria-label={`Excluir ${item.nome}`} title="Excluir" onClick={() => removeServerProduct(item)} disabled={backendProductActionId !== null || savingBackendProduct}><Trash size={15} /></button>
+                        <Link className="btn-editar" to={`/produtos/${item.id_produto}/editar`} aria-label={`Editar ${item.nome}`}><PencilSimple size={15} /> Editar</Link>
+                        <button className="produto-arquivar" type="button" aria-label={`Arquivar ${item.nome}`} title="Arquivar" onClick={() => archiveServerProduct(item)} disabled={backendProductActionId !== null}><Archive size={16} /></button>
+                        <button className="btn-excluir" type="button" aria-label={`Excluir ${item.nome}`} title="Excluir" onClick={() => removeServerProduct(item)} disabled={backendProductActionId !== null}><Trash size={15} /></button>
                       </div>}
                     </div>
                     <div className="produto-metricas">

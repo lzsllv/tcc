@@ -89,9 +89,7 @@ if (!existeRegistro(empresa)) {
     });
 }
 
-const imagem = request.file
-    ? `imagens/${request.file.filename}`
-    : null;
+const imagem = request.file ? request.file.filename : null;
 
 const [resultado] = await db.query(
     `INSERT INTO produto
@@ -137,9 +135,7 @@ const [resultado] = await db.query(
         } = request.body;
 
 
-const imagem = request.file
-    ? `imagens/${request.file.filename}`
-    : null;
+const imagem = request.file ? request.file.filename : null;
 
 const [resultado] = await db.query(
     `UPDATE produto
@@ -159,7 +155,7 @@ const [resultado] = await db.query(
         custo_direto,
         tempo_producao,
         id_empresa,
-        preco_minimo || null,
+        preco_minimo === '' ? null : preco_minimo,
         imagem,
         id_produto
     ]

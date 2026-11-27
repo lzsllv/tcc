@@ -59,6 +59,16 @@ test('atualiza produto no endpoint multipart e preserva a foto se não foi subst
   expect(formData.get('imagem')).toBeNull();
 });
 
+test('envia a nova foto no campo multipart esperado pelo backend', async () => {
+  api.patch.mockResolvedValue({ data: { sucesso: true, dados: { affectedRows: 1 } } });
+  const image = new File(['image'], 'produto.png', { type: 'image/png' });
+
+  await updateBackendProduct({ id_produto: 24, id_empresa: 8 }, image);
+
+  const [, formData] = api.patch.mock.calls[0];
+  expect(formData.get('imagem')).toBe(image);
+});
+
 test('expõe a mensagem quando o backend rejeita a edição', async () => {
   api.patch.mockResolvedValue({ data: { sucesso: false, mensagem: 'Produto não atualizado.' } });
 

@@ -1,14 +1,14 @@
 const path = require('path');
 const { URL } = require('url');
 
-const PUBLIC_ROOT_PATH = path.join(process.cwd(), 'public');
+const PUBLIC_ROOT_PATH = path.join(__dirname, '..', '..', 'public');
 
 const API_URL = process.env.API_BASE_URL || 'http://localhost:3333';
 
 function gerarUrl(nomeArquivo, pasta, arquivoPadrao) {
     const pastaBase = (pasta || '').replace(/\\/g, '/');
 
-    const arquivo = nomeArquivo || arquivoPadrao || 'sem-img.png';
+    const arquivo = path.basename(nomeArquivo || arquivoPadrao || 'sem-img.png');
 
     const caminhoRelativo = `/${pastaBase ? `${pastaBase}/` : ''}${arquivo}`;
 

@@ -1,30 +1,79 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Package } from '@phosphor-icons/react';
 import Navbar from '../../components/layout/Navbar';
 import { useApp } from '../../context/AppContext.js';
+import { fetchBackendProducts } from '../../services/products.js';
+import { calculateServerProductSimulation } from '../../features/reports/domain/serverProductSimulation.js';
 import '../../styles/Pagina.css';
 import '../../features/reports/styles/Simulacao.css';
 
 export default function Simulacao() {
-  const { produtos, workspaceError, workspaceStatus, calcularCustoTotal, calcularLucroMensal, calcularPrecoSugerido } = useApp();
+  const {
+    produtos,
+    custosFixos,
+    configuracoes,
+    workspace,
+    workspaceError,
+    workspaceStatus,
+    calcularCustoTotal,
+    calcularLucroMensal,
+    calcularPrecoSugerido,
+  } = useApp();
 
+  const [produtosServidor, setProdutosServidor] = useState([]);
+  const [statusProdutosServidor, setStatusProdutosServidor] = useState('loading');
+  const [erroProdutosServidor, setErroProdutosServidor] = useState('');
   const [produtoSelecionado, setProdutoSelecionado] = useState('');
   const [precoVenda,         setPrecoVenda]         = useState('');
   const [quantidade,         setQuantidade]         = useState('');
   const [resultado,          setResultado]          = useState(null);
 
-  const produtoAtual      = produtos.find(p => String(p.id) === produtoSelecionado) || null;
-  const precoSugeridoRef  = produtoAtual ? calcularPrecoSugerido(produtoAtual) : null;
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchBackendProducts({ signal: controller.signal })
+      .then(items => {
+        setProdutosServidor(items
+          .filter(product => Number(product.ativo ?? 1) !== 0)
+          .map(product => ({ ...product, id: `server:${product.id_produto}`, source: 'server' })));
+        setStatusProdutosServidor('ready');
+      })
+      .catch(error => {
+        if (controller.signal.aborted) return;
+        setErroProdutosServidor(error.message || 'Não foi possível carregar os produtos do servidor.');
+        setStatusProdutosServidor('error');
+      });
+
+    return () => controller.abort();
+  }, []);
+
+  const produtosDisponiveis = [...produtos, ...produtosServidor];
+  const produtoAtual = produtosDisponiveis.find(product => String(product.id) === produtoSelecionado) || null;
+  const isProdutoServidor = produtoAtual?.source === 'server';
+  const simulacaoProdutoServidor = isProdutoServidor
+    ? calculateServerProductSimulation({
+      product: produtoAtual,
+      settings: configuracoes,
+      fixedCosts: custosFixos,
+      workspace,
+      monthlyQuantity: quantidade,
+      salePrice: precoVenda,
+    })
+    : null;
+  const precoSugeridoRef = isProdutoServidor
+    ? simulacaoProdutoServidor.suggestedPrice
+    : produtoAtual ? calcularPrecoSugerido(produtoAtual) : null;
 
   function fmt(v) {
-    if (v === null) return 'Indisponível';
+    if (v === null || !Number.isFinite(Number(v))) return 'Indisponível';
     return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 
   function handleSimular(e) {
     e.preventDefault();
     if (!produtoAtual) return;
-    const custoTotal       = calcularCustoTotal(produtoAtual, Number(precoVenda));
+    const custoTotal = isProdutoServidor
+      ? simulacaoProdutoServidor.totalCost
+      : calcularCustoTotal(produtoAtual, Number(precoVenda));
     if (custoTotal === null) { setResultado(null); return; }
     const lucroMensal      = calcularLucroMensal(precoVenda, custoTotal, quantidade);
     const lucroUnitario    = Number(precoVenda) - custoTotal;
@@ -47,12 +96,16 @@ export default function Simulacao() {
         </div>
 
         {workspaceError && <div className="alerta-erro" role="alert">Não foi possível carregar os dados do backend: {workspaceError}</div>}
+        {erroProdutosServidor && <div className="alerta-erro" role="alert">Não foi possível carregar produtos cadastrados no servidor: {erroProdutosServidor}</div>}
         {workspaceStatus === 'loading' && <div className="alerta-aviso" role="status">Carregando dados do backend...</div>}
+        {statusProdutosServidor === 'loading' && <div className="alerta-aviso" role="status">Carregando produtos cadastrados no servidor...</div>}
 
         <div className="pagina-grid">
           <div className="card">
             <h2 className="secao-titulo">Parâmetros da simulação</h2>
-            {produtos.length === 0 ? (
+            {produtosDisponiveis.length === 0 && statusProdutosServidor === 'loading' ? (
+              <div className="estado-vazio" role="status"><p>Carregando produtos...</p></div>
+            ) : produtosDisponiveis.length === 0 ? (
               <div className="estado-vazio">
                 <span><Package size={30} /></span>
                 <p>Cadastre produtos para simular.</p>
@@ -60,8 +113,8 @@ export default function Simulacao() {
             ) : (
               <form onSubmit={handleSimular} className="auth-form">
                 <div className="campo-grupo">
-                  <label className="input-label">Selecione o produto</label>
-                  <select className="input-field" value={produtoSelecionado}
+                  <label className="input-label" htmlFor="simulation-product">Selecione o produto</label>
+                  <select id="simulation-product" className="input-field" value={produtoSelecionado}
                     onChange={e => { setProdutoSelecionado(e.target.value); setResultado(null); }}
                     required
                   >
@@ -69,8 +122,17 @@ export default function Simulacao() {
                     {produtos.map(p => (
                       <option key={p.id} value={p.id}>{p.nome}</option>
                     ))}
+                    {produtosServidor.map(p => (
+                      <option key={p.id} value={p.id}>{p.nome}</option>
+                    ))}
                   </select>
                 </div>
+
+                {isProdutoServidor && (
+                  <p className="sim-nota-margem" role="status">
+                    Para este produto, o custo considera o custo direto, a mão de obra e o rateio dos custos fixos pela quantidade mensal informada.
+                  </p>
+                )}
 
                 {precoSugeridoRef !== null && (
                   <div className="alerta-info sim-sugestao">
@@ -82,20 +144,20 @@ export default function Simulacao() {
                 )}
 
                 <div className="campo-grupo">
-                  <label className="input-label">Preço de venda (R$)</label>
-                  <input className="input-field" type="number" min="0" step="0.01"
+                  <label className="input-label" htmlFor="simulation-sale-price">Preço de venda (R$)</label>
+                  <input id="simulation-sale-price" className="input-field" type="number" min="0" step="0.01"
                     value={precoVenda} onChange={e => { setPrecoVenda(e.target.value); setResultado(null); }}
                     placeholder="0,00" required />
                 </div>
 
                 <div className="campo-grupo">
-                  <label className="input-label">Quantidade vendida por mês</label>
-                  <input className="input-field" type="number" min="1"
+                  <label className="input-label" htmlFor="simulation-monthly-quantity">Quantidade vendida por mês</label>
+                  <input id="simulation-monthly-quantity" className="input-field" type="number" min="1"
                     value={quantidade} onChange={e => { setQuantidade(e.target.value); setResultado(null); }}
                     placeholder="Ex: 50" required />
                 </div>
 
-                {precoSugeridoRef === null && <p role="status">Preço indisponível. Confira o planejamento mensal, o canal e a margem do produto.</p>}
+                {precoSugeridoRef === null && <p role="status">{isProdutoServidor && !Number(quantidade) ? 'Informe a quantidade mensal para calcular o rateio e o preço sugerido.' : 'Preço indisponível. Confira o planejamento mensal, o canal e a margem do produto.'}</p>}
                 <button type="submit" className="btn-primary" disabled={precoSugeridoRef === null}>Simular</button>
               </form>
             )}

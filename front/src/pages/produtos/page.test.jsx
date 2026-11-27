@@ -6,14 +6,12 @@ import {
   archiveBackendProduct,
   deleteBackendProduct,
   fetchBackendProducts,
-  updateBackendProduct,
 } from '../../services/products.js';
 import Produtos from './page.jsx';
 
 vi.mock('../../context/AppContext.js', () => ({ useApp: vi.fn() }));
 vi.mock('../../services/products.js', () => ({
   fetchBackendProducts: vi.fn(),
-  updateBackendProduct: vi.fn(),
   archiveBackendProduct: vi.fn(),
   deleteBackendProduct: vi.fn(),
 }));
@@ -83,6 +81,8 @@ test('exibe no mesmo catálogo produtos do servidor e fichas cadastradas no work
 
   await waitFor(() => expect(screen.getByText('Bolo do servidor')).toBeTruthy());
   expect(screen.getByText('Brigadeiro cadastrado')).toBeTruthy();
+  expect(screen.getByRole('link', { name: 'Editar Bolo do servidor' }).getAttribute('href')).toBe('/produtos/12/editar');
+  expect(screen.getByRole('link', { name: 'Editar' }).getAttribute('href')).toBe('/produtos/offer-1/editar');
   expect(screen.getByText('2 itens')).toBeTruthy();
 });
 
@@ -112,40 +112,13 @@ test('exibe a foto cadastrada junto da ficha técnica', async () => {
   expect(photo.getAttribute('src')).toBe(image);
 });
 
-test('edita um produto do servidor e recarrega a lista atualizada', async () => {
-  const product = {
-    id_produto: 24,
-    id_empresa: 8,
-    nome: 'Bolo antigo',
-    tipo: 'Confeitaria',
-    descricao: 'Descrição antiga',
-    custo_direto: '35.00',
-    tempo_producao: '2.50',
-    preco_minimo: null,
-    imagem: 'http://localhost:3333/imagens/bolo.jpg',
-  };
-  fetchBackendProducts.mockResolvedValue([product]);
-  updateBackendProduct.mockResolvedValue({ affectedRows: 1 });
+test('encaminha produtos do servidor para o mesmo fluxo de edição das fichas', async () => {
+  fetchBackendProducts.mockResolvedValue([{ id_produto: 25, nome: 'Bolo com foto', tipo: 'Confeitaria' }]);
 
   renderProducts();
-  fireEvent.click(await screen.findByRole('button', { name: 'Editar Bolo antigo' }));
-  fireEvent.change(screen.getByLabelText('Nome'), { target: { value: 'Bolo atualizado' } });
-  fireEvent.change(screen.getByLabelText('Preço mínimo (R$)'), { target: { value: '42.50' } });
-  fireEvent.click(screen.getByRole('button', { name: 'Salvar alterações' }));
 
-  await waitFor(() => expect(updateBackendProduct).toHaveBeenCalledWith(
-    expect.objectContaining({
-      id_produto: 24,
-      id_empresa: 8,
-      nome: 'Bolo atualizado',
-      custo_direto: 35,
-      tempo_producao: 2.5,
-      preco_minimo: 42.5,
-    }),
-    null,
-  ));
-  await waitFor(() => expect(fetchBackendProducts).toHaveBeenCalledTimes(2));
-  expect((await screen.findByRole('status')).textContent).toContain('Produto do servidor atualizado com sucesso.');
+  const editLink = await screen.findByRole('link', { name: 'Editar Bolo com foto' });
+  expect(editLink.getAttribute('href')).toBe('/produtos/25/editar');
 });
 
 test('arquiva produto do servidor e mantém visível o item arquivado', async () => {
